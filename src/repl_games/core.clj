@@ -9,23 +9,6 @@
                   :game-state nil
                   :message-queue nil}))
 
-(defn mk-help [{:keys [ns help-atom]}]
-  ;; create help function in target namespace
-  (intern ns 'help (fn []
-                     (doseq [[x y] @help-atom]
-                       (println x y))))
-  ;; add doc string to help atom
-  (swap! help-atom conj ["help" "(help)"]))
-
-(defn mk-setup [{:keys [ns help-atom world-atom doc mk-game-state]}]
-  ;; create setup function in target namespace
-  (intern ns 'su (fn []
-                   (->> (System/currentTimeMillis)
-                        (mk-world-state mk-game-state)
-                        (reset! world-atom))))
-  ;; add doc string to help atom
-  (swap! help-atom conj ["su" "(setup)"]))
-
 (defn update-world-state [world-state cmd-map cmd-name args]
   (let [cmd-fn (-> cmd-map cmd-name)]
     ;; iff a new state is produced ...
@@ -42,5 +25,26 @@
                 ;; look up mk-game-state, initialize world state
                 (mk-world-state (-> cmd-map :mk-game-state) seed)
                 (rest cmd-log))
-        ;; ignore messages when replaying
+        ;; messages should be ignored during replay
         (assoc :message-queue nil))))
+
+(defn mk-help-setup-undo [{:keys [ns help-atom world-atom command-map]}]
+  ;; create help function
+  (intern ns 'help #(doseq [[x y] @help-atom]
+                      (println x y)))
+  ;; add help to help
+  (swap! help-atom conj ["help" "(help)"])
+  ;; create setup function
+  (intern ns 'su #(->> (System/currentTimeMillis)
+                       (mk-world-state (:mk-game-state command-map))
+                       (reset! world-atom)))
+  ;; add setup to help
+  (swap! help-atom conj ["su" "(setup)"])
+  ;; create undo function
+  (intern ns 'un #(let [cmd-log (-> @world-atom :command-log)]
+                    ;; allow undo iff there is at least 1 non-setup command
+                    (when (-> cmd-log (count) (> 1))
+                      (->> (replay-commands (butlast cmd-log) command-map)
+                           (reset! world-atom)))))
+  ;; add undo to help
+  (swap! help-atom conj ["un" "(undo)"]))
