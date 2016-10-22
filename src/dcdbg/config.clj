@@ -44,7 +44,15 @@
                 :facing :down
                 :type :pile}))
 
+(def card-types
+  {:equipment   {:alias :eq}
+   :hero        {:alias :he}
+   :location    {:alias :lo}
+   :starter     {:alias :st}
+   :super-power {:alias :sp}
+   :villain     {:alias :vi}})
+
 (def aliases
-  (->> (for [[k v] card-spaces]
+  (->> (for [[k v] (merge card-spaces card-types)]
          [k (:alias v)])
        (into {})))

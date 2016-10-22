@@ -37,7 +37,8 @@
   ;; create setup function
   (intern ns 'su #(->> (System/currentTimeMillis)
                        (mk-world-state (:mk-game-state command-map))
-                       (reset! world-atom)))
+                       (reset! world-atom)
+                       ((:pr-world-state command-map))))
   ;; add setup to help
   (swap! help-atom conj ["su" "(setup)"])
   ;; create undo function
@@ -45,6 +46,7 @@
                     ;; allow undo iff there is at least 1 non-setup command
                     (when (-> cmd-log (count) (> 1))
                       (->> (replay-commands (butlast cmd-log) command-map)
-                           (reset! world-atom)))))
+                           (reset! world-atom)
+                           ((:pr-world-state command-map))))))
   ;; add undo to help
   (swap! help-atom conj ["un" "(undo)"]))
