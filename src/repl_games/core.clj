@@ -9,12 +9,22 @@
                   :game-state nil
                   :message-queue nil}))
 
-(defn mk-setup [ns world-atom mk-game-state]
-  ;; create "su" setup function in target namespace
+(defn mk-help [{:keys [ns help-atom]}]
+  ;; create help function in target namespace
+  (intern ns 'help (fn []
+                     (doseq [[x y] @help-atom]
+                       (println x y))))
+  ;; add doc string to help atom
+  (swap! help-atom conj ["help" "(help)"]))
+
+(defn mk-setup [{:keys [ns help-atom world-atom doc mk-game-state]}]
+  ;; create setup function in target namespace
   (intern ns 'su (fn []
                    (->> (System/currentTimeMillis)
                         (mk-world-state mk-game-state)
-                        (reset! world-atom)))))
+                        (reset! world-atom))))
+  ;; add doc string to help atom
+  (swap! help-atom conj ["su" "(setup)"]))
 
 (defn update-world-state [world-state cmd-map cmd-name args]
   (let [cmd-fn (-> cmd-map cmd-name)]
