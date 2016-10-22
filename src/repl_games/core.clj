@@ -9,6 +9,13 @@
                   :game-state nil
                   :message-queue nil}))
 
+(defn mk-setup [ns world-atom mk-game-state]
+  ;; create "su" setup function in target namespace
+  (intern ns 'su (fn []
+                   (->> (System/currentTimeMillis)
+                        (mk-world-state mk-game-state)
+                        (reset! world-atom)))))
+
 (defn update-world-state [world-state cmd-map cmd-name args]
   (let [cmd-fn (-> cmd-map cmd-name)]
     ;; iff a new state is produced ...
@@ -27,5 +34,3 @@
                 (rest cmd-log))
         ;; ignore messages when replaying
         (assoc :message-queue nil))))
-
-
