@@ -38,6 +38,7 @@
   (intern ns 'su #(->> (System/currentTimeMillis)
                        (mk-world-state (:mk-game-state command-map))
                        (reset! world-atom)
+                       ;; print new world state
                        ((:pr-world-state command-map))))
   ;; add setup to help
   (swap! help-atom conj ["su" "(setup)"])
@@ -47,6 +48,7 @@
                     (when (-> cmd-log (count) (> 1))
                       (->> (replay-commands (butlast cmd-log) command-map)
                            (reset! world-atom)
+                           ;; print new world state
                            ((:pr-world-state command-map))))))
   ;; add undo to help
   (swap! help-atom conj ["un" "(undo)"]))
