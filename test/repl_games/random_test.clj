@@ -7,10 +7,9 @@
     (set-seed! 0)
     (is (= [7 2 5 3 6 1 4 8 9 0]
            (shuffle* (range 10))))
-    (is (= [9 2 1 7 0 8 3 5 6 4]
-           (shuffle* (range 10))))
     (set-seed! 0)
     (is (= [7 2 5 3 6 1 4 8 9 0]
            (shuffle* (range 10))))
-    (is (= [9 2 1 7 0 8 3 5 6 4]
+    (set-seed! 0)
+    (is (= [7 2 5 3 6 1 4 8 9 0]
            (shuffle* (range 10))))))

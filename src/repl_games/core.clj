@@ -4,10 +4,10 @@
 (defn mk-world-state [mk-game-state seed]
   ;; set PRNG seed
   (rand/set-seed! seed)
-  ;; make state
-  {:command-log [[seed]]
-   :game-state (mk-game-state)
-   :message-queue []})
+  ;; mk-game-state should update :game-state and :message-queue
+  (mk-game-state {:command-log [[seed]]
+                  :game-state nil
+                  :message-queue nil}))
 
 (defn update-world-state [world-state cmd-map cmd-name args]
   (let [cmd-fn (-> cmd-map cmd-name)]
@@ -26,6 +26,6 @@
                 (mk-world-state (-> cmd-map :mk-game-state) seed)
                 (rest cmd-log))
         ;; ignore messages when replaying
-        (assoc :message-queue []))))
+        (assoc :message-queue nil))))
 
 
