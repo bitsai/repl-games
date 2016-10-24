@@ -72,7 +72,8 @@
                         (first)
                         (:stack-ongoing)
                         (format "SUPER-VILLAIN ONGOING: %s")))
-        state {:super-villain svs
+        state (array-map
+               :super-villain svs
                :timer (-> cards/weakness mk-cards (use-facing :weakness))
                :weakness []
                :kick (-> cards/kick mk-cards (use-facing :kick))
@@ -83,7 +84,7 @@
                :location []
                :hand (-> hand (use-facing :hand))
                :deck (-> deck (use-facing :deck))
-               :discard []}]
+               :discard [])]
     (-> game
         (assoc :messages msgs)
         (assoc :state state))))

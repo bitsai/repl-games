@@ -4,15 +4,15 @@
 
 ;; helpers
 
-(defn- mk-alias [k]
-  (-> cfg/aliases (get k) name))
+(defn- mk-alias [card-type]
+  (-> cfg/aliases (get card-type) name str/upper-case (subs 0 2)))
 
-(defn- mk-header [k]
-  (-> k name str/upper-case))
+(defn- mk-header [x]
+  (-> x name str/upper-case))
 
 ;; printers
 
-(defn print-card-summary [card-idx card]
+(defn print-card-summary [card card-idx]
   (printf "%2s) " (inc card-idx))
   (case (:type card)
     :super-villain
@@ -28,7 +28,7 @@
     (printf "%-1s %-2s %-1s %-1s %-2s %s\n"
             (or (:cost card) "")
             (if (:type card)
-              (-> card :type mk-alias str/upper-case (subs 0 2))
+              (-> card :type mk-alias)
               "")
             (if (:text card) "T" "")
             (cond
@@ -44,29 +44,29 @@
     (when-let [x (get card k)]
       (printf "%s: %s\n" (mk-header k) x))))
 
-(defn print-pile [pile k]
-  (printf "[%s] %s (%d)\n" (mk-alias k) (mk-header k) (count pile))
-  (->> pile
+(defn print-pile [cards space-idx space-name]
+  (printf "[%2s] %s (%d)\n" space-idx (mk-header space-name) (count cards))
+  (->> cards
        (map-indexed (fn [idx c]
                       (when (-> c :facing (= :up))
-                        (print-card-summary idx c))))
+                        (print-card-summary c idx))))
        (dorun)))
 
-(defn print-stack [stack k]
-  (printf "[%s] %s (%d)\n" (mk-alias k) (mk-header k) (count stack))
-  (when (-> stack first :facing (= :up))
-    (print-card-summary 0 (first stack))))
+(defn print-stack [cards space-idx space-name]
+  (printf "[%2s] %s (%d)\n" space-idx (mk-header space-name) (count cards))
+  (when (-> cards first :facing (= :up))
+    (print-card-summary (first cards) 0)))
 
 (defn print-game [{:keys [messages state]}]
-  (doseq [[k v] (take 7 cfg/card-spaces)]
-    (case (:type v)
-      :pile (-> state (get k) (print-pile k))
-      :stack (-> state (get k) (print-stack k))))
-  (println)
-  (doseq [[k v] (drop 7 cfg/card-spaces)]
-    (case (:type v)
-      :pile (-> state (get k) (print-pile k))
-      :stack (-> state (get k) (print-stack k))))
+  (->> state
+       (map-indexed (fn [idx [space-name cards]]
+                      ;; insert separator between game and player cards
+                      (when (= idx 7)
+                        (println))
+                      (case (-> cfg/card-spaces space-name :type)
+                        :pile (print-pile cards idx space-name)
+                        :stack (print-stack cards idx space-name))))
+       (dorun))
   (when-let [msgs (seq messages)]
     (println)
     (doseq [msg msgs]
