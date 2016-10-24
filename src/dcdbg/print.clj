@@ -10,7 +10,7 @@
 ;; printers
 
 (defn print-card-summary [card card-idx]
-  (printf "%2s) " (inc card-idx))
+  (printf "%2s) " card-idx)
   (case (:type card)
     :super-villain
     (printf "%-4s %-1s %-1s %s\n"
