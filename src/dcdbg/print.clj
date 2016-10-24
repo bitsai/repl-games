@@ -4,9 +4,6 @@
 
 ;; helpers
 
-(defn- mk-alias [card-type]
-  (-> cfg/aliases (get card-type) name str/upper-case (subs 0 2)))
-
 (defn- mk-header [x]
   (-> x name str/upper-case))
 
@@ -28,7 +25,7 @@
     (printf "%-1s %-2s %-1s %-1s %-2s %s\n"
             (or (:cost card) "")
             (if (:type card)
-              (-> card :type mk-alias)
+              (-> card :type cfg/aliases)
               "")
             (if (:text card) "T" "")
             (cond
@@ -41,7 +38,7 @@
 
 (defn print-card-details [card]
   (doseq [k [:name :type :cost :victory :text :power :attack :defense :ongoing :stack-ongoing :first-appearance-attack]]
-    (when-let [x (get card k)]
+    (when-let [x (k card)]
       (printf "%s: %s\n" (mk-header k) x))))
 
 (defn print-pile [cards space-idx space-name]

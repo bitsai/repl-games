@@ -1,12 +1,12 @@
 (ns dcdbg.config)
 
 (def aliases
-  {:equipment   :eq
-   :hero        :he
-   :location    :lo
-   :starter     :st
-   :super-power :sp
-   :villain     :vi})
+  {:equipment   "EQ"
+   :hero        "HE"
+   :location    "LO"
+   :starter     "ST"
+   :super-power "SP"
+   :villain     "VI"})
 
 (def card-spaces
   (array-map

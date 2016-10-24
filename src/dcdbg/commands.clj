@@ -4,7 +4,7 @@
 ;; helpers
 
 (defn- get-cards [game k]
-  (-> game :state (get k)))
+  (-> game :state k))
 
 (defn- get-card [game k card-idx]
   (let [;; convert 1-based index to 0-based index

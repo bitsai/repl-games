@@ -44,7 +44,7 @@
   ;; create undo function
   (intern ns 'un #(let [cmds (-> @game-atom :commands)]
                     ;; allow undo iff there is at least 1 non-setup command
-                    (when (-> cmds (count) (> 1))
+                    (when (-> cmds count (> 1))
                       (->> (replay-commands (butlast cmds) command-map)
                            (reset! game-atom)
                            ((:pr-game command-map))))))
