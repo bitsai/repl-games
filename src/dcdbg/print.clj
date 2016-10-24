@@ -57,17 +57,17 @@
   (when (-> stack first :facing (= :up))
     (print-card-summary 0 (first stack))))
 
-(defn print-world-state [{:keys [game-state message-queue]}]
+(defn print-game [{:keys [messages state]}]
   (doseq [[k v] (take 7 cfg/card-spaces)]
     (case (:type v)
-      :pile (print-pile (get game-state k) k)
-      :stack (print-stack (get game-state k) k)))
+      :pile (-> state (get k) (print-pile k))
+      :stack (-> state (get k) (print-stack k))))
   (println)
   (doseq [[k v] (drop 7 cfg/card-spaces)]
     (case (:type v)
-      :pile (print-pile (get game-state k) k)
-      :stack (print-stack (get game-state k) k)))
-  (when-let [msgs (seq message-queue)]
+      :pile (-> state (get k) (print-pile k))
+      :stack (-> state (get k) (print-stack k))))
+  (when-let [msgs (seq messages)]
     (println)
     (doseq [msg msgs]
       (println msg))))

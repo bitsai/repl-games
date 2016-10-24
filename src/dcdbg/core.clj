@@ -6,15 +6,15 @@
 
 (def help-atom (atom []))
 
-(def world-atom (atom nil))
+(def game-atom (atom nil))
 
 (def command-map
   {:mk-game-state setup/mk-game-state
-   :pr-world-state print/print-world-state
-   :pg {:doc "(print game): [card-space [idx+]]"
+   :pr-game print/print-game
+   :pg {:doc "(print game): [space-idx [card-idx+]]"
         :fn commands/print*}})
 
 (repl-games/mk-help-setup-undo {:ns *ns*
                                 :help-atom help-atom
-                                :world-atom world-atom
+                                :game-atom game-atom
                                 :command-map command-map})

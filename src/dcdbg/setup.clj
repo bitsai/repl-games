@@ -61,29 +61,29 @@
             (->  z  (use-facing :super-villain))
             (-> [y] (use-facing :super-villain)))))
 
-(defn mk-game-state [world-state]
+(defn mk-game-state [game]
   (let [svs (setup-super-villains (:super-villain-count cfg/defaults))
         [line-up main-deck] (split-at 5 (setup-main-deck))
         shs (setup-super-heroes)
         [hand deck] (split-at 5 (setup-deck))
-        game-state {:super-villain svs
-                    :timer (-> cards/weakness mk-cards (use-facing :weakness))
-                    :weakness []
-                    :kick (-> cards/kick mk-cards (use-facing :kick))
-                    :destroyed []
-                    :main-deck (-> main-deck (use-facing :main-deck))
-                    :line-up (-> line-up (use-facing :line-up))
-                    :super-hero shs
-                    :location []
-                    :hand (-> hand (use-facing :hand))
-                    :deck (-> deck (use-facing :deck))
-                    :discard []}
         msgs (conj (->> shs
                         (mapv #(format "SUPER-HERO: %s" (:text %))))
                    (->> svs
                         (first)
                         (:stack-ongoing)
-                        (format "SUPER-VILLAIN ONGOING: %s")))]
-    (-> world-state
-        (assoc :game-state game-state)
-        (assoc :message-queue msgs))))
+                        (format "SUPER-VILLAIN ONGOING: %s")))
+        state {:super-villain svs
+               :timer (-> cards/weakness mk-cards (use-facing :weakness))
+               :weakness []
+               :kick (-> cards/kick mk-cards (use-facing :kick))
+               :destroyed []
+               :main-deck (-> main-deck (use-facing :main-deck))
+               :line-up (-> line-up (use-facing :line-up))
+               :super-hero shs
+               :location []
+               :hand (-> hand (use-facing :hand))
+               :deck (-> deck (use-facing :deck))
+               :discard []}]
+    (-> game
+        (assoc :messages msgs)
+        (assoc :state state))))
