@@ -72,19 +72,30 @@
                         (first)
                         (:stack-ongoing)
                         (format "SUPER-VILLAIN ONGOING: %s")))
-        state (array-map
-               :super-villain svs
-               :timer (-> cards/weakness mk-cards (use-facing :weakness))
-               :weakness []
-               :kick (-> cards/kick mk-cards (use-facing :kick))
-               :destroyed []
-               :main-deck (-> main-deck (use-facing :main-deck))
-               :line-up (-> line-up (use-facing :line-up))
-               :super-hero shs
-               :location []
-               :hand (-> hand (use-facing :hand))
-               :deck (-> deck (use-facing :deck))
-               :discard [])]
+        state [{:name :super-villain
+                :cards svs}
+               {:name :timer
+                :cards (-> cards/weakness mk-cards (use-facing :weakness))}
+               {:name :weakness
+                :cards []}
+               {:name :kick
+                :cards (-> cards/kick mk-cards (use-facing :kick))}
+               {:name :destroyed
+                :cards []}
+               {:name :main-deck
+                :cards (-> main-deck (use-facing :main-deck))}
+               {:name :line-up
+                :cards (-> line-up (use-facing :line-up))}
+               {:name :super-hero
+                :cards shs}
+               {:name :location
+                :cards []}
+               {:name :hand
+                :cards (-> hand (use-facing :hand))}
+               {:name :deck
+                :cards (-> deck (use-facing :deck))}
+               {:name :discard
+                :cards []}]]
     (-> game
         (assoc :messages msgs)
         (assoc :state state))))

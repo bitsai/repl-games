@@ -56,13 +56,13 @@
 
 (defn print-game [{:keys [messages state]}]
   (->> state
-       (map-indexed (fn [idx [space-name cards]]
+       (map-indexed (fn [idx {:keys [name cards]}]
                       ;; insert separator between game and player cards
                       (when (= idx 7)
                         (println))
-                      (case (-> cfg/card-spaces space-name :type)
-                        :pile (print-pile cards idx space-name)
-                        :stack (print-stack cards idx space-name))))
+                      (case (-> cfg/card-spaces name :type)
+                        :pile (print-pile cards idx name)
+                        :stack (print-stack cards idx name))))
        (dorun))
   (when-let [msgs (seq messages)]
     (println)
