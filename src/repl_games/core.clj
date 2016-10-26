@@ -34,7 +34,8 @@
           (-> cmd-name name symbol)
           (fn [& args]
             (when-let [g (update-game @game-atom cmd-name (:fn cmd-spec) args)]
-              (print-game g)))))
+              (reset! game-atom g)
+              (print-game @game-atom)))))
 
 (defn mk-commands [ns game-atom help-atom command-map mk-game-state print-game]
   ;; create help command
