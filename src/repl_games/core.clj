@@ -5,7 +5,7 @@
   ;; set PRNG seed
   (rand/set-seed! seed)
   ;; mk-game-state should update :messages and :state
-  (mk-game-state {:commands [[seed]]
+  (mk-game-state {:commands [[:setup seed]]
                   :messages nil
                   :state nil}))
 
@@ -17,14 +17,14 @@
 
 (defn replay-commands [cmds cmd-map mk-game-state]
   ;; first command contains data for making new game
-  (let [[seed] (first cmds)]
+  (let [[_ seed] (first cmds)]
     ;; replay commands
     (-> (reduce (fn [game [cmd-name args]]
                   (let [cmd-fn (-> cmd-map cmd-name :fn)]
                     (update-game game cmd-name cmd-fn args)))
                 (mk-game mk-game-state seed)
                 (rest cmds))
-        ;; messages should be ignored during replay
+        ;; discard messages during replay
         (assoc :messages nil))))
 
 (defn print-and-reset! [game print-game game-atom]
