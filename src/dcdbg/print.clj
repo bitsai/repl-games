@@ -9,7 +9,7 @@
 
 ;; printers
 
-(defn print-card-summary [card card-idx]
+(defn print-card-summary! [card card-idx]
   (printf "%2s) " card-idx)
   (case (:type card)
     :super-villain
@@ -36,33 +36,33 @@
             (or (:power card) "")
             (:name card))))
 
-(defn print-card-details [card]
+(defn print-card-details! [card]
   (doseq [k [:name :type :cost :victory :text :power :attack :defense :ongoing :stack-ongoing :first-appearance-attack]]
     (when-let [x (k card)]
       (printf "%s: %s\n" (mk-header k) x))))
 
-(defn print-pile [cards space-idx space-name]
+(defn print-pile! [cards space-idx space-name]
   (printf "[%2s] %s (%d)\n" space-idx (mk-header space-name) (count cards))
   (->> cards
        (map-indexed (fn [idx c]
                       (when (-> c :facing (= :up))
-                        (print-card-summary c idx))))
+                        (print-card-summary! c idx))))
        (dorun)))
 
-(defn print-stack [cards space-idx space-name]
+(defn print-stack! [cards space-idx space-name]
   (printf "[%2s] %s (%d)\n" space-idx (mk-header space-name) (count cards))
   (when (-> cards first :facing (= :up))
-    (print-card-summary (first cards) 0)))
+    (print-card-summary! (first cards) 0)))
 
-(defn print-game [{:keys [messages state]}]
+(defn print-game! [{:keys [messages state]}]
   (->> state
        (map-indexed (fn [idx {:keys [name cards]}]
                       ;; insert separator between game and player cards
                       (when (= idx 7)
                         (println))
                       (case (-> cfg/card-spaces name :type)
-                        :pile (print-pile cards idx name)
-                        :stack (print-stack cards idx name))))
+                        :pile (print-pile! cards idx name)
+                        :stack (print-stack! cards idx name))))
        (dorun))
   (when-let [msgs (seq messages)]
     (println)

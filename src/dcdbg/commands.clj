@@ -22,20 +22,20 @@
 
 ;; commands
 
-(defn print*
+(defn print!
   ([game]
-   (print/print-game game))
+   (print/print-game! game))
   ([game space-idx]
    (-> game
        (get-cards space-idx)
        ;; turn everything face-up so they are all visible
        (->> (map #(assoc % :facing :up)))
-       (print/print-pile space-idx (get-space-name game space-idx))))
+       (print/print-pile! space-idx (get-space-name game space-idx))))
   ([game k card-idx & card-idxs]
-   (print/print-card-details (get-card game k card-idx))
+   (print/print-card-details! (get-card game k card-idx))
    (doseq [idx card-idxs]
      (println)
-     (print/print-card-details (get-card game k idx)))))
+     (print/print-card-details! (get-card game k idx)))))
 
 (defn move [game from-space-idx to-space-idx to-top-or-bottom & card-idxs]
   (let [from-cards (get-cards game from-space-idx)

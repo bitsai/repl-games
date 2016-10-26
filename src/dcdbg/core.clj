@@ -8,17 +8,20 @@
 
 (def help-atom (atom []))
 
+(def meta-fn-map
+  {:mk-game-state setup/mk-game-state
+   :print-game print/print-game!})
+
 (def command-map
   {:pg {:doc "(print game): [space-idx [card-idx+]]"
-        :fn commands/print*}
+        :fn commands/print!}
    :mt {:doc "(move to top): from-space-idx to-space-idx card-idx+"
         :fn #(apply commands/move %1 %2 %3 :top %&)}
    :mb {:doc "(move to bottom): from-space-idx to-space-idx card-idx+"
         :fn #(apply commands/move %1 %2 %3 :bottom %&)}})
 
-(repl-games/mk-commands *ns*
-                        game-atom
-                        help-atom
-                        command-map
-                        setup/mk-game-state
-                        print/print-game)
+(repl-games/mk-commands! *ns*
+                         game-atom
+                         help-atom
+                         meta-fn-map
+                         command-map)
