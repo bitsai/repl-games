@@ -1,6 +1,6 @@
 # repl-games
 
-A toy project to let me play text-based games in the Android Clojure REPL app.
+A toy project to let me play text-based games in the Clojure REPL on Android.
 
 ## Notes
 
