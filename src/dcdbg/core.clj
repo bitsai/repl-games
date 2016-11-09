@@ -33,7 +33,9 @@
    :de {:doc "(destroy): space-idx card-idx+"
         :fn #(apply cmds/move %1 %2 4 :top %&)}
    :rd {:doc "(refill deck)"
-        :fn cmds/refill-deck}))
+        :fn cmds/refill-deck}
+   :dr {:doc "(draw): [n]"
+        :fn cmds/draw}))
 
 (repl-games/mk-commands! *ns*
                          game-atom

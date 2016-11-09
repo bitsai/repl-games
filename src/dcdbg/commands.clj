@@ -21,6 +21,9 @@
                       card))
                   cards)))
 
+(defn- update-cards [game space-idx update-fn]
+  (update-in game [:state space-idx :cards] update-fn))
+
 ;; commands
 
 (defn print!
@@ -45,12 +48,12 @@
         moved (->> card-idxs
                    (map #(nth from-cards %))
                    (map #(assoc % :facing to-facing)))
-        update-fn #(case to-top-or-bottom
+        concat-fn #(case to-top-or-bottom
                      :top    (concat moved %)
                      :bottom (concat % moved))]
     (-> game
-        (update-in [:state from-space-idx :cards] remove-cards card-idxs)
-        (update-in [:state to-space-idx :cards] update-fn))))
+        (update-cards from-space-idx #(remove-cards % card-idxs))
+        (update-cards to-space-idx concat-fn))))
 
 (defn gain
   ([game space-idx]
@@ -59,6 +62,22 @@
    (apply move game space-idx 11 :top (range 1 (inc n)))))
 
 (defn refill-deck [game]
-  (let [discard-count (-> game :state (get 11) :cards count)
-        shuffled (update-in game [:state 11 :cards] rand/shuffle*)]
+  (let [discard-count (-> game (get-cards 11) count)
+        shuffled (update-cards game 11 rand/shuffle*)]
     (apply move shuffled 11 10 :bottom (range discard-count))))
+
+(defn draw
+  ([game]
+   (draw game 1))
+  ([game n]
+   (cond
+     ;; if player deck has enough cards, draw
+     (-> game (get-cards 10) count (>= n))
+     (apply move game 10 9 :bottom (range n))
+
+     ;; if player deck has too few cards but there are discards, refill then draw
+     (-> game (get-cards 11) seq)
+     (-> game refill-deck (draw n))
+
+     :else
+     (throw (Exception. "not enough cards!")))))
