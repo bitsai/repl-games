@@ -5,6 +5,14 @@
 
 ;; helpers
 
+(defn- find-space-index [game space-name]
+  (->> game
+       (:state)
+       (keep-indexed (fn [idx space]
+                       (when (-> space :name (= space-name))
+                         idx)))
+       (first)))
+
 (defn- get-cards [game space-idx]
   (-> game :state (nth space-idx) :cards))
 
@@ -59,25 +67,20 @@
   ([game space-idx]
    (gain game space-idx 1))
   ([game space-idx n]
-   (apply move game space-idx 11 :top (range 1 (inc n)))))
+   (let [discard-idx (find-space-index game :discard)]
+     (apply move game space-idx discard-idx :top (range n)))))
 
 (defn refill-deck [game]
-  (let [discard-count (-> game (get-cards 11) count)
-        shuffled (update-cards game 11 rand/shuffle*)]
-    (apply move shuffled 11 10 :bottom (range discard-count))))
+  (let [deck-idx (find-space-index game :deck)
+        discard-idx (find-space-index game :discard)
+        n (-> game (get-cards discard-idx) count)
+        shuffled (update-cards game discard-idx rand/shuffle*)]
+    (apply move shuffled discard-idx deck-idx :bottom (range n))))
 
 (defn draw
   ([game]
    (draw game 1))
   ([game n]
-   (cond
-     ;; if player deck has enough cards, draw
-     (-> game (get-cards 10) count (>= n))
-     (apply move game 10 9 :bottom (range n))
-
-     ;; if player deck has too few cards but there are discards, refill then draw
-     (-> game (get-cards 11) seq)
-     (-> game refill-deck (draw n))
-
-     :else
-     (throw (Exception. "not enough cards!")))))
+   (let [hand-idx (find-space-index game :hand)
+         deck-idx (find-space-index game :deck)]
+     (apply move game deck-idx hand-idx :bottom (range n)))))
