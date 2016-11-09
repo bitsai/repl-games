@@ -1,6 +1,7 @@
 (ns dcdbg.commands
   (:require [dcdbg.config :as cfg]
-            [dcdbg.print :as print]))
+            [dcdbg.print :as print]
+            [repl-games.random :as rand]))
 
 ;; helpers
 
@@ -56,3 +57,8 @@
    (gain game space-idx 1))
   ([game space-idx n]
    (apply move game space-idx 11 :top (range 1 (inc n)))))
+
+(defn refill-deck [game]
+  (let [discard-count (-> game :state (get 11) :cards count)
+        shuffled (update-in game [:state 11 :cards] rand/shuffle*)]
+    (apply move shuffled 11 10 :bottom (range discard-count))))
