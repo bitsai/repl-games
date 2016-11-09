@@ -50,3 +50,9 @@
     (-> game
         (update-in [:state from-space-idx :cards] remove-cards card-idxs)
         (update-in [:state to-space-idx :cards] update-fn))))
+
+(defn gain
+  ([game space-idx]
+   (gain game space-idx 1))
+  ([game space-idx n]
+   (apply move game space-idx 11 :top (range 1 (inc n)))))

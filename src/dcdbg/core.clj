@@ -13,7 +13,8 @@
    :print-game print/print-game!})
 
 (def command-map
-  {:pg {:doc "(print game): [space-idx [card-idx+]]"
+  (array-map
+   :pg {:doc "(print game): [space-idx [card-idx+]]"
         :fn commands/print!}
    :pt {:doc "(print top): space-idx"
         :fn #(commands/print! %1 %2 0)}
@@ -24,7 +25,13 @@
    :pl {:doc "(play location): card-idx+"
         :fn #(apply commands/move %1 9 8 :bottom %&)}
    :bl {:doc "(buy line-up): card-idx+"
-        :fn #(apply commands/move %1 6 11 :top %&)}})
+        :fn #(apply commands/move %1 6 11 :top %&)}
+   :ga {:doc "(gain): space-idx [n]"
+        :fn commands/gain}
+   :di {:doc "(discard): space-idx card-idx+"
+        :fn #(apply commands/move %1 %2 11 :top %&)}
+   :de {:doc "(destroy): space-idx card-idx+"
+        :fn #(apply commands/move %1 %2 4 :top %&)}))
 
 (repl-games/mk-commands! *ns*
                          game-atom
