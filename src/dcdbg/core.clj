@@ -15,10 +15,16 @@
 (def command-map
   {:pg {:doc "(print game): [space-idx [card-idx+]]"
         :fn commands/print!}
+   :pt {:doc "(print top): space-idx"
+        :fn #(commands/print! %1 %2 0)}
    :mt {:doc "(move to top): from-space-idx to-space-idx card-idx+"
         :fn #(apply commands/move %1 %2 %3 :top %&)}
    :mb {:doc "(move to bottom): from-space-idx to-space-idx card-idx+"
-        :fn #(apply commands/move %1 %2 %3 :bottom %&)}})
+        :fn #(apply commands/move %1 %2 %3 :bottom %&)}
+   :pl {:doc "(play location): card-idx+"
+        :fn #(apply commands/move %1 9 8 :bottom %&)}
+   :bl {:doc "(buy line-up): card-idx+"
+        :fn #(apply commands/move %1 6 11 :top %&)}})
 
 (repl-games/mk-commands! *ns*
                          game-atom
