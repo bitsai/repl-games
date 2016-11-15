@@ -103,6 +103,9 @@
                        :cards [{:name "B"
                                 :facing :down}
                                {:name "C"
+                                :facing :down}]}
+                      {:name :discard
+                       :cards [{:name "D"
                                 :facing :down}]}]}]
     (testing "Should draw 1 card by default."
       (is (= {:state [{:name :hand
@@ -112,6 +115,9 @@
                                 :facing :up}]}
                       {:name :deck
                        :cards [{:name "C"
+                                :facing :down}]}
+                      {:name :discard
+                       :cards [{:name "D"
                                 :facing :down}]}]}
              (draw game))))
     (testing "Should be able to draw multiple cards."
@@ -123,5 +129,26 @@
                                {:name "C"
                                 :facing :up}]}
                       {:name :deck
+                       :cards []}
+                      {:name :discard
+                       :cards [{:name "D"
+                                :facing :down}]}]}
+             (draw game 2))))
+    (testing "Should refill then draw if needed."
+      (is (= {:state [{:name :hand
+                       :cards [{:name "A"
+                                :facing :up}
+                               {:name "B"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}
+                               {:name "D"
+                                :facing :up}]}
+                      {:name :deck
+                       :cards []}
+                      {:name :discard
                        :cards []}]}
-             (draw game 2))))))
+             (draw game 3))))
+    (testing "Should throw exception if there aren't enough cards."
+      (is (thrown? Exception
+                   (draw game 4))))))

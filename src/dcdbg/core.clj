@@ -35,7 +35,9 @@
    :rd {:doc "(refill deck)"
         :fn cmds/refill-deck}
    :dr {:doc "(draw): [n]"
-        :fn cmds/draw}))
+        :fn cmds/draw}
+   :et {:doc "(end turn): [n]"
+        :fn cmds/end-turn}))
 
 (repl-games/mk-commands! *ns*
                          game-atom
