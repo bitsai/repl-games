@@ -10,10 +10,10 @@
 ;; printers
 
 (defn print-card-summary! [card card-idx]
-  (printf "%2s) " card-idx)
+  (printf "%3s. " card-idx)
   (case (:type card)
     :super-villain
-    (printf "%-4s %-1s %-1s %-1s %-2s %s\n"
+    (printf "%-3s VI %-1s %-1s %-1s %-2s %s\n"
             (or (:cost card) "")
             (if (:text card) "T" "")
             (if (:first-appearance-attack card) "A" "")
@@ -24,7 +24,7 @@
     :super-hero
     (println (:name card))
 
-    (printf "%-1s %-2s %-1s %-1s%-1s%-1s %-2s %s\n"
+    (printf "%-3s %-2s %-1s %-1s%-1s%-1s %-2s %s\n"
             (or (:cost card) "")
             (if (:type card)
               (-> card :type cfg/aliases)
