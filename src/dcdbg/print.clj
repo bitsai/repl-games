@@ -13,26 +13,26 @@
   (printf "%2s) " card-idx)
   (case (:type card)
     :super-villain
-    (printf "%-4s %-1s %-1s %s\n"
+    (printf "%-4s %-1s %-1s %-1s %-2s %s\n"
             (or (:cost card) "")
-            (if (:stack-ongoing card) "G" "")
+            (if (:text card) "T" "")
             (if (:first-appearance-attack card) "A" "")
+            (if (:stack-ongoing card) "G" "")
+            (or (:power card) "")
             (:name card))
 
     :super-hero
     (println (:name card))
 
-    (printf "%-1s %-2s %-1s %-1s %-2s %s\n"
+    (printf "%-1s %-2s %-1s %-1s%-1s%-1s %-2s %s\n"
             (or (:cost card) "")
             (if (:type card)
               (-> card :type cfg/aliases)
               "")
             (if (:text card) "T" "")
-            (cond
-              (:attack card) "A"
-              (:defense card) "D"
-              (:ongoing card) "G"
-              :else "")
+            (if (:attack card) "A" "")
+            (if (:defense card) "D" "")
+            (if (:ongoing card) "G" "")
             (or (:power card) "")
             (:name card))))
 
