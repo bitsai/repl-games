@@ -57,9 +57,6 @@
 (defn print-game! [{:keys [messages state]}]
   (->> state
        (map-indexed (fn [idx {:keys [name cards]}]
-                      ;; insert separator between game and player cards
-                      (when (= idx 7)
-                        (println))
                       (case (-> cfg/card-spaces name :type)
                         :pile (print-pile! cards idx name)
                         :stack (print-stack! cards idx name))))
