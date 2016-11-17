@@ -119,10 +119,24 @@
   (let [destroyed-idx (find-space-index game :destroyed)
         line-up-idx (find-space-index game :line-up)
         line-up-count (count-cards game line-up-idx)]
-    ;; if line-up isn't empty, destroy last line-up card
     (cond-> game
+      ;; if line-up has cards, destroy last line-up card
       (pos? line-up-count)
       (move line-up-idx destroyed-idx :top (dec line-up-count)))))
+
+(defn- flip-super-villain [game]
+  (let [super-villain-idx (find-space-index game :super-villain)
+        [sv & svs] (get-cards game super-villain-idx)
+        flipped (assoc sv :facing :up)
+        msgs (concat (when-let [so (:stack-ongoing sv)]
+                       [(format "SUPER-VILLAIN ONGOING: %s" so)])
+                     (when-let [faa (:first-appearance-attack sv)]
+                       [(format "SUPER-VILLAIN ATTACK: %s" faa)]))]
+    (cond-> game
+      ;; if top super-villain is face-down, flip it up and show effects
+      (-> sv :facing (= :down))
+      (-> (update-cards super-villain-idx (constantly (cons flipped svs)))
+          (update :messages concat msgs)))))
 
 (defn- advance-timer [game]
   (let [timer-idx (find-space-index game :timer)
@@ -139,5 +153,5 @@
        (execute-super-villain-plan)
        ;; refill line-up, show villain attacks
        ;; destroy n main deck cards, where n = highest line-up villain cost
-       ;; flip new super villain, show first appearance attacks
+       (flip-super-villain)
        (advance-timer))))

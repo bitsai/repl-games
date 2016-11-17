@@ -66,12 +66,12 @@
         [line-up main-deck] (split-at 5 (setup-main-deck))
         shs (setup-super-heroes)
         [hand deck] (split-at 5 (setup-deck))
-        msgs (conj (->> shs
-                        (mapv #(format "SUPER-HERO: %s" (:text %))))
-                   (->> svs
-                        (first)
-                        (:stack-ongoing)
-                        (format "SUPER-VILLAIN ONGOING: %s")))
+        msgs (concat (->> shs
+                          (map #(format "SUPER-HERO: %s" (:text %))))
+                     [(->> svs
+                           (first)
+                           (:stack-ongoing)
+                           (format "SUPER-VILLAIN ONGOING: %s"))])
         state [{:name :super-villain
                 :cards svs}
                {:name :timer
