@@ -37,5 +37,5 @@
 
 (def defaults
   {:punch-count 7
-   :super-villain-count 8
+   :super-villain-count 6
    :vulnerability-count 3})

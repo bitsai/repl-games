@@ -115,14 +115,15 @@
         hand-count (count-cards game hand-idx)]
     (move* game hand-idx discard-idx :top (range hand-count))))
 
-(defn- execute-super-villain-plan [game]
-  (let [destroyed-idx (find-space-index game :destroyed)
+(defn refill-line-up [game]
+  (let [main-deck-idx (find-space-index game :main-deck)
         line-up-idx (find-space-index game :line-up)
-        line-up-count (count-cards game line-up-idx)]
-    (cond-> game
-      ;; if line-up has cards, destroy last line-up card
-      (pos? line-up-count)
-      (move line-up-idx destroyed-idx :top (dec line-up-count)))))
+        card (get-card game main-deck-idx 0)
+        msg (when-let [a (:attack card)]
+              [(format "VILLAIN ATTACK: %s" a)])]
+    (-> game
+        (move main-deck-idx line-up-idx :top 0)
+        (update :messages concat msg))))
 
 (defn- flip-super-villain [game]
   (let [super-villain-idx (find-space-index game :super-villain)
@@ -150,8 +151,6 @@
    (-> game
        (discard-hand)
        (draw n)
-       (execute-super-villain-plan)
-       ;; refill line-up, show villain attacks
-       ;; destroy n main deck cards, where n = highest line-up villain cost
+       (refill-line-up)
        (flip-super-villain)
        (advance-timer))))

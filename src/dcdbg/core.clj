@@ -36,6 +36,8 @@
         :fn cmds/refill-deck}
    :dr {:doc "(draw): [n]"
         :fn cmds/draw}
+   :rl {:doc "(refill line-up)"
+        :fn cmds/refill-line-up}
    :et {:doc "(end turn): [n]"
         :fn cmds/end-turn}))
 
