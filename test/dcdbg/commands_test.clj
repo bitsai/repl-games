@@ -66,19 +66,14 @@
              (gain game 0 2))))))
 
 (deftest refill-deck-test
-  (let [game1 {:state [{:name :deck
-                        :cards [{:name "A"
-                                 :facing :down}]}
-                       {:name :discard
-                        :cards [{:name "B"
-                                 :facing :down}
-                                {:name "C"
-                                 :facing :down}]}]}
-        game2 {:state [{:name :deck
-                        :cards [{:name "A"
-                                 :facing :down}]}
-                       {:name :discard
-                        :cards []}]}]
+  (let [game {:state [{:name :deck
+                       :cards [{:name "A"
+                                :facing :down}]}
+                      {:name :discard
+                       :cards [{:name "B"
+                                :facing :down}
+                               {:name "C"
+                                :facing :down}]}]}]
     (testing "Should be able to refill deck from discards."
       (rand/set-seed! 420)
       (is (= {:state [{:name :deck
@@ -90,10 +85,7 @@
                                 :facing :down}]}
                       {:name :discard
                        :cards []}]}
-             (refill-deck game1))))
-    (testing "Should do nothing if discards is empty."
-      (is (= game2
-             (refill-deck game2))))))
+             (refill-deck game))))))
 
 (deftest draw-test
   (let [game {:state [{:name :hand
@@ -152,3 +144,25 @@
     (testing "Should throw exception if there aren't enough cards."
       (is (thrown? Exception
                    (draw game 4))))))
+
+(deftest discard-hand-test
+  (let [game {:state [{:name :hand
+                       :cards [{:name "A"
+                                :facing :up}
+                               {:name "B"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}]}
+                      {:name :discard
+                       :cards []}]}]
+    (testing "Should be able to discard whole hand."
+      (is (= {:state [{:name :hand
+                       :cards []}
+                      {:name :discard
+                       :cards [{:name "A"
+                                :facing :down}
+                               {:name "B"
+                                :facing :down}
+                               {:name "C"
+                                :facing :down}]}]}
+             (discard-hand game))))))

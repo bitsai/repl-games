@@ -109,7 +109,7 @@
 
 ;; end turn helpers and command
 
-(defn- discard-hand [game]
+(defn discard-hand [game]
   (let [discard-idx (find-space-index game :discard)
         hand-idx (find-space-index game :hand)
         hand-count (count-cards game hand-idx)]
