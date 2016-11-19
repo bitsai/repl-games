@@ -205,3 +205,17 @@
                                 :stack-ongoing "Ongoing"
                                 :first-appearance-attack "Attack"}]}]}
              (flip-super-villain game2))))))
+
+(deftest advance-timer-test
+  (let [game {:state [{:name :timer
+                       :cards [{:name "A"
+                                :facing :down}]}
+                      {:name :weakness
+                       :cards []}]}]
+    (testing "Should be able to move card from timer to weakness stack."
+      (is (= {:state [{:name :timer
+                       :cards []}
+                      {:name :weakness
+                       :cards [{:name "A"
+                                :facing :down}]}]}
+             (advance-timer game))))))

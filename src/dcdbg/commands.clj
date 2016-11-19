@@ -139,7 +139,7 @@
       (-> (update-cards super-villain-idx (constantly (cons flipped svs)))
           (update :messages concat msgs)))))
 
-(defn- advance-timer [game]
+(defn advance-timer [game]
   (let [timer-idx (find-space-index game :timer)
         weakness-idx (find-space-index game :weakness)]
     (move game timer-idx weakness-idx :top 0)))
