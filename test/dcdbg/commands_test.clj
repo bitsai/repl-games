@@ -166,3 +166,20 @@
                                {:name "C"
                                 :facing :down}]}]}
              (discard-hand game))))))
+
+(deftest refill-line-up-test
+  (let [game {:state [{:name :main-deck
+                       :cards [{:name "A"
+                                :facing :down
+                                :attack "Boo!"}]}
+                      {:name :line-up
+                       :cards []}]}]
+    (testing "Should be able to refill line-up w/ top main deck card."
+      (is (= {:messages ["VILLAIN ATTACK: Boo!"]
+              :state [{:name :main-deck
+                       :cards []}
+                      {:name :line-up
+                       :cards [{:name "A"
+                                :facing :up
+                                :attack "Boo!"}]}]}
+             (refill-line-up game))))))
