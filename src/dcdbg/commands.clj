@@ -125,7 +125,7 @@
         (move main-deck-idx line-up-idx :top 0)
         (update :messages concat msg))))
 
-(defn- flip-super-villain [game]
+(defn flip-super-villain [game]
   (let [super-villain-idx (find-space-index game :super-villain)
         [sv & svs] (get-cards game super-villain-idx)
         flipped (assoc sv :facing :up)

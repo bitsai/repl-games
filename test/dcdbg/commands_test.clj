@@ -171,15 +171,37 @@
   (let [game {:state [{:name :main-deck
                        :cards [{:name "A"
                                 :facing :down
-                                :attack "Boo!"}]}
+                                :attack "Attack"}]}
                       {:name :line-up
                        :cards []}]}]
     (testing "Should be able to refill line-up w/ top main deck card."
-      (is (= {:messages ["VILLAIN ATTACK: Boo!"]
+      (is (= {:messages ["VILLAIN ATTACK: Attack"]
               :state [{:name :main-deck
                        :cards []}
                       {:name :line-up
                        :cards [{:name "A"
                                 :facing :up
-                                :attack "Boo!"}]}]}
+                                :attack "Attack"}]}]}
              (refill-line-up game))))))
+
+(deftest flip-super-villain-test
+  (let [game1 {:state [{:name :super-villain
+                        :cards [{:name "A"
+                                 :facing :up}]}]}
+        game2 {:state [{:name :super-villain
+                        :cards [{:name "A"
+                                 :facing :down
+                                 :stack-ongoing "Ongoing"
+                                 :first-appearance-attack "Attack"}]}]}]
+    (testing "Should do nothing if top super-villain is already facing up."
+      (is (= game1
+             (flip-super-villain game1))))
+    (testing "Should flip top super-villain if it's face-down."
+      (is (= {:messages ["SUPER-VILLAIN ONGOING: Ongoing"
+                         "SUPER-VILLAIN ATTACK: Attack"]
+              :state [{:name :super-villain
+                       :cards [{:name "A"
+                                :facing :up
+                                :stack-ongoing "Ongoing"
+                                :first-appearance-attack "Attack"}]}]}
+             (flip-super-villain game2))))))
