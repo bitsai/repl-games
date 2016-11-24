@@ -1,11 +1,5 @@
 (ns btdg.cards)
 
-(def roles
-  {:sheriff  (repeat 1 {:role :sheriff})
-   :deputy   (repeat 2 {:role :deputy})
-   :outlaw   (repeat 3 {:role :outlaw})
-   :renegade (repeat 2 {:role :renegade})})
-
 (def characters
   [{:name "Bart Cassidy"
     :life 8
