@@ -18,9 +18,14 @@
 
 (defn- setup-players [roles characters]
   (map (fn [r c]
-         (assoc c
-                :role r
-                :life (:max-life c)))
+         (let [max-life (cond-> (:max-life c)
+                          ;; sheriff gets 2 additional life points
+                          (= r :sheriff)
+                          (+ 2))]
+           (-> c
+               (assoc :role r)
+               (assoc :max-life max-life)
+               (assoc :life max-life))))
        roles
        characters))
 
