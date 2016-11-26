@@ -25,7 +25,8 @@
            (-> c
                (assoc :role r)
                (assoc :max-life max-life)
-               (assoc :life max-life))))
+               (assoc :life max-life)
+               (assoc :arrows 0))))
        roles
        characters))
 
