@@ -2,7 +2,10 @@
   (:require [clojure.string :as str]))
 
 (defn- print-player! [idx player]
-  (println (format "[%2s] %s (%d/%d life) (%d arrows)"
+  (println (format "%s[%s] %s (%d/%d life) (%d arrows)"
+                   (if (-> player :active?)
+                     ">"
+                     " ")
                    idx
                    (-> player :role name str/upper-case)
                    (-> player :life)
