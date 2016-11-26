@@ -16,6 +16,10 @@
   (array-map
    :pg {:doc "(print game)"
         :fn print/print-game!}
+   :ta {:doc "(take arrows): player-idx [n]"
+        :fn cmds/take-arrows}
+   :da {:doc "(discard arrows): player-idx [n]"
+        :fn cmds/discard-arrows}
    :gl {:doc "(gain life): player-idx [n]"
         :fn cmds/gain-life}
    :ll {:doc "(lose life): player-idx [n]"
