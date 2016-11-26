@@ -17,21 +17,21 @@
        (take n)))
 
 (defn- setup-players [roles characters]
-  (map (fn [idx r c]
-         (let [max-life (cond-> (:max-life c)
-                          ;; sheriff gets 2 additional life points
-                          (= r :sheriff)
-                          (+ 2))]
-           (-> c
-               (assoc :role r)
-               (assoc :max-life max-life)
-               (assoc :life max-life)
-               (assoc :arrows 0)
-               ;; make first player active, everyone else inactive
-               (assoc :active? (zero? idx)))))
-       (range)
-       roles
-       characters))
+  (mapv (fn [idx r c]
+          (let [max-life (cond-> (:max-life c)
+                           ;; sheriff gets 2 additional life points
+                           (= r :sheriff)
+                           (+ 2))]
+            (-> c
+                (assoc :role r)
+                (assoc :max-life max-life)
+                (assoc :life max-life)
+                (assoc :arrows 0)
+                ;; make first player active, everyone else inactive
+                (assoc :active? (zero? idx)))))
+        (range)
+        roles
+        characters))
 
 (defn mk-game-state [game]
   (let [roles (setup-roles (:sheriff-count cfg/defaults)
