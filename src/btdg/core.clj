@@ -14,6 +14,8 @@
 
 (def command-map
   (array-map
+   :pg {:doc "(print game)"
+        :fn print/print-game!}
    :gl {:doc "(gain life): player-idx [n]"
         :fn cmds/gain-life}
    :ll {:doc "(lose life): player-idx [n]"
