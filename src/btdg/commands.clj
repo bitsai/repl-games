@@ -6,6 +6,11 @@
 (defn- update-player-k [game player-idx k f & args]
   (apply update-in game [:state :players player-idx k] f args))
 
+(defn- remove-player [game player-idx]
+  (update-in game [:state :players] #(->> (assoc % player-idx nil)
+                                          (remove nil?)
+                                          (vec))))
+
 (defn take-arrows
   ([game player-idx]
    (take-arrows game player-idx 1))
@@ -43,5 +48,10 @@
   ([game player-idx n]
    (let [remove-life #(-> %
                           (- n)
-                          (max 0))]
-     (update-player-k game player-idx :life remove-life))))
+                          (max 0))
+         updated (update-player-k game player-idx :life remove-life)]
+     (cond-> updated
+       ;; if player is dead, discard arrows and remove from game
+       (-> updated (get-player-k player-idx :life) zero?)
+       (-> (discard-arrows player-idx)
+           (remove-player player-idx))))))
