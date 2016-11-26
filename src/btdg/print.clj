@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]))
 
 (defn- print-player! [idx player]
-  (println (format "%s[%s] %s (%d/%d life) (%d arrows)"
+  (println (format "%s[%s] %s (LIFE %d/%d) (ARROWS %d)"
                    (if (-> player :active?)
                      ">"
                      " ")
@@ -21,4 +21,5 @@
        (:state)
        (:players)
        (map-indexed print-player!)
-       (dorun)))
+       (dorun))
+  (println (format " ARROWS %d" (-> game :state :arrows))))
