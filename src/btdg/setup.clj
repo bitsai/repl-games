@@ -26,9 +26,7 @@
                 (assoc :role r)
                 (assoc :max-life max-life)
                 (assoc :life max-life)
-                (assoc :arrows 0)
-                ;; make first player active, everyone else inactive
-                (assoc :active? (zero? idx)))))
+                (assoc :arrows 0))))
         (range)
         roles
         characters))
@@ -41,5 +39,7 @@
         characters (setup-characters (count roles))
         players (setup-players roles characters)
         state {:players players
+               ;; make first player active
+               :active-player-idx 0
                :arrows (:arrow-count cfg/defaults)}]
     (assoc game :state state)))

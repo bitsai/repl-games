@@ -1,9 +1,9 @@
 (ns btdg.print
   (:require [clojure.string :as str]))
 
-(defn- print-player! [idx player]
+(defn- print-player! [active-player-idx idx player]
   (println (format "%s[%s] %s (LIFE %d/%d) (ARROWS %d)"
-                   (if (-> player :active?)
+                   (if (= active-player-idx idx)
                      ">"
                      " ")
                    idx
@@ -17,9 +17,10 @@
                      (-> player :ability)))))
 
 (defn print-game! [game]
-  (->> game
-       (:state)
-       (:players)
-       (map-indexed print-player!)
-       (dorun))
+  (let [active-player-idx (-> game :state :active-player-idx)]
+    (->> game
+         (:state)
+         (:players)
+         (map-indexed (partial print-player! active-player-idx))
+         (dorun)))
   (println (format " ARROWS %d" (-> game :state :arrows))))

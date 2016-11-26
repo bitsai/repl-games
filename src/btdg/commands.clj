@@ -55,3 +55,9 @@
        (-> updated (get-player-k player-idx :life) zero?)
        (-> (discard-arrows player-idx)
            (remove-player player-idx))))))
+
+(defn end-turn [game]
+  (let [n (-> game :state :players count)]
+    (update-in game [:state :active-player-idx] #(-> %
+                                                     (inc)
+                                                     (mod n)))))

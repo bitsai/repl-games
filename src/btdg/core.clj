@@ -23,7 +23,9 @@
    :gl {:doc "(gain life): player-idx [n]"
         :fn cmds/gain-life}
    :ll {:doc "(lose life): player-idx [n]"
-        :fn cmds/lose-life}))
+        :fn cmds/lose-life}
+   :et {:doc "(end turn)"
+        :fn cmds/end-turn}))
 
 (repl-games/mk-commands! *ns*
                          game-atom
