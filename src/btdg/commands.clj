@@ -31,6 +31,17 @@
     4 "BEER"
     5 "GATLING GUN"))
 
+(defn- next-active-player-idx [game]
+  (let [n (-> game (get-in-game [:players]) count)
+        active-player-idx (get-in-game game [:active-player-idx])]
+    (->> (range 1 (inc n))
+         ;; generate seq of next player idxs
+         (map #(-> active-player-idx (+ %) (mod n)))
+         ;; find live player idxs
+         (filter #(-> game (get-in-player % [:life]) pos?))
+         ;; get the next one
+         (first))))
+
 ;; commands
 
 (defn init-dice [game]
@@ -140,12 +151,8 @@
              player-idxs))))
 
 (defn end-turn [game]
-  (let [n (-> game (get-in-game [:players]) count)
-        ;; set next player as active
-        updated (update-in-game game [:active-player-idx] #(-> % inc (mod n)))
-        ;; get new active player idx
-        active-player-idx (get-in-game updated [:active-player-idx])]
-    (cond-> updated
-      ;; re-init dice iff new active player is alive
-      (-> updated (get-in-player active-player-idx [:life]) pos?)
-      (init-dice))))
+  (-> game
+      ;; find next active player
+      (assoc-in-game [:active-player-idx] (next-active-player-idx game))
+      ;; re-init dice
+      (init-dice)))
