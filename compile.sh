@@ -5,8 +5,8 @@ cat src/repl_games/random.clj \
     src/btdg/cards.clj \
     src/btdg/config.clj \
     src/btdg/print.clj \
-    src/btdg/setup.clj \
     src/btdg/commands.clj \
+    src/btdg/setup.clj \
     src/btdg/core.clj \
     src/dcdbg/cards/core.clj \
     src/dcdbg/cards/equipment.clj \
