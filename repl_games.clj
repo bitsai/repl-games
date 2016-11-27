@@ -98,6 +98,364 @@
     ;; create game commands
     (doseq [[cmd-name cmd-spec] cmd-map]
       (mk-command! ns game-atom help-atom cmd-name cmd-spec print-game))))
+(ns btdg.cards)
+
+(def characters
+  [{:name "Bart Cassidy"
+    :max-life 8
+    :ability "You may take an arrow instead of losing a life point (except to Indians or Dynamite). You cannot use this ability if you lose a life point to Indian or Dynamite, only for 1, 2, or Gatling Gun. You may not use this ability to take the last arrow remaining in the pile."}
+   {:name "Black Jack"
+    :max-life 8
+    :ability "You may re-roll Dynamite (not if you roll three or more!). If you roll three or more Dynamite at once (or in total if you didn't re-roll them), follow the usual rules (your turn ends, etc.)."}
+   {:name "Calamity Jane"
+    :max-life 8
+    :ability "You can use 1 as 2 and vice-versa."}
+   {:name "El Gringo"
+    :max-life 7
+    :ability "When a player makes you lose one or more life points, he must take an arrow. Life points lost to Indians or Dynamite are not affected."}
+   {:name "Jesse Jones"
+    :max-life 9
+    :ability "If you have four life points or less, you gain two if you use Beer for yourself. For example, if you have four life points and use two beers, you get four life points."}
+   {:name "Jourdonnais"
+    :max-life 7
+    :ability "You never lose more than one life point to Indians."}
+   {:name "Kit Carlson"
+    :max-life 7
+    :ability "For each Gatling Gun you may discard one arrow from any player. You may choose to discard your own arrows. If you roll three Gatling Gun, you discard all your own arrows, plus three from any player(s) (of course, you still deal one damage to each other player)."}
+   {:name "Lucky Duke"
+    :max-life 8
+    :ability "You may make one extra re-roll. You may roll the dice a total of four times on your turn."}
+   {:name "Paul Regret"
+    :max-life 9
+    :ability "You never lose life points to the Gatling Gun."}
+   {:name "Pedro Ramirez"
+    :max-life 8
+    :ability "Each time you lose a life point, you may discard one of your arrows. You still lose the life point when you use this ability."}
+   {:name "Rose Doolan"
+    :max-life 9
+    :ability "You may use 1 or 2 for players sitting one place further. With 1 you may hit a player sitting up to two places away, and with 2 you may hit a player sitting two or three places away."}
+   {:name "Sid Ketchum"
+    :max-life 8
+    :ability "At the beginning of your turn, any player of your choice gains one life point. You may also choose yourself."}
+   {:name "Slab the Killer"
+    :max-life 8
+    :ability "Once per turn, you can use a Beer to double a 1 or 2. The dice you double takes two life points away from the same player (you can't choose two different players). The Beer in this case does not provide any life points."}
+   {:name "Suzy Lafayette"
+    :max-life 8
+    :ability "If you didn't roll any 1 or 2, you gain two life points. This only applies at the end of your turn, not during your re-rolls."}
+   {:name "Vulture Sam"
+    :max-life 9
+    :ability "Each time another player is eliminated, you gain two life points."}
+   {:name "Willy the Kid"
+    :max-life 8
+    :ability "You only need 2 Gatling Gun results to use the Gatling Gun. You can activate the Gatling Gun only once per turn, even if you roll more than two Gatling Gun results."}])
+(ns btdg.config)
+
+(def defaults
+  {:sheriff-count 1
+   :renegade-count 1
+   :outlaw-count 2
+   :deputy-count 1
+   :arrow-count 9
+   :dice-count 5})
+(ns btdg.print
+  (:require [clojure.string :as str]))
+
+(defn- ->active-marker [active-idxs idx]
+  (if (or (and (integer? active-idxs)
+               (= active-idxs idx))
+          (and (set? active-idxs)
+               (contains? active-idxs idx)))
+    ">"
+    " "))
+
+(defn- print-player! [active-player-idx player-idx player]
+  (if-not (-> player :life pos?)
+    (println (format "%s[%s] DEAD"
+                     (->active-marker active-player-idx player-idx)
+                     player-idx))
+    (let [role (:role player)]
+      (println (format "%s[%s] %s (LIFE %d/%d) (ARROWS %d)"
+                       (->active-marker active-player-idx player-idx)
+                       player-idx
+                       (-> role name str/upper-case)
+                       (-> player :life)
+                       (-> player :max-life)
+                       (-> player :arrows)))
+      (when (#{:sheriff :deputy} role)
+        (println (format "     %s: %s"
+                         (-> player :name)
+                         (-> player :ability)))))))
+
+(defn- print-die! [active-die-idxs die-idx die]
+  (println (format "%s[%s] %s"
+                   (->active-marker active-die-idxs die-idx)
+                   die-idx
+                   die)))
+
+(defn print-game! [game]
+  (let [active-player-idx (-> game :state :active-player-idx)
+        active-die-idxs (-> game :state :active-die-idxs)]
+    (->> game
+         (:state)
+         (:players)
+         (map-indexed (partial print-player! active-player-idx))
+         (dorun))
+    (println (format " ARROWS %d" (-> game :state :arrows)))
+    (println (format " DICE ROLLS %d" (-> game :state :dice-rolls)))
+    (->> game
+         (:state)
+         (:dice)
+         (map-indexed (partial print-die! active-die-idxs))
+         (dorun))))
+(ns btdg.setup
+  (:require [btdg.cards :as cards]
+            [btdg.commands :as cmds]
+            [btdg.config :as cfg]
+            [repl-games.random :as rand]))
+
+(defn- setup-roles [sheriff-count renegade-count outlaw-count deputy-count]
+  ;; put sheriffs first, then the other roles shuffled together
+  (concat (repeat sheriff-count :sheriff)
+          (-> (concat (repeat renegade-count :renegade)
+                      (repeat outlaw-count :outlaw)
+                      (repeat deputy-count :deputy))
+              (rand/shuffle*))))
+
+(defn- setup-characters [n]
+  (->> cards/characters
+       (rand/shuffle*)
+       (take n)))
+
+(defn- setup-players [roles characters]
+  (mapv (fn [idx r c]
+          (let [max-life (cond-> (:max-life c)
+                           ;; sheriff gets 2 additional life points
+                           (= r :sheriff)
+                           (+ 2))]
+            (-> c
+                (assoc :role r)
+                (assoc :max-life max-life)
+                (assoc :life max-life)
+                (assoc :arrows 0))))
+        (range)
+        roles
+        characters))
+
+(defn mk-game-state [game]
+  (let [roles (setup-roles (:sheriff-count cfg/defaults)
+                           (:renegade-count cfg/defaults)
+                           (:outlaw-count cfg/defaults)
+                           (:deputy-count cfg/defaults))
+        characters (setup-characters (count roles))
+        players (setup-players roles characters)
+        state {:players players
+               ;; make first player active
+               :active-player-idx 0
+               :arrows (:arrow-count cfg/defaults)}]
+    (-> game
+        ;; set initial state
+        (assoc :state state)
+        ;; init dice
+        (cmds/init-dice))))
+(ns btdg.commands
+  (:require [btdg.config :as cfg]
+            [repl-games.random :as rand]))
+
+;; helpers
+
+(defn- get-in-game [game ks]
+  (get-in game (cons :state ks)))
+
+(defn- assoc-in-game [game ks v]
+  (assoc-in game (cons :state ks) v))
+
+(defn- update-in-game [game ks f & args]
+  (apply update-in game (cons :state ks) f args))
+
+(defn- get-in-player [game player-idx ks]
+  (get-in-game game (concat [:players player-idx] ks)))
+
+(defn- assoc-in-player [game player-idx ks v]
+  (assoc-in-game game (concat [:players player-idx] ks) v))
+
+(defn- update-in-player [game player-idx ks f & args]
+  (apply update-in-game game (concat [:players player-idx] ks) f args))
+
+(defn- roll-die []
+  (case (rand/uniform 0 6)
+    0 "ARROW"
+    1 "DYNAMITE"
+    2 "1"
+    3 "2"
+    4 "BEER"
+    5 "GATLING GUN"))
+
+(defn- next-active-player-idx [game]
+  (let [n (-> game (get-in-game [:players]) count)
+        active-player-idx (get-in-game game [:active-player-idx])]
+    (->> (range 1 (inc n))
+         ;; generate seq of next player idxs
+         (map #(-> active-player-idx (+ %) (mod n)))
+         ;; find live player idxs
+         (filter #(-> game (get-in-player % [:life]) pos?))
+         ;; get the next one
+         (first))))
+
+;; commands
+
+(defn init-dice [game]
+  (let [n (:dice-count cfg/defaults)]
+    (-> game
+        ;; set # dice rolls to 1
+        (assoc-in-game [:dice-rolls] 1)
+        ;; roll all dice
+        (assoc-in-game [:dice] (vec (repeatedly n roll-die)))
+        ;; mark all dice as active
+        (assoc-in-game [:active-die-idxs] (set (range n))))))
+
+(defn roll-dice
+  ([game]
+   (let [n (:dice-count cfg/defaults)]
+     ;; by default, roll all dice
+     (apply roll-dice game (range n))))
+  ([game & die-idxs]
+   (reduce (fn [g die-idx]
+             ;; roll selected die
+             (assoc-in-game g [:dice die-idx] (roll-die)))
+           (-> game
+               ;; increment # dice rolls
+               (update-in-game [:dice-rolls] inc)
+               ;; mark selected dice as active
+               (assoc-in-game [:active-die-idxs] (set die-idxs)))
+           die-idxs)))
+
+(defn take-arrows
+  ([game player-idx]
+   ;; by default, take 1 arrow
+   (take-arrows game player-idx 1))
+  ([game player-idx n]
+   (let [arrows (-> n
+                    ;; can't take more arrows than are left
+                    (min (get-in-game game [:arrows])))]
+     (-> game
+         (update-in-game [:arrows] - arrows)
+         (update-in-player player-idx [:arrows] + arrows)))))
+
+(defn discard-arrows
+  ([game player-idx]
+   (let [arrows (get-in-player game player-idx [:arrows])]
+     ;; by default, discard all arrows
+     (discard-arrows game player-idx arrows)))
+  ([game player-idx n]
+   (let [arrows (-> n
+                    ;; can't discard more arrows than player has
+                    (min (get-in-player game player-idx [:arrows])))]
+     (-> game
+         (update-in-player player-idx [:arrows] - arrows)
+         (update-in-game [:arrows] + arrows)))))
+
+(defn gain-life
+  ([game player-idx]
+   ;; by default, gain 1 life
+   (gain-life game player-idx 1))
+  ([game player-idx n]
+   (let [max-life (get-in-player game player-idx [:max-life])
+         add-life #(-> %
+                       (+ n)
+                       ;; can't gain more than player max life
+                       (min max-life))]
+     (update-in-player game player-idx [:life] add-life))))
+
+(defn lose-life
+  ([game player-idx]
+   ;; by default, lose 1 life
+   (lose-life game player-idx 1))
+  ([game player-idx n]
+   (let [remove-life #(-> %
+                          (- n)
+                          ;; can't go below 0 life
+                          (max 0))
+         updated (update-in-player game player-idx [:life] remove-life)]
+     (cond-> updated
+       ;; if player is dead, discard arrows
+       (-> updated (get-in-player player-idx [:life]) zero?)
+       (discard-arrows player-idx)))))
+
+(defn indians-attack
+  ([game]
+   (let [player-idxs (-> game (get-in-game [:players]) count range)]
+     ;; by default, attack all players
+     (apply indians-attack game player-idxs)))
+  ([game & player-idxs]
+   (reduce (fn [g player-idx]
+             (let [arrows (get-in-player g player-idx [:arrows])]
+               (-> g
+                   (discard-arrows player-idx)
+                   (lose-life player-idx arrows))))
+           game
+           player-idxs)))
+
+(defn gatling-gun
+  ([game]
+   (let [active-player-idx (get-in-game game [:active-player-idx])
+         player-idxs (-> game (get-in-game [:players]) count range)]
+     ;; by default, attack each OTHER player
+     (apply gatling-gun game (remove #{active-player-idx} player-idxs))))
+  ([game & player-idxs]
+   (let [active-player-idx (get-in-game game [:active-player-idx])]
+     (reduce (fn [g player-idx]
+               (lose-life g player-idx))
+             ;; discard arrows for active player
+             (discard-arrows game active-player-idx)
+             player-idxs))))
+
+(defn end-turn [game]
+  (-> game
+      ;; find next active player
+      (assoc-in-game [:active-player-idx] (next-active-player-idx game))
+      ;; re-init dice
+      (init-dice)))
+(ns btdg.core
+  (:require [btdg.commands :as cmds]
+            [btdg.print :as print]
+            [btdg.setup :as setup]
+            [repl-games.core :as repl-games]))
+
+(def game-atom (atom nil))
+
+(def help-atom (atom []))
+
+(def meta-fn-map
+  {:mk-game-state setup/mk-game-state
+   :print-game print/print-game!})
+
+(def command-map
+  (array-map
+   :pg {:doc "(print game)"
+        :fn print/print-game!}
+   :rd {:doc "(roll dice): [die-idx ...]"
+        :fn cmds/roll-dice}
+   :ta {:doc "(take arrows): player-idx [n]"
+        :fn cmds/take-arrows}
+   :da {:doc "(discard arrows): player-idx [n]"
+        :fn cmds/discard-arrows}
+   :gl {:doc "(gain life): player-idx [n]"
+        :fn cmds/gain-life}
+   :ll {:doc "(lose life): player-idx [n]"
+        :fn cmds/lose-life}
+   :ia {:doc "(Indians attack): [player-idx ...]"
+        :fn cmds/indians-attack}
+   :gg {:doc "(Gatling Gun): [player-idx ...]"
+        :fn cmds/gatling-gun}
+   :et {:doc "(end turn)"
+        :fn cmds/end-turn}))
+
+(repl-games/mk-commands! *ns*
+                         game-atom
+                         help-atom
+                         meta-fn-map
+                         command-map)
 (ns dcdbg.cards.core)
 
 (def weakness

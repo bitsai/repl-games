@@ -2,6 +2,12 @@
 
 cat src/repl_games/random.clj \
     src/repl_games/core.clj \
+    src/btdg/cards.clj \
+    src/btdg/config.clj \
+    src/btdg/print.clj \
+    src/btdg/setup.clj \
+    src/btdg/commands.clj \
+    src/btdg/core.clj \
     src/dcdbg/cards/core.clj \
     src/dcdbg/cards/equipment.clj \
     src/dcdbg/cards/hero.clj \
