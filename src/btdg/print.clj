@@ -16,11 +16,26 @@
                      (-> player :name)
                      (-> player :ability)))))
 
+(defn- print-die! [active-die-idxs idx die]
+  (println (format "%s[%s] %s"
+                   (if (active-die-idxs idx)
+                     ">"
+                     " ")
+                   idx
+                   die)))
+
 (defn print-game! [game]
-  (let [active-player-idx (-> game :state :active-player-idx)]
+  (let [active-player-idx (-> game :state :active-player-idx)
+        active-die-idxs (-> game :state :active-die-idxs)]
     (->> game
          (:state)
          (:players)
          (map-indexed (partial print-player! active-player-idx))
-         (dorun)))
-  (println (format " ARROWS %d" (-> game :state :arrows))))
+         (dorun))
+    (println (format " ARROWS %d" (-> game :state :arrows)))
+    (println (format " DICE ROLLS %d" (-> game :state :dice-rolls)))
+    (->> game
+         (:state)
+         (:dice)
+         (map-indexed (partial print-die! active-die-idxs))
+         (dorun))))

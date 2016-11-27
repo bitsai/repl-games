@@ -16,6 +16,8 @@
   (array-map
    :pg {:doc "(print game)"
         :fn print/print-game!}
+   :rd {:doc "(roll dice): [die-idx ...]"
+        :fn cmds/roll-dice}
    :ta {:doc "(take arrows): player-idx [n]"
         :fn cmds/take-arrows}
    :da {:doc "(discard arrows): player-idx [n]"

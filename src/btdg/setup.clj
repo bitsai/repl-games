@@ -1,5 +1,6 @@
 (ns btdg.setup
   (:require [btdg.cards :as cards]
+            [btdg.commands :as cmds]
             [btdg.config :as cfg]
             [repl-games.random :as rand]))
 
@@ -42,4 +43,8 @@
                ;; make first player active
                :active-player-idx 0
                :arrows (:arrow-count cfg/defaults)}]
-    (assoc game :state state)))
+    (-> game
+        ;; set initial state
+        (assoc :state state)
+        ;; init dice
+        (cmds/init-dice))))
