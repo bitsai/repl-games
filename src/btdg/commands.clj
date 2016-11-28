@@ -22,6 +22,12 @@
 (defn- update-in-player [game player-idx ks f & args]
   (apply update-in-game game (concat [:players player-idx] ks) f args))
 
+(defn- do-for-players [f game player-idx n args]
+  (reduce (fn [g [player-idx n]]
+             (f g player-idx n))
+           game
+           (cons [player-idx n] (partition 2 args))))
+
 (defn- roll-die []
   (case (rand/uniform 0 6)
     0 "ARROW"
@@ -75,25 +81,31 @@
    ;; by default, take 1 arrow
    (take-arrows game player-idx 1))
   ([game player-idx n]
-   (let [arrows (-> n
-                    ;; can't take more arrows than are left
-                    (min (get-in-game game [:arrows])))]
+   (let [game-arrows (get-in-game game [:arrows])
+         arrows (-> n
+                    ;; can't take more than game arrows
+                    (min game-arrows))]
      (-> game
          (update-in-game [:arrows] - arrows)
-         (update-in-player player-idx [:arrows] + arrows)))))
+         (update-in-player player-idx [:arrows] + arrows))))
+  ([game player-idx n & args]
+   (do-for-players take-arrows game player-idx n args)))
 
 (defn discard-arrows
   ([game player-idx]
-   (let [arrows (get-in-player game player-idx [:arrows])]
-     ;; by default, discard all arrows
-     (discard-arrows game player-idx arrows)))
+   (let [player-arrows (get-in-player game player-idx [:arrows])]
+     ;; by default, discard all player arrows
+     (discard-arrows game player-idx player-arrows)))
   ([game player-idx n]
-   (let [arrows (-> n
-                    ;; can't discard more arrows than player has
-                    (min (get-in-player game player-idx [:arrows])))]
+   (let [player-arrows (get-in-player game player-idx [:arrows])
+         arrows (-> n
+                    ;; can't discard more than player arrows
+                    (min player-arrows))]
      (-> game
          (update-in-player player-idx [:arrows] - arrows)
-         (update-in-game [:arrows] + arrows)))))
+         (update-in-game [:arrows] + arrows))))
+  ([game player-idx n & args]
+   (do-for-players discard-arrows game player-idx n args)))
 
 (defn gain-life
   ([game player-idx]
@@ -103,9 +115,11 @@
    (let [max-life (get-in-player game player-idx [:max-life])
          add-life #(-> %
                        (+ n)
-                       ;; can't gain more than player max life
+                       ;; can't go above max life
                        (min max-life))]
-     (update-in-player game player-idx [:life] add-life))))
+     (update-in-player game player-idx [:life] add-life)))
+  ([game player-idx n & args]
+   (do-for-players gain-life game player-idx n args)))
 
 (defn lose-life
   ([game player-idx]
@@ -120,7 +134,9 @@
      (cond-> updated
        ;; if player is dead, discard arrows
        (-> updated (get-in-player player-idx [:life]) zero?)
-       (discard-arrows player-idx)))))
+       (discard-arrows player-idx))))
+  ([game player-idx n & args]
+   (do-for-players lose-life game player-idx n args)))
 
 (defn indians-attack
   ([game]
@@ -128,31 +144,29 @@
      ;; by default, attack all players
      (apply indians-attack game player-idxs)))
   ([game & player-idxs]
-   (reduce (fn [g player-idx]
-             (let [arrows (get-in-player g player-idx [:arrows])]
-               (-> g
-                   (discard-arrows player-idx)
-                   (lose-life player-idx arrows))))
-           game
-           player-idxs)))
+   (let [idxs-and-arrows (->> player-idxs
+                              (map #(get-in-player game % [:arrows]))
+                              (interleave player-idxs))]
+     (-> game
+         (#(apply lose-life % idxs-and-arrows))
+         (#(apply discard-arrows % idxs-and-arrows))))))
 
 (defn gatling-gun
   ([game]
    (let [active-player-idx (get-in-game game [:active-player-idx])
          player-idxs (-> game (get-in-game [:players]) count range)]
-     ;; by default, attack each OTHER player
+     ;; by default, attack each of the OTHER players
      (apply gatling-gun game (remove #{active-player-idx} player-idxs))))
   ([game & player-idxs]
-   (let [active-player-idx (get-in-game game [:active-player-idx])]
-     (reduce (fn [g player-idx]
-               (lose-life g player-idx))
-             ;; discard arrows for active player
-             (discard-arrows game active-player-idx)
-             player-idxs))))
+   (let [active-player-idx (get-in-game game [:active-player-idx])
+         idxs-and-damages (interleave player-idxs (repeat 1))]
+     (-> game
+         (#(apply lose-life % idxs-and-damages))
+         (discard-arrows active-player-idx)))))
 
 (defn end-turn [game]
   (-> game
       ;; find next active player
       (assoc-in-game [:active-player-idx] (next-active-player-idx game))
-      ;; re-init dice
+      ;; init dice again
       (init-dice)))
