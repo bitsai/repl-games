@@ -60,11 +60,11 @@
         ;; mark all dice as active
         (assoc-in-game [:active-die-idxs] (set (range n))))))
 
-(defn roll-dice
+(defn reroll-dice
   ([game]
    (let [n (:dice-count cfg/defaults)]
-     ;; by default, roll all dice
-     (apply roll-dice game (range n))))
+     ;; by default, reroll all dice
+     (apply reroll-dice game (range n))))
   ([game & die-idxs]
    (reduce (fn [g die-idx]
              ;; roll selected die
