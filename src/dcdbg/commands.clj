@@ -109,13 +109,13 @@
 
 ;; end turn helpers and command
 
-(defn discard-hand [game]
+(defn- discard-hand [game]
   (let [discard-idx (find-space-index game :discard)
         hand-idx (find-space-index game :hand)
         hand-count (count-cards game hand-idx)]
     (move* game hand-idx discard-idx :top (range hand-count))))
 
-(defn refill-line-up [game]
+(defn- refill-line-up [game]
   (let [main-deck-idx (find-space-index game :main-deck)
         line-up-idx (find-space-index game :line-up)
         card (get-card game main-deck-idx 0)
@@ -125,7 +125,7 @@
         (move main-deck-idx line-up-idx :top 0)
         (update :messages concat msg))))
 
-(defn flip-super-villain [game]
+(defn- flip-super-villain [game]
   (let [super-villain-idx (find-space-index game :super-villain)
         [sv & svs] (get-cards game super-villain-idx)
         flipped (assoc sv :facing :up)
@@ -139,7 +139,7 @@
       (-> (update-cards super-villain-idx (constantly (cons flipped svs)))
           (update :messages concat msgs)))))
 
-(defn advance-timer [game]
+(defn- advance-timer [game]
   (let [timer-idx (find-space-index game :timer)
         weakness-idx (find-space-index game :weakness)]
     (move game timer-idx weakness-idx :top 0)))
