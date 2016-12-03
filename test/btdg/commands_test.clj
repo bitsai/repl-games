@@ -11,7 +11,7 @@
                       :dice ["ARROW" "ARROW" "2" "DYNAMITE" "1"]
                       :active-die-idxs #{0 1 2 3 4}}}
              (reroll-dice game))))
-    (testing "Should be able to reroll selected dice."
+    (testing "Should be able to reroll specific dice."
       (is (= {:state {:dice-rolls 2
                       :dice ["BEER" "DYNAMITE" "ARROW" "DYNAMITE" "BEER"]
                       :active-die-idxs #{0 2 4}}}
@@ -116,3 +116,94 @@
                                  :arrows 0}]
                       :arrows 3}}
              (lose-life game 0 1 1 20))))))
+
+(deftest indians-attack-test
+  (let [game {:state {:players [{:max-life 10
+                                 :life 1
+                                 :arrows 1}
+                                {:max-life 10
+                                 :life 8
+                                 :arrows 2}]
+                      :arrows 0}}]
+    (testing "Should attack all players by default."
+      (is (= {:state {:players [{:max-life 10
+                                 :life 0
+                                 :arrows 0}
+                                {:max-life 10
+                                 :life 6
+                                 :arrows 0}]
+                      :arrows 3}}
+             (indians-attack game))))
+    (testing "Should be able to attack specific players."
+      (is (= {:state {:players [{:max-life 10
+                                 :life 0
+                                 :arrows 0}
+                                {:max-life 10
+                                 :life 8
+                                 :arrows 2}]
+                      :arrows 1}}
+             (indians-attack game 0))))))
+
+(deftest gatling-gun-test
+  (let [game {:state {:players [{:max-life 10
+                                 :life 1
+                                 :arrows 1}
+                                {:max-life 10
+                                 :life 8
+                                 :arrows 2}
+                                {:max-life 10
+                                 :life 1
+                                 :arrows 3}]
+                      :active-player-idx 2
+                      :arrows 0}}]
+    (testing "Should attack all non-active players by default."
+      (is (= {:state {:players [{:max-life 10
+                                 :life 0
+                                 :arrows 0}
+                                {:max-life 10
+                                 :life 7
+                                 :arrows 2}
+                                {:max-life 10
+                                 :life 1
+                                 :arrows 0}]
+                      :active-player-idx 2
+                      :arrows 4}}
+             (gatling-gun game))))
+    (testing "Should be able to attack specific players."
+      (is (= {:state {:players [{:max-life 10
+                                 :life 0
+                                 :arrows 0}
+                                {:max-life 10
+                                 :life 8
+                                 :arrows 2}
+                                {:max-life 10
+                                 :life 1
+                                 :arrows 0}]
+                      :active-player-idx 2
+                      :arrows 4}}
+             (gatling-gun game 0))))))
+
+(deftest end-turn-test
+  (rand/set-seed! 420)
+  (let [game {:state {:players [{:max-life 10
+                                 :life 1}
+                                {:max-life 10
+                                 :life 8}
+                                {:max-life 10
+                                 :life 0}]
+                      :active-player-idx 1
+                      :dice-rolls 2
+                      :dice ["ARROW" "ARROW" "2" "DYNAMITE" "1"]
+                      :active-die-idxs #{0 1}}}]
+    (testing "Should be able to find next active player and re-init dice."
+      (is (= {:state {:players [{:max-life 10
+                                 :life 1}
+                                {:max-life 10
+                                 :life 8}
+                                {:max-life 10
+                                 :life 0}]
+                      :active-player-idx 0
+                      :dice-rolls 1
+                      :dice ["BEER" "DYNAMITE" "DYNAMITE" "DYNAMITE" "BEER"]
+                      :active-die-idxs #{0 1 2 3 4}}}
+             (end-turn game))))))
