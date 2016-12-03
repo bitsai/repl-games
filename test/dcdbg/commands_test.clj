@@ -145,77 +145,102 @@
       (is (thrown? Exception
                    (draw game 4))))))
 
-(deftest discard-hand-test
-  (let [game {:state [{:name :hand
-                       :cards [{:name "A"
-                                :facing :up}
-                               {:name "B"
-                                :facing :up}
-                               {:name "C"
-                                :facing :up}]}
-                      {:name :discard
-                       :cards []}]}]
-    (testing "Should be able to discard whole hand."
-      (is (= {:state [{:name :hand
-                       :cards []}
-                      {:name :discard
-                       :cards [{:name "A"
-                                :facing :down}
-                               {:name "B"
-                                :facing :down}
-                               {:name "C"
-                                :facing :down}]}]}
-             (discard-hand game))))))
-
-(deftest refill-line-up-test
-  (let [game {:state [{:name :main-deck
-                       :cards [{:name "A"
-                                :facing :down
-                                :attack "Attack"}]}
-                      {:name :line-up
-                       :cards []}]}]
-    (testing "Should be able to refill line-up w/ top main deck card."
-      (is (= {:messages ["VILLAIN ATTACK: Attack"]
-              :state [{:name :main-deck
-                       :cards []}
-                      {:name :line-up
-                       :cards [{:name "A"
-                                :facing :up
-                                :attack "Attack"}]}]}
-             (refill-line-up game))))))
-
-(deftest flip-super-villain-test
+(deftest end-turn-test
   (let [game1 {:state [{:name :super-villain
-                        :cards [{:name "A"
-                                 :facing :up}]}]}
-        game2 {:state [{:name :super-villain
-                        :cards [{:name "A"
-                                 :facing :down
+                        :cards [{:name "Crisis Anti-Monitor (Imp.)"
+                                 :facing :up
                                  :stack-ongoing "Ongoing"
-                                 :first-appearance-attack "Attack"}]}]}]
-    (testing "Should do nothing if top super-villain is already facing up."
-      (is (= game1
-             (flip-super-villain game1))))
+                                 :first-appearance-attack "Attack"}]}
+                       {:name :timer
+                        :cards [{:name "Weakness"
+                                 :facing :down}]}
+                       {:name :weakness
+                        :cards []}
+                       {:name :main-deck
+                        :cards [{:name "Bane"
+                                 :facing :down
+                                 :attack "Attack"}]}
+                       {:name :line-up
+                        :cards []}
+                       {:name :hand
+                        :cards [{:name "Super Speed"
+                                 :facing :up}
+                                {:name "The Fastest Man Alive"
+                                 :facing :up}]}
+                       {:name :deck
+                        :cards [{:name "Arkham Asylum"
+                                 :facing :down}
+                                {:name "The Batcave"
+                                 :facing :down}
+                                {:name "Fortress of Solitude"
+                                 :facing :down}
+                                {:name "Titans Tower"
+                                 :facing :down}
+                                {:name "The Watchtower"
+                                 :facing :down}
+                                {:name "Monument Point"
+                                 :facing :down}]}
+                       {:name :discard
+                        :cards []}]}
+        game2 {:messages ["VILLAIN ATTACK: Attack"]
+               :state [{:name :super-villain
+                        :cards [{:name "Crisis Anti-Monitor (Imp.)"
+                                 :facing :up
+                                 :stack-ongoing "Ongoing"
+                                 :first-appearance-attack "Attack"}]}
+                       {:name :timer
+                        :cards []}
+                       {:name :weakness
+                        :cards [{:name "Weakness"
+                                 :facing :down}]}
+                       {:name :main-deck
+                        :cards []}
+                       {:name :line-up
+                        :cards [{:name "Bane"
+                                 :facing :up
+                                 :attack "Attack"}]}
+                       {:name :hand
+                        :cards [{:name "Arkham Asylum"
+                                 :facing :up}
+                                {:name "The Batcave"
+                                 :facing :up}
+                                {:name "Fortress of Solitude"
+                                 :facing :up}
+                                {:name "Titans Tower"
+                                 :facing :up}
+                                {:name "The Watchtower"
+                                 :facing :up}]}
+                       {:name :deck
+                        :cards [{:name "Monument Point"
+                                 :facing :down}]}
+                       {:name :discard
+                        :cards [{:name "Super Speed"
+                                 :facing :down}
+                                {:name "The Fastest Man Alive"
+                                 :facing :down}]}]}]
+    (testing "Should draw 5 cards by default at end of turn."
+      (is (= game2
+             (end-turn game1))))
+    (testing "Should be able to draw n cards at end of turn."
+      (is (= (-> game2
+                 (assoc-in [:state 5 :cards] [{:name "Arkham Asylum"
+                                               :facing :up}
+                                              {:name "The Batcave"
+                                               :facing :up}
+                                              {:name "Fortress of Solitude"
+                                               :facing :up}
+                                              {:name "Titans Tower"
+                                               :facing :up}
+                                              {:name "The Watchtower"
+                                               :facing :up}
+                                              {:name "Monument Point"
+                                               :facing :up}])
+                 (assoc-in [:state 6 :cards] []))
+             (end-turn game1 6))))
     (testing "Should flip top super-villain if it's face-down."
-      (is (= {:messages ["SUPER-VILLAIN ONGOING: Ongoing"
-                         "SUPER-VILLAIN ATTACK: Attack"]
-              :state [{:name :super-villain
-                       :cards [{:name "A"
-                                :facing :up
-                                :stack-ongoing "Ongoing"
-                                :first-appearance-attack "Attack"}]}]}
-             (flip-super-villain game2))))))
-
-(deftest advance-timer-test
-  (let [game {:state [{:name :timer
-                       :cards [{:name "A"
-                                :facing :down}]}
-                      {:name :weakness
-                       :cards []}]}]
-    (testing "Should be able to move card from timer to weakness stack."
-      (is (= {:state [{:name :timer
-                       :cards []}
-                      {:name :weakness
-                       :cards [{:name "A"
-                                :facing :down}]}]}
-             (advance-timer game))))))
+      (is (= (assoc game2 :messages ["VILLAIN ATTACK: Attack"
+                                     "SUPER-VILLAIN ONGOING: Ongoing"
+                                     "SUPER-VILLAIN ATTACK: Attack"])
+             (-> game1
+                 (assoc-in [:state 0 :cards 0 :facing] :down)
+                 (end-turn)))))))
