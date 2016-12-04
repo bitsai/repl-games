@@ -270,11 +270,11 @@
         ;; mark all dice as active
         (assoc-in-game [:active-die-idxs] (set (range n))))))
 
-(defn roll-dice
+(defn reroll-dice
   ([game]
    (let [n (:dice-count cfg/defaults)]
-     ;; by default, roll all dice
-     (apply roll-dice game (range n))))
+     ;; by default, reroll all dice
+     (apply reroll-dice game (range n))))
   ([game & die-idxs]
    (reduce (fn [g die-idx]
              ;; roll selected die
@@ -448,8 +448,8 @@
   (array-map
    :pg {:doc "(print game)"
         :fn print/print-game!}
-   :rd {:doc "(roll dice): [die-idx ...]"
-        :fn cmds/roll-dice}
+   :rd {:doc "(reroll dice): [die-idx ...]"
+        :fn cmds/reroll-dice}
    :ta {:doc "(take arrows): player-idx [n] ..."
         :fn cmds/take-arrows}
    :da {:doc "(discard arrows): player-idx [n] ..."
@@ -1573,13 +1573,13 @@
 
 ;; end turn helpers and command
 
-(defn discard-hand [game]
+(defn- discard-hand [game]
   (let [discard-idx (find-space-index game :discard)
         hand-idx (find-space-index game :hand)
         hand-count (count-cards game hand-idx)]
     (move* game hand-idx discard-idx :top (range hand-count))))
 
-(defn refill-line-up [game]
+(defn- refill-line-up [game]
   (let [main-deck-idx (find-space-index game :main-deck)
         line-up-idx (find-space-index game :line-up)
         card (get-card game main-deck-idx 0)
@@ -1589,7 +1589,7 @@
         (move main-deck-idx line-up-idx :top 0)
         (update :messages concat msg))))
 
-(defn flip-super-villain [game]
+(defn- flip-super-villain [game]
   (let [super-villain-idx (find-space-index game :super-villain)
         [sv & svs] (get-cards game super-villain-idx)
         flipped (assoc sv :facing :up)
@@ -1603,7 +1603,7 @@
       (-> (update-cards super-villain-idx (constantly (cons flipped svs)))
           (update :messages concat msgs)))))
 
-(defn advance-timer [game]
+(defn- advance-timer [game]
   (let [timer-idx (find-space-index game :timer)
         weakness-idx (find-space-index game :weakness)]
     (move game timer-idx weakness-idx :top 0)))
