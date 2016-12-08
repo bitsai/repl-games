@@ -107,15 +107,7 @@
        :else
        (throw (Exception. "not enough cards!"))))))
 
-;; end turn helpers and command
-
-(defn- discard-hand [game]
-  (let [discard-idx (find-space-index game :discard)
-        hand-idx (find-space-index game :hand)
-        hand-count (count-cards game hand-idx)]
-    (move* game hand-idx discard-idx :top (range hand-count))))
-
-(defn- refill-line-up [game]
+(defn refill-line-up [game]
   (let [main-deck-idx (find-space-index game :main-deck)
         line-up-idx (find-space-index game :line-up)
         card (get-card game main-deck-idx 0)
@@ -124,6 +116,14 @@
     (-> game
         (move main-deck-idx line-up-idx :top 0)
         (update :messages concat msg))))
+
+;; end turn helpers and command
+
+(defn- discard-hand [game]
+  (let [discard-idx (find-space-index game :discard)
+        hand-idx (find-space-index game :hand)
+        hand-count (count-cards game hand-idx)]
+    (move* game hand-idx discard-idx :top (range hand-count))))
 
 (defn- flip-super-villain [game]
   (let [super-villain-idx (find-space-index game :super-villain)
