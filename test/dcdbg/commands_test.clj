@@ -145,6 +145,23 @@
       (is (thrown? Exception
                    (draw game 4))))))
 
+(deftest refill-line-up-test
+  (let [game {:state [{:name :main-deck
+                       :cards [{:name "A"
+                                :facing :down
+                                :attack "Attack"}]}
+                      {:name :line-up
+                       :cards []}]}]
+    (testing "Should be able to refill line-up from main deck."
+      (is (= {:messages ["VILLAIN ATTACK: Attack"]
+              :state [{:name :main-deck
+                       :cards []}
+                      {:name :line-up
+                       :cards [{:name "A"
+                                :facing :up
+                                :attack "Attack"}]}]}
+             (refill-line-up game))))))
+
 (deftest end-turn-test
   (let [game1 {:state [{:name :super-villain
                         :cards [{:name "Crisis Anti-Monitor (Imp.)"
