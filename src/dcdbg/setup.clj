@@ -14,15 +14,10 @@
 
 (defn- mk-cards [card-spec]
   (let [n (:copies card-spec 1)]
-    (->> (dissoc card-spec :copies)
-         (repeat n))))
+    (->> (dissoc card-spec :copies) (repeat n))))
 
 (defn- flip [cards facing]
-  (map #(assoc % :facing facing) cards))
-
-(defn- use-facing [cards k]
-  (let [facing (-> cfg/card-spaces k :facing)]
-    (flip cards facing)))
+  (mapv #(assoc % :facing facing) cards))
 
 ;; setup
 
@@ -30,9 +25,7 @@
   (->> [[cards/punch (-> cfg/defaults :punch-count)]
         [cards/vulnerability (-> cfg/defaults :vulnerability-count)]]
        (mapcat (fn [[card-spec n]]
-                 (->> card-spec
-                      (mk-cards)
-                      (take n))))
+                 (->> card-spec (mk-cards) (take n))))
        (rand/shuffle*)))
 
 (defn- setup-main-deck []
@@ -47,55 +40,44 @@
 (defn- setup-super-heroes []
   ;; use The Flash and 1 random
   (let [[x & xs] super-hero/all]
-    (-> [x (rand/rand-nth* xs)]
-        (use-facing :super-hero))))
+    [x (rand/rand-nth* xs)]))
 
 (defn- setup-super-villains [n]
   ;; use Ra's Al-Ghul, Crisis Anti-Monitor, and N - 2 randoms
-  (let [[x y & z] super-villain/all
-        z (->> z
-               (rand/shuffle*)
-               (take (- n 2)))]
-    ;; flip Ra's Al-Ghul up, set Crisis Anti-Monitor on bottom
-    (concat (-> [x] (flip :up))
-            (->  z  (use-facing :super-villain))
-            (-> [y] (use-facing :super-villain)))))
+  (let [[x y & zs] super-villain/all
+        zs (->> zs (rand/shuffle*) (take (- n 2)))]
+    ;; set Ra's Al-Ghul on top, Crisis Anti-Monitor on bottom
+    (concat [x] zs [y])))
 
 (defn mk-game-state [game]
   (let [svs (setup-super-villains (:super-villain-count cfg/defaults))
         [line-up main-deck] (split-at 5 (setup-main-deck))
         shs (setup-super-heroes)
         [hand deck] (split-at 5 (setup-deck))
-        msgs (concat (->> shs
-                          (map #(format "SUPER-HERO: %s" (:text %))))
-                     [(->> svs
-                           (first)
-                           (:stack-ongoing)
-                           (format "SUPER-VILLAIN ONGOING: %s"))])
-        state [{:name :super-villain
-                :cards svs}
-               {:name :timer
-                :cards (-> cards/weakness mk-cards (use-facing :weakness))}
-               {:name :weakness
-                :cards []}
-               {:name :kick
-                :cards (-> cards/kick mk-cards (use-facing :kick))}
-               {:name :destroyed
-                :cards []}
-               {:name :main-deck
-                :cards (-> main-deck (use-facing :main-deck))}
-               {:name :line-up
-                :cards (-> line-up (use-facing :line-up))}
-               {:name :super-hero
-                :cards shs}
-               {:name :location
-                :cards []}
-               {:name :hand
-                :cards (-> hand (use-facing :hand))}
-               {:name :deck
-                :cards (-> deck (use-facing :deck))}
-               {:name :discard
-                :cards []}]]
+        msgs (conj (->> shs
+                        (mapv #(format "SUPER-HERO: %s" (:text %))))
+                   (->> svs
+                        (first)
+                        (:stack-ongoing)
+                        (format "SUPER-VILLAIN ONGOING: %s")))
+        state (for [[name cards] [[:super-villain svs]
+                                  [:countdown (mk-cards cards/weakness)]
+                                  [:weakness []]
+                                  [:kick (mk-cards cards/kick)]
+                                  [:destroyed []]
+                                  [:main-deck main-deck]
+                                  [:line-up line-up]
+                                  [:super-hero shs]
+                                  [:location []]
+                                  [:hand hand]
+                                  [:deck deck]
+                                  [:discard []]]
+                    :let [{:keys [facing type]} (-> cfg/card-spaces name)]]
+                {:name name
+                 :type type
+                 :facing facing
+                 :cards (flip cards facing)})]
     (-> game
         (assoc :messages msgs)
-        (assoc :state state))))
+        (assoc :state (vec state))
+        (assoc-in [:state 0 :cards 0 :facing] :up))))

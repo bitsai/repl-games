@@ -5,6 +5,8 @@
 
 (deftest move-test
   (let [game {:state [{:name :line-up
+                       :type :pile
+                       :facing :up
                        :cards [{:name "A"
                                 :facing :up}
                                {:name "B"
@@ -12,13 +14,35 @@
                                {:name "C"
                                 :facing :up}]}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards [{:name "D"
                                 :facing :down}]}]}]
-    (testing "Should be able to move to the top."
+    (testing "By default, move nothing."
       (is (= {:state [{:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "A"
+                                :facing :up}
+                               {:name "B"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}]}
+                      {:name :discard
+                       :type :pile
+                       :facing :down
+                       :cards [{:name "D"
+                                :facing :down}]}]}
+             (move game 0 1 :top))))
+    (testing "Move to the top."
+      (is (= {:state [{:name :line-up
+                       :type :pile
+                       :facing :up
                        :cards [{:name "B"
                                 :facing :up}]}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards [{:name "A"
                                 :facing :down}
                                {:name "C"
@@ -26,11 +50,15 @@
                                {:name "D"
                                 :facing :down}]}]}
              (move game 0 1 :top 0 2))))
-    (testing "Should be able to move to the bottom."
+    (testing "Move to the bottom."
       (is (= {:state [{:name :line-up
+                       :type :pile
+                       :facing :up
                        :cards [{:name "B"
                                 :facing :up}]}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards [{:name "D"
                                 :facing :down}
                                {:name "A"
@@ -41,24 +69,36 @@
 
 (deftest gain-test
   (let [game {:state [{:name :kick
+                       :type :stack
+                       :facing :up
                        :cards [{:name "A"
                                 :facing :up}
                                {:name "B"
                                 :facing :up}]}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards []}]}]
-    (testing "Should be able to gain 1 card by default."
+    (testing "By default, gain 1 card."
       (is (= {:state [{:name :kick
+                       :type :stack
+                       :facing :up
                        :cards [{:name "B"
                                 :facing :up}]}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards [{:name "A"
                                 :facing :down}]}]}
              (gain game 0))))
-    (testing "Should be able to gain multiple cards."
+    (testing "Gain multiple cards."
       (is (= {:state [{:name :kick
+                       :type :stack
+                       :facing :up
                        :cards []}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards [{:name "A"
                                 :facing :down}
                                {:name "B"
@@ -67,16 +107,22 @@
 
 (deftest refill-deck-test
   (let [game {:state [{:name :deck
+                       :type :stack
+                       :facing :down
                        :cards [{:name "A"
                                 :facing :down}]}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards [{:name "B"
                                 :facing :down}
                                {:name "C"
                                 :facing :down}]}]}]
-    (testing "Should be able to refill deck from discards."
+    (testing "Refill deck from discard."
       (rand/set-seed! 420)
       (is (= {:state [{:name :deck
+                       :type :stack
+                       :facing :down
                        :cards [{:name "A"
                                 :facing :down}
                                {:name "B"
@@ -84,36 +130,52 @@
                                {:name "C"
                                 :facing :down}]}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards []}]}
              (refill-deck game))))))
 
 (deftest draw-test
   (let [game {:state [{:name :hand
+                       :type :pile
+                       :facing :up
                        :cards [{:name "A"
                                 :facing :up}]}
                       {:name :deck
+                       :type :stack
+                       :facing :down
                        :cards [{:name "B"
                                 :facing :down}
                                {:name "C"
                                 :facing :down}]}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards [{:name "D"
                                 :facing :down}]}]}]
-    (testing "Should draw 1 card by default."
+    (testing "By default, draw 1 card."
       (is (= {:state [{:name :hand
+                       :type :pile
+                       :facing :up
                        :cards [{:name "A"
                                 :facing :up}
                                {:name "B"
                                 :facing :up}]}
                       {:name :deck
+                       :type :stack
+                       :facing :down
                        :cards [{:name "C"
                                 :facing :down}]}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards [{:name "D"
                                 :facing :down}]}]}
              (draw game))))
-    (testing "Should be able to draw multiple cards."
+    (testing "Draw multiple cards."
       (is (= {:state [{:name :hand
+                       :type :pile
+                       :facing :up
                        :cards [{:name "A"
                                 :facing :up}
                                {:name "B"
@@ -121,13 +183,19 @@
                                {:name "C"
                                 :facing :up}]}
                       {:name :deck
+                       :type :stack
+                       :facing :down
                        :cards []}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards [{:name "D"
                                 :facing :down}]}]}
              (draw game 2))))
-    (testing "Should refill then draw if needed."
+    (testing "If necessary, refill deck from discard then draw."
       (is (= {:state [{:name :hand
+                       :type :pile
+                       :facing :up
                        :cards [{:name "A"
                                 :facing :up}
                                {:name "B"
@@ -137,127 +205,225 @@
                                {:name "D"
                                 :facing :up}]}
                       {:name :deck
+                       :type :stack
+                       :facing :down
                        :cards []}
                       {:name :discard
+                       :type :pile
+                       :facing :down
                        :cards []}]}
              (draw game 3))))
-    (testing "Should throw exception if there aren't enough cards."
+    (testing "Throw exception if there aren't enough to refill."
       (is (thrown? Exception
                    (draw game 4))))))
 
+(deftest discard-hand-test)
+
+(deftest exec-super-villain-plan-test)
+
 (deftest refill-line-up-test
-  (let [game {:state [{:name :main-deck
-                       :cards [{:name "A"
-                                :facing :down
-                                :attack "Attack"}]}
-                      {:name :line-up
-                       :cards []}]}]
-    (testing "Should be able to refill line-up from main deck."
-      (is (= {:messages ["VILLAIN ATTACK: Attack"]
+  (testing "Do nothing if line-up has enough cards."
+    (let [game {:state [{:name :line-up
+                         :type :pile
+                         :facing :up
+                         :cards [{:name "A"
+                                  :facing :up}
+                                 {:name "B"
+                                  :facing :up}
+                                 {:name "C"
+                                  :facing :up}
+                                 {:name "D"
+                                  :facing :up}
+                                 {:name "E"
+                                  :facing :up}]}]}]
+      (is (= game
+             (refill-line-up game)))))
+  (testing "Refill line-up from main deck."
+    (let [game {:state [{:name :main-deck
+                         :type :stack
+                         :facing :down
+                         :cards [{:name "A"
+                                  :attack "A"
+                                  :facing :down}
+                                 {:name "B"
+                                  :attack "B"
+                                  :facing :down}]}
+                        {:name :line-up
+                         :type :pile
+                         :facing :up
+                         :cards [{:name "C"
+                                  :facing :up}
+                                 {:name "D"
+                                  :facing :up}
+                                 {:name "E"
+                                  :facing :up}]}]}]
+      (is (= {:messages ["VILLAIN ATTACK: A"
+                         "VILLAIN ATTACK: B"]
               :state [{:name :main-deck
+                       :type :stack
+                       :facing :down
                        :cards []}
                       {:name :line-up
-                       :cards [{:name "A"
-                                :facing :up
-                                :attack "Attack"}]}]}
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "B"
+                                :attack "B"
+                                :facing :up}
+                               {:name "A"
+                                :attack "A"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}
+                               {:name "D"
+                                :facing :up}
+                               {:name "E"
+                                :facing :up}]}]}
              (refill-line-up game))))))
+
+(deftest exec-villains-plan-test)
+
+(deftest flip-super-villain-test)
+
+(deftest proc-anti-monitor-ongoing-test)
+
+(deftest advance-countdown-test
+  (let [game {:state [{:name :countdown
+                       :type :stack
+                       :facing :down
+                       :cards [{:name "W"
+                                :facing :down}]}
+                      {:name :weakness
+                       :type :stack
+                       :facing :up
+                       :cards []}]}]
+    (testing "Advance timer by flipping a Weakness card over."
+      (is (= {:state [{:name :countdown
+                       :type :stack
+                       :facing :down
+                       :cards []}
+                      {:name :weakness
+                       :type :stack
+                       :facing :up
+                       :cards [{:name "W"
+                                :facing :up}]}]}
+             (advance-countdown game))))))
 
 (deftest end-turn-test
   (let [game1 {:state [{:name :super-villain
-                        :cards [{:name "Crisis Anti-Monitor (Imp.)"
-                                 :facing :up
-                                 :stack-ongoing "Ongoing"
-                                 :first-appearance-attack "Attack"}]}
-                       {:name :timer
-                        :cards [{:name "Weakness"
+                        :type :stack
+                        :facing :down
+                        :cards [{:name "SV"
+                                 :facing :up}]}
+                       {:name :countdown
+                        :type :stack
+                        :facing :down
+                        :cards [{:name "W"
                                  :facing :down}]}
                        {:name :weakness
+                        :type :stack
+                        :facing :up
                         :cards []}
-                       {:name :main-deck
-                        :cards [{:name "Bane"
-                                 :facing :down
-                                 :attack "Attack"}]}
                        {:name :line-up
-                        :cards []}
-                       {:name :hand
-                        :cards [{:name "Super Speed"
+                        :type :pile
+                        :facing :up
+                        :cards [{:name "A"
                                  :facing :up}
-                                {:name "The Fastest Man Alive"
+                                {:name "B"
+                                 :facing :up}
+                                {:name "C"
+                                 :facing :up}
+                                {:name "D"
+                                 :facing :up}
+                                {:name "E"
                                  :facing :up}]}
+                       {:name :hand
+                        :type :pile
+                        :facing :up
+                        :cards []}
                        {:name :deck
-                        :cards [{:name "Arkham Asylum"
+                        :type :stack
+                        :facing :down
+                        :cards [{:name "1"
                                  :facing :down}
-                                {:name "The Batcave"
+                                {:name "2"
                                  :facing :down}
-                                {:name "Fortress of Solitude"
+                                {:name "3"
                                  :facing :down}
-                                {:name "Titans Tower"
+                                {:name "4"
                                  :facing :down}
-                                {:name "The Watchtower"
+                                {:name "5"
                                  :facing :down}
-                                {:name "Monument Point"
+                                {:name "6"
                                  :facing :down}]}
                        {:name :discard
+                        :type :pile
+                        :facing :down
                         :cards []}]}
-        game2 {:messages ["VILLAIN ATTACK: Attack"]
-               :state [{:name :super-villain
-                        :cards [{:name "Crisis Anti-Monitor (Imp.)"
-                                 :facing :up
-                                 :stack-ongoing "Ongoing"
-                                 :first-appearance-attack "Attack"}]}
-                       {:name :timer
+        game2 {:state [{:name :super-villain
+                        :type :stack
+                        :facing :down
+                        :cards [{:name "SV"
+                                 :facing :up}]}
+                       {:name :countdown
+                        :type :stack
+                        :facing :down
                         :cards []}
                        {:name :weakness
-                        :cards [{:name "Weakness"
-                                 :facing :down}]}
-                       {:name :main-deck
-                        :cards []}
+                        :type :stack
+                        :facing :up
+                        :cards [{:name "W"
+                                 :facing :up}]}
                        {:name :line-up
-                        :cards [{:name "Bane"
-                                 :facing :up
-                                 :attack "Attack"}]}
+                        :type :pile
+                        :facing :up
+                        :cards [{:name "A"
+                                 :facing :up}
+                                {:name "B"
+                                 :facing :up}
+                                {:name "C"
+                                 :facing :up}
+                                {:name "D"
+                                 :facing :up}
+                                {:name "E"
+                                 :facing :up}]}
                        {:name :hand
-                        :cards [{:name "Arkham Asylum"
+                        :type :pile
+                        :facing :up
+                        :cards [{:name "1"
                                  :facing :up}
-                                {:name "The Batcave"
+                                {:name "2"
                                  :facing :up}
-                                {:name "Fortress of Solitude"
+                                {:name "3"
                                  :facing :up}
-                                {:name "Titans Tower"
+                                {:name "4"
                                  :facing :up}
-                                {:name "The Watchtower"
+                                {:name "5"
                                  :facing :up}]}
                        {:name :deck
-                        :cards [{:name "Monument Point"
+                        :type :stack
+                        :facing :down
+                        :cards [{:name "6"
                                  :facing :down}]}
                        {:name :discard
-                        :cards [{:name "Super Speed"
-                                 :facing :down}
-                                {:name "The Fastest Man Alive"
-                                 :facing :down}]}]}]
-    (testing "Should draw 5 cards by default at end of turn."
+                        :type :pile
+                        :facing :down
+                        :cards []}]}]
+    (testing "By default, draw 5 new cards."
       (is (= game2
              (end-turn game1))))
-    (testing "Should be able to draw n cards at end of turn."
+    (testing "Draw n new cards."
       (is (= (-> game2
-                 (assoc-in [:state 5 :cards] [{:name "Arkham Asylum"
+                 (assoc-in [:state 4 :cards] [{:name "1"
                                                :facing :up}
-                                              {:name "The Batcave"
+                                              {:name "2"
                                                :facing :up}
-                                              {:name "Fortress of Solitude"
+                                              {:name "3"
                                                :facing :up}
-                                              {:name "Titans Tower"
+                                              {:name "4"
                                                :facing :up}
-                                              {:name "The Watchtower"
+                                              {:name "5"
                                                :facing :up}
-                                              {:name "Monument Point"
+                                              {:name "6"
                                                :facing :up}])
-                 (assoc-in [:state 6 :cards] []))
-             (end-turn game1 6))))
-    (testing "Should flip top super-villain if it's face-down."
-      (is (= (assoc game2 :messages ["VILLAIN ATTACK: Attack"
-                                     "SUPER-VILLAIN ONGOING: Ongoing"
-                                     "SUPER-VILLAIN ATTACK: Attack"])
-             (-> game1
-                 (assoc-in [:state 0 :cards 0 :facing] :down)
-                 (end-turn)))))))
+                 (assoc-in [:state 5 :cards] []))
+             (end-turn game1 6))))))

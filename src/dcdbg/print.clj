@@ -13,7 +13,7 @@
   (printf "%3s. " card-idx)
   (case (:type card)
     :super-villain
-    (printf "%-3s VI %-1s %-1s %-1s %-2s %s\n"
+    (printf "%-3s VI %-1s%-1s %-1s %-2s %s\n"
             (or (:cost card) "")
             (if (:text card) "T" "")
             (if (:first-appearance-attack card) "A" "")
@@ -24,7 +24,7 @@
     :super-hero
     (println (:name card))
 
-    (printf "%-3s %-2s %-1s %-1s%-1s%-1s %-2s %s\n"
+    (printf "%-3s %-2s %-1s%-1s%-1s%-1s %-2s %s\n"
             (or (:cost card) "")
             (if (:type card)
               (-> card :type cfg/aliases)
@@ -41,25 +41,25 @@
     (when-let [x (k card)]
       (printf "%s: %s\n" (mk-header k) x))))
 
-(defn print-pile! [cards space-idx space-name]
-  (printf "[%2s] %s (%d)\n" space-idx (mk-header space-name) (count cards))
+(defn print-pile! [{:keys [name cards]} space-idx]
+  (printf "[%2s] %s (%d)\n" space-idx (mk-header name) (count cards))
   (->> cards
        (map-indexed (fn [idx c]
                       (when (-> c :facing (= :up))
                         (print-card-summary! c idx))))
        (dorun)))
 
-(defn print-stack! [cards space-idx space-name]
-  (printf "[%2s] %s (%d)\n" space-idx (mk-header space-name) (count cards))
+(defn print-stack! [{:keys [name cards]} space-idx]
+  (printf "[%2s] %s (%d)\n" space-idx (mk-header name) (count cards))
   (when (-> cards first :facing (= :up))
     (print-card-summary! (first cards) 0)))
 
 (defn print-game! [{:keys [messages state]}]
   (->> state
-       (map-indexed (fn [idx {:keys [name cards]}]
-                      (case (-> cfg/card-spaces name :type)
-                        :pile (print-pile! cards idx name)
-                        :stack (print-stack! cards idx name))))
+       (map-indexed (fn [idx space]
+                      (case (:type space)
+                        :pile (print-pile! space idx)
+                        :stack (print-stack! space idx))))
        (dorun))
   (when-let [msgs (seq messages)]
     (println)
