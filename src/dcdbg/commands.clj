@@ -114,6 +114,12 @@
   (let [hand-count (count-cards game :hand)]
     (move* game :hand :discard :top (range hand-count))))
 
+(defn exec-super-villain-plan [game]
+  (if (-> game (get-cards :line-up) empty?)
+    game
+    (let [last-idx (dec (count-cards game :line-up))]
+      (move game :line-up :destroyed :top last-idx))))
+
 (defn refill-line-up [game]
   (if (>= (count-cards game :line-up) (:line-up-count cfg/defaults))
     game
@@ -147,7 +153,7 @@
    (-> game
        (discard-hand)
        (draw n)
-       ;; exec-super-villain-plan
+       (exec-super-villain-plan)
        (refill-line-up)
        ;; exec-villains-plan
        (flip-super-villain)
