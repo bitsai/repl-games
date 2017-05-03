@@ -217,46 +217,70 @@
       (is (thrown? Exception
                    (draw game 4))))))
 
-(deftest discard-hand-test)
+(deftest discard-hand-test
+  (let [game {:state [{:name :hand
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "A"
+                                :facing :up}
+                               {:name "B"
+                                :facing :up}]}
+                      {:name :discard
+                       :type :pile
+                       :facing :down
+                       :cards []}]}]
+    (testing "Discard entire hand."
+      (is (= {:state [{:name :hand
+                       :type :pile
+                       :facing :up
+                       :cards []}
+                      {:name :discard
+                       :type :pile
+                       :facing :down
+                       :cards [{:name "A"
+                                :facing :down}
+                               {:name "B"
+                                :facing :down}]}]}
+             (discard-hand game))))))
 
 (deftest exec-super-villain-plan-test)
 
 (deftest refill-line-up-test
-  (testing "Do nothing if line-up has enough cards."
-    (let [game {:state [{:name :line-up
-                         :type :pile
-                         :facing :up
-                         :cards [{:name "A"
-                                  :facing :up}
-                                 {:name "B"
-                                  :facing :up}
-                                 {:name "C"
-                                  :facing :up}
-                                 {:name "D"
-                                  :facing :up}
-                                 {:name "E"
-                                  :facing :up}]}]}]
-      (is (= game
-             (refill-line-up game)))))
-  (testing "Refill line-up from main deck."
-    (let [game {:state [{:name :main-deck
-                         :type :stack
-                         :facing :down
-                         :cards [{:name "A"
-                                  :attack "A"
-                                  :facing :down}
-                                 {:name "B"
-                                  :attack "B"
-                                  :facing :down}]}
-                        {:name :line-up
-                         :type :pile
-                         :facing :up
-                         :cards [{:name "C"
-                                  :facing :up}
-                                 {:name "D"
-                                  :facing :up}
-                                 {:name "E"
-                                  :facing :up}]}]}]
+  (let [game1 {:state [{:name :line-up
+                        :type :pile
+                        :facing :up
+                        :cards [{:name "A"
+                                 :facing :up}
+                                {:name "B"
+                                 :facing :up}
+                                {:name "C"
+                                 :facing :up}
+                                {:name "D"
+                                 :facing :up}
+                                {:name "E"
+                                 :facing :up}]}]}
+        game2 {:state [{:name :main-deck
+                        :type :stack
+                        :facing :down
+                        :cards [{:name "A"
+                                 :attack "A"
+                                 :facing :down}
+                                {:name "B"
+                                 :attack "B"
+                                 :facing :down}]}
+                       {:name :line-up
+                        :type :pile
+                        :facing :up
+                        :cards [{:name "C"
+                                 :facing :up}
+                                {:name "D"
+                                 :facing :up}
+                                {:name "E"
+                                 :facing :up}]}]}]
+    (testing "Do nothing if line-up has enough cards."
+      (is (= game1
+             (refill-line-up game1))))
+    (testing "Refill line-up from main deck."
       (is (= {:messages ["VILLAIN ATTACK: A"
                          "VILLAIN ATTACK: B"]
               :state [{:name :main-deck
@@ -278,13 +302,11 @@
                                 :facing :up}
                                {:name "E"
                                 :facing :up}]}]}
-             (refill-line-up game))))))
+             (refill-line-up game2))))))
 
 (deftest exec-villains-plan-test)
 
 (deftest flip-super-villain-test)
-
-(deftest proc-anti-monitor-ongoing-test)
 
 (deftest advance-countdown-test
   (let [game {:state [{:name :countdown
