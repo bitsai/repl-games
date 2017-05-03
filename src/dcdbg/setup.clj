@@ -80,4 +80,5 @@
     (-> game
         (assoc :messages msgs)
         (assoc :state (vec state))
+        ;; flip first super-villain face up
         (assoc-in [:state 0 :cards 0 :facing] :up))))
