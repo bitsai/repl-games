@@ -63,27 +63,28 @@
 (defn print!
   ([game]
    (print/print-game! game))
-  ([game space-idx]
-   (-> game
-       ;; turn cards face-up so they are all visible
-       (update-cards space-idx (fn [cards]
+  ([game space-*]
+   (let [space-idx (to-space-index game space-*)]
+     (-> game
+         ;; turn cards face-up so they are all visible
+         (update-cards space-* (fn [cards]
                                  (map #(assoc % :facing :up) cards)))
-       (get-space space-idx)
-       (print/print-pile! space-idx)))
-  ([game space-idx card-idx & card-idxs]
-   (print/print-card-details! (get-card game space-idx card-idx))
+         (get-space space-*)
+         (print/print-pile! space-idx))))
+  ([game space-* card-idx & card-idxs]
+   (print/print-card-details! (get-card game space-* card-idx))
    (doseq [idx card-idxs]
      (println)
-     (print/print-card-details! (get-card game space-idx idx)))))
+     (print/print-card-details! (get-card game space-* idx)))))
 
-(defn move [game from-space-idx to-space-idx to-top-or-bottom & card-idxs]
-  (move* game from-space-idx to-space-idx to-top-or-bottom card-idxs))
+(defn move [game from-space-* to-space-* to-top-or-bottom & card-idxs]
+  (move* game from-space-* to-space-* to-top-or-bottom card-idxs))
 
 (defn gain
-  ([game space-idx]
-   (gain game space-idx 1))
-  ([game space-idx n]
-   (move* game space-idx :discard :top (range n))))
+  ([game space-*]
+   (gain game space-* 1))
+  ([game space-* n]
+   (move* game space-* :discard :top (range n))))
 
 (defn refill-deck [game]
   (let [discard-count (count-cards game :discard)
@@ -150,5 +151,4 @@
        (refill-line-up)
        ;; exec-villains-plan
        (flip-super-villain)
-       ;; proc-anti-monitor-ongoing
        (advance-countdown))))
