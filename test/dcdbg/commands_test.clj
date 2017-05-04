@@ -288,7 +288,60 @@
                                 :facing :up}]}]}
              (refill-line-up game2))))))
 
-(deftest exec-villains-plan-test)
+(deftest exec-villains-plan-test
+  (let [game1 {:state [{:name :line-up
+                        :type :pile
+                        :facing :up
+                        :cards []}]}
+        game2 {:state [{:name :destroyed
+                        :type :pile
+                        :facing :down
+                        :cards []}
+                       {:name :main-deck
+                        :type :stack
+                        :facing :down
+                        :cards [{:name "1"
+                                 :facing :down}
+                                {:name "2"
+                                 :facing :down}]}
+                       {:name :line-up
+                        :type :pile
+                        :facing :up
+                        :cards [{:name "A"
+                                 :facing :up
+                                 :type :villain
+                                 :cost 1}
+                                {:name "B"
+                                 :facing :up
+                                 :type :villain
+                                 :cost 2}]}]}]
+    (testing "Do nothing if there are no villains in the line-up."
+      (is (= game1
+             (exec-villains-plan game1))))
+    (testing "Destroy # of main deck cards = max villain cost."
+      (is (= {:state [{:name :destroyed
+                       :type :pile
+                       :facing :down
+                       :cards [{:name "1"
+                                :facing :down}
+                               {:name "2"
+                                :facing :down}]}
+                      {:name :main-deck
+                       :type :stack
+                       :facing :down
+                       :cards []}
+                      {:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "A"
+                                :facing :up
+                                :type :villain
+                                :cost 1}
+                               {:name "B"
+                                :facing :up
+                                :type :villain
+                                :cost 2}]}]}
+             (exec-villains-plan game2))))))
 
 (deftest flip-super-villain-test
   (let [game {:state [{:name :super-villain
