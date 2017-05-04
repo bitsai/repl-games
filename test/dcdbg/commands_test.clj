@@ -306,7 +306,30 @@
 
 (deftest exec-villains-plan-test)
 
-(deftest flip-super-villain-test)
+(deftest flip-super-villain-test
+  (let [game {:state [{:name :super-villain
+                       :type :stack
+                       :facing :down
+                       :cards [{:name "SV"
+                                :facing :up
+                                :stack-ongoing "ONGOING"
+                                :first-appearance-attack "ATTACK"}]}]}]
+    (testing "Do nothing if top super-villain is face-up."
+      (is (= game
+             (flip-super-villain game))))
+    (testing "If top super-villain is face-down, flip it up and show effects."
+      (is (= {:messages ["SUPER-VILLAIN ONGOING: ONGOING"
+                         "SUPER-VILLAIN ATTACK: ATTACK"]
+              :state [{:name :super-villain
+                       :type :stack
+                       :facing :down
+                       :cards [{:name "SV"
+                                :facing :up
+                                :stack-ongoing "ONGOING"
+                                :first-appearance-attack "ATTACK"}]}]}
+             (-> game
+                 (assoc-in [:state 0 :cards 0 :facing] :down)
+                 (flip-super-villain)))))))
 
 (deftest advance-countdown-test
   (let [game {:state [{:name :countdown
