@@ -345,18 +345,27 @@
                         :type :stack
                         :facing :up
                         :cards []}
+                       {:name :destroyed
+                        :type :pile
+                        :facing :down
+                        :cards []}
+                       {:name :main-deck
+                        :type :stack
+                        :facing :down
+                        :cards [{:name "A"
+                                 :facing :down}]}
                        {:name :line-up
                         :type :pile
                         :facing :up
-                        :cards [{:name "A"
-                                 :facing :up}
-                                {:name "B"
+                        :cards [{:name "B"
                                  :facing :up}
                                 {:name "C"
                                  :facing :up}
                                 {:name "D"
                                  :facing :up}
                                 {:name "E"
+                                 :facing :up}
+                                {:name "F"
                                  :facing :up}]}
                        {:name :hand
                         :type :pile
@@ -381,7 +390,8 @@
                         :type :pile
                         :facing :down
                         :cards []}]}
-        game2 {:state [{:name :super-villain
+        game2 {:messages []
+               :state [{:name :super-villain
                         :type :stack
                         :facing :down
                         :cards [{:name "SV"
@@ -395,6 +405,15 @@
                         :facing :up
                         :cards [{:name "W"
                                  :facing :up}]}
+                       {:name :destroyed
+                        :type :pile
+                        :facing :down
+                        :cards [{:name "F"
+                                 :facing :down}]}
+                       {:name :main-deck
+                        :type :stack
+                        :facing :down
+                        :cards []}
                        {:name :line-up
                         :type :pile
                         :facing :up
@@ -435,7 +454,7 @@
              (end-turn game1))))
     (testing "Draw n new cards."
       (is (= (-> game2
-                 (assoc-in [:state 4 :cards] [{:name "1"
+                 (assoc-in [:state 6 :cards] [{:name "1"
                                                :facing :up}
                                               {:name "2"
                                                :facing :up}
@@ -447,5 +466,5 @@
                                                :facing :up}
                                               {:name "6"
                                                :facing :up}])
-                 (assoc-in [:state 5 :cards] []))
+                 (assoc-in [:state 7 :cards] []))
              (end-turn game1 6))))))
