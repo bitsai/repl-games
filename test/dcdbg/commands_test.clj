@@ -227,7 +227,37 @@
                                 :facing :down}]}]}
              (discard-hand game))))))
 
-(deftest exec-super-villain-plan-test)
+(deftest exec-super-villain-plan-test
+  (let [game1 {:state [{:name :line-up
+                        :type :pile
+                        :facing :up
+                        :cards []}]}
+        game2 {:state [{:name :destroyed
+                        :type :pile
+                        :facing :down
+                        :cards []}
+                       {:name :line-up
+                        :type :pile
+                        :facing :up
+                        :cards [{:name "A"
+                                 :facing :up}
+                                {:name "B"
+                                 :facing :up}]}]}]
+    (testing "Do nothing if line-up is empty."
+      (is (= game1
+             (exec-super-villain-plan game1))))
+    (testing "Destroy bottom line-up card."
+      (is (= {:state [{:name :destroyed
+                       :type :pile
+                       :facing :down
+                       :cards [{:name "B"
+                                :facing :down}]}
+                      {:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "A"
+                                :facing :up}]}]}
+             (exec-super-villain-plan game2))))))
 
 (deftest refill-line-up-test
   (let [game1 {:state [{:name :line-up
