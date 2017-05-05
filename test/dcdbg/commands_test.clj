@@ -408,7 +408,7 @@
                        :type :stack
                        :facing :up
                        :cards []}]}]
-    (testing "Advance timer by flipping a Weakness card over."
+    (testing "Advance countdown by flipping a Weakness card over."
       (is (= {:state [{:name :countdown
                        :type :stack
                        :facing :down
