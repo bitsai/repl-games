@@ -190,7 +190,7 @@
                                 {:max-life 10
                                  :life 8}
                                 {:max-life 10
-                                 :life 0}]
+                                 :life 5}]
                       :active-player-idx 1
                       :dice-rolls 2
                       :dice ["ARROW" "ARROW" "2" "DYNAMITE" "1"]
@@ -201,9 +201,23 @@
                                 {:max-life 10
                                  :life 8}
                                 {:max-life 10
-                                 :life 0}]
-                      :active-player-idx 0
+                                 :life 5}]
+                      :active-player-idx 2
                       :dice-rolls 1
                       :dice ["BEER" "DYNAMITE" "DYNAMITE" "DYNAMITE" "BEER"]
                       :active-die-idxs #{0 1 2 3 4}}}
-             (end-turn game))))))
+             (end-turn game))))
+    (testing "Should skip dead players."
+      (is (= {:state {:players [{:max-life 10
+                                 :life 1}
+                                {:max-life 10
+                                 :life 8}
+                                {:max-life 10
+                                 :life 0}]
+                      :active-player-idx 0
+                      :dice-rolls 1
+                      :dice ["ARROW" "ARROW" "2" "DYNAMITE" "1"]
+                      :active-die-idxs #{0 1 2 3 4}}}
+             (-> game
+                 (assoc-in [:state :players 2 :life] 0)
+                 (end-turn)))))))
