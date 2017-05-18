@@ -32,12 +32,12 @@
         :fn #(apply cmds/move %1 :line-up :destroyed :top %&)}
    :rl {:doc "(refill line-up)"
         :fn cmds/refill-line-up}
-   :pl {:doc "(play location): card-idx+"
-        :fn #(apply cmds/move %1 :hand :location :bottom %&)}
    :di {:doc "(discard): card-idx+"
         :fn #(apply cmds/move %1 :hand :discard :top %&)}
    :de {:doc "(destroy): card-idx+"
         :fn #(apply cmds/move %1 :hand :destroyed :top %&)}
+   :dw {:dos "(destroy weakness): card-idx+"
+        :fn #(apply cmds/move %1 :hand :weakness :top %&)}
    :rd {:doc "(refill deck)"
         :fn cmds/refill-deck}
    :dr {:doc "(draw): [n]"
