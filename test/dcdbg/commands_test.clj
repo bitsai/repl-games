@@ -18,6 +18,9 @@
                        :facing :down
                        :cards [{:name "D"
                                 :facing :down}]}]}]
+    (testing "By default, move nothing."
+      (is (= game
+             (move game :line-up :discard :top))))
     (testing "Move to the top."
       (is (= {:state [{:name :line-up
                        :type :pile
@@ -33,7 +36,7 @@
                                 :facing :down}
                                {:name "D"
                                 :facing :down}]}]}
-             (move game 0 1 :top 0 2))))
+             (move game :line-up :discard :top 0 2))))
     (testing "Move to the bottom."
       (is (= {:state [{:name :line-up
                        :type :pile
@@ -49,45 +52,48 @@
                                 :facing :down}
                                {:name "C"
                                 :facing :down}]}]}
-             (move game 0 1 :bottom 0 2))))))
+             (move game :line-up :discard :bottom 0 2))))))
 
-(deftest gain-test
-  (let [game {:state [{:name :kick
+(deftest defeat-super-villain-test
+  (let [game {:state [{:name :super-villain
                        :type :stack
-                       :facing :up
-                       :cards [{:name "A"
-                                :facing :up}
-                               {:name "B"
-                                :facing :up}]}
-                      {:name :discard
-                       :type :pile
-                       :facing :down
-                       :cards []}]}]
-    (testing "By default, gain 1 card."
-      (is (= {:state [{:name :kick
-                       :type :stack
-                       :facing :up
-                       :cards [{:name "B"
-                                :facing :up}]}
-                      {:name :discard
-                       :type :pile
                        :facing :down
                        :cards [{:name "A"
-                                :facing :down}]}]}
-             (gain game 0))))
-    (testing "Gain multiple cards."
-      (is (= {:state [{:name :kick
+                                :facing :up}]}]}]
+    (testing "Remove top super-villain."
+      (is (= {:state [{:name :super-villain
                        :type :stack
-                       :facing :up
-                       :cards []}
-                      {:name :discard
-                       :type :pile
+                       :facing :down
+                       :cards []}]}
+             (defeat-super-villain game))))))
+
+(deftest refill-line-up-test
+  (let [game {:state [{:name :main-deck
+                       :type :stack
                        :facing :down
                        :cards [{:name "A"
                                 :facing :down}
                                {:name "B"
-                                :facing :down}]}]}
-             (gain game 0 2))))))
+                                :facing :down}]}
+                      {:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "C"
+                                :facing :up}]}]}]
+    (testing "Refill line-up from main deck."
+      (is (= {:state [{:name :main-deck
+                       :type :stack
+                       :facing :down
+                       :cards [{:name "B"
+                                :facing :down}]}
+                      {:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "A"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}]}]}
+             (refill-line-up game))))))
 
 (deftest refill-deck-test
   (let [game {:state [{:name :deck
@@ -226,152 +232,6 @@
                                {:name "B"
                                 :facing :down}]}]}
              (discard-hand game))))))
-
-(deftest exec-super-villain-plan-test
-  (let [game1 {:state [{:name :line-up
-                        :type :pile
-                        :facing :up
-                        :cards []}]}
-        game2 {:state [{:name :destroyed
-                        :type :pile
-                        :facing :down
-                        :cards []}
-                       {:name :line-up
-                        :type :pile
-                        :facing :up
-                        :cards [{:name "A"
-                                 :facing :up}
-                                {:name "B"
-                                 :facing :up}]}]}]
-    (testing "Do nothing if line-up is empty."
-      (is (= game1
-             (exec-super-villain-plan game1))))
-    (testing "Destroy bottom line-up card."
-      (is (= {:state [{:name :destroyed
-                       :type :pile
-                       :facing :down
-                       :cards [{:name "B"
-                                :facing :down}]}
-                      {:name :line-up
-                       :type :pile
-                       :facing :up
-                       :cards [{:name "A"
-                                :facing :up}]}]}
-             (exec-super-villain-plan game2))))))
-
-(deftest refill-line-up-test
-  (let [game1 {:state [{:name :line-up
-                        :type :pile
-                        :facing :up
-                        :cards [{:name "A"
-                                 :facing :up}
-                                {:name "B"
-                                 :facing :up}
-                                {:name "C"
-                                 :facing :up}
-                                {:name "D"
-                                 :facing :up}
-                                {:name "E"
-                                 :facing :up}]}]}
-        game2 {:state [{:name :main-deck
-                        :type :stack
-                        :facing :down
-                        :cards [{:name "A"
-                                 :attack "A"
-                                 :facing :down}
-                                {:name "B"
-                                 :attack "B"
-                                 :facing :down}]}
-                       {:name :line-up
-                        :type :pile
-                        :facing :up
-                        :cards [{:name "C"
-                                 :facing :up}
-                                {:name "D"
-                                 :facing :up}
-                                {:name "E"
-                                 :facing :up}]}]}]
-    (testing "Do nothing if line-up has enough cards."
-      (is (= game1
-             (refill-line-up game1))))
-    (testing "Refill line-up from main deck."
-      (is (= {:messages ["VILLAIN ATTACK: A"
-                         "VILLAIN ATTACK: B"]
-              :state [{:name :main-deck
-                       :type :stack
-                       :facing :down
-                       :cards []}
-                      {:name :line-up
-                       :type :pile
-                       :facing :up
-                       :cards [{:name "B"
-                                :attack "B"
-                                :facing :up}
-                               {:name "A"
-                                :attack "A"
-                                :facing :up}
-                               {:name "C"
-                                :facing :up}
-                               {:name "D"
-                                :facing :up}
-                               {:name "E"
-                                :facing :up}]}]}
-             (refill-line-up game2))))))
-
-(deftest exec-villains-plan-test
-  (let [game1 {:state [{:name :line-up
-                        :type :pile
-                        :facing :up
-                        :cards []}]}
-        game2 {:state [{:name :destroyed
-                        :type :pile
-                        :facing :down
-                        :cards []}
-                       {:name :main-deck
-                        :type :stack
-                        :facing :down
-                        :cards [{:name "1"
-                                 :facing :down}
-                                {:name "2"
-                                 :facing :down}]}
-                       {:name :line-up
-                        :type :pile
-                        :facing :up
-                        :cards [{:name "A"
-                                 :facing :up
-                                 :type :villain
-                                 :cost 1}
-                                {:name "B"
-                                 :facing :up
-                                 :type :villain
-                                 :cost 2}]}]}]
-    (testing "Do nothing if there are no villains in the line-up."
-      (is (= game1
-             (exec-villains-plan game1))))
-    (testing "Destroy # of main deck cards = max villain cost."
-      (is (= {:state [{:name :destroyed
-                       :type :pile
-                       :facing :down
-                       :cards [{:name "1"
-                                :facing :down}
-                               {:name "2"
-                                :facing :down}]}
-                      {:name :main-deck
-                       :type :stack
-                       :facing :down
-                       :cards []}
-                      {:name :line-up
-                       :type :pile
-                       :facing :up
-                       :cards [{:name "A"
-                                :facing :up
-                                :type :villain
-                                :cost 1}
-                               {:name "B"
-                                :facing :up
-                                :type :villain
-                                :cost 2}]}]}
-             (exec-villains-plan game2))))))
 
 (deftest flip-super-villain-test
   (let [game {:state [{:name :super-villain

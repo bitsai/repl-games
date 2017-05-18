@@ -993,91 +993,91 @@
 (ns dcdbg.cards.super-villain)
 
 (def crisis1
-  [{:name "Ra's Al Ghul (IMP)"
+  [{:name "Ra's Al Ghul (Impossible)"
     :cost 9
     :victory 4
     :text "At the end of your turn, put this card onto the bottom of its owner's deck before drawing a new hand."
     :power 4
     :stack-ongoing "At the end of your turn, if you did not buy or gain a card from the Line-Up, add the top card of the main deck to the Line-Up."
     :first-appearance-attack nil}
-   {:name "Crisis Anti-Monitor (IMP)"
+   {:name "Crisis Anti-Monitor (Impossible)"
     :cost "13+"
     :victory nil
     :text nil
     :power nil
     :stack-ongoing "Add the top card of the main deck to the Line-Up. Whenever a Hero is added to the Line-Up, each player puts a Weakness from the stack on top of his deck. Crisis Anti-Monitor costs 1 more to defeat for each card in the Line-Up. Each player must defeat this Villain to win the game."
     :first-appearance-attack nil}
-   {:name "Atrocitus (IMP)"
+   {:name "Atrocitus (Impossible)"
     :cost 11
     :victory 5
     :text "Destroy up to three cards in your discard pile."
     :power 3
     :stack-ongoing nil
     :first-appearance-attack "Each player puts his hand under his Super Hero. If you avoid this Attack, put a random card from your hand under your Super Hero. When this Villain is defeated, discard those cards."}
-   {:name "Black Manta (IMP)"
+   {:name "Black Manta (Impossible)"
     :cost "10+"
     :victory 5
     :text "You may gain all Equipment in the Line-Up with cost 5 or less and put them into your hand. If you choose not to, +4 Power."
     :power "4?"
     :stack-ongoing "Black Manta costs 3 more to defeat for each Equipment in the Line-Up."
     :first-appearance-attack "Each player puts all Equipment from his hand into the Line-Up."}
-   {:name "Brainiac (IMP)"
+   {:name "Brainiac (Impossible)"
     :cost 12
     :victory 6
     :text "Each foe reveals two random cards from his hand. Play one revealed non-Location card from each foe's hand."
     :power nil
     :stack-ongoing nil
     :first-appearance-attack "Each player discards a random card, and then destroys the top X cards of the main deck, where X is the cost of that card."}
-   {:name "Captain Cold (IMP)"
+   {:name "Captain Cold (Impossible)"
     :cost 10
     :victory 5
     :text "An additional +1 Power for each foe with a Hero in his discard pile."
     :power "4+"
     :stack-ongoing nil
     :first-appearance-attack "Each player flips his Super Hero face down. When this Villain is defeated, each player may discard a random card. If you do, flip your Super Hero face up."}
-   {:name "Darkseid (IMP)"
+   {:name "Darkseid (Impossible)"
     :cost "10+"
     :victory 5
     :text "You may gain all Super Powers in the Line-Up with cost 5 or less and put them into your hand. If you choose not to, +4 Power."
     :power "4?"
     :stack-ongoing "Darkseid costs 3 more to defeat for each Super Power in the Line-Up."
     :first-appearance-attack "Each player puts all Super Powers from his hand into the Line-Up."}
-   {:name "Deathstroke (IMP)"
+   {:name "Deathstroke (Impossible)"
     :cost 10
     :victory 5
     :text "You may gain a Hero and Villain from the Line-Up. If you choose not to, +4 Power."
     :power "4?"
     :stack-ongoing nil
     :first-appearance-attack "Each player destroys a Hero, Super Power, and Equipment in his hand."}
-   {:name "Hades (IMP)"
+   {:name "Hades (Impossible)"
     :cost 12
     :victory 6
     :text "Gain a card from the destroyed pile and put it into your hand."
     :power nil
     :stack-ongoing nil
     :first-appearance-attack "Each player puts the top two cards of the main deck into the Line-Up. Gain Weaknesses equal to the cost of one of those cards."}
-   {:name "The Joker (IMP)"
+   {:name "The Joker (Impossible)"
     :cost 10
     :victory 5
     :text "Each foe chooses: They discard two random cards or you draw two cards."
     :power 2
     :stack-ongoing nil
     :first-appearance-attack "Discard a random card. If its cost is 0, gain a Weakness and repeat this."}
-   {:name "Lex Luthor (IMP)"
+   {:name "Lex Luthor (Impossible)"
     :cost 11
     :victory 5
     :text "Draw four cards."
     :power nil
     :stack-ongoing nil
     :first-appearance-attack "This Attack can't be avoided. Each player gains X Weaknesses, where X is equal to the highest VP value among cards in his hand. (* = 3.)"}
-   {:name "Parallax (IMP)"
+   {:name "Parallax (Impossible)"
     :cost 13
     :victory 6
     :text "Draw a card. Double your Power this turn."
     :power nil
     :stack-ongoing nil
     :first-appearance-attack "Each player reveals his hand and discards all cards with cost 3 or less."}
-   {:name "Sinestro (IMP)"
+   {:name "Sinestro (Impossible)"
     :cost "10+"
     :victory 5
     :text "You may gain all Heroes in the Line-Up with cost 5 or less and put them into your hand. If you choose not to, +4 Power."
@@ -1291,9 +1291,8 @@
                 :facing :down}))
 
 (def defaults
-  {:line-up-count 5
-   :punch-count 7
-   :super-villain-count 8
+  {:punch-count 7
+   :super-villain-count 4
    :vulnerability-count 3})
 (ns dcdbg.print
   (:require [clojure.string :as str]
@@ -1310,26 +1309,22 @@
   (printf "%3s. " card-idx)
   (case (:type card)
     :super-villain
-    (printf "%-3s VI %-1s%-1s %-1s %-2s %s\n"
+    (printf "%-3s SV %-1s %s\n"
             (or (:cost card) "")
-            (if (:text card) "T" "")
-            (if (:first-appearance-attack card) "A" "")
-            (if (:stack-ongoing card) "G" "")
-            (or (:power card) "")
+            (if (:stack-ongoing card) "O" "")
             (:name card))
 
     :super-hero
     (println (:name card))
 
-    (printf "%-3s %-2s %-1s%-1s%-1s%-1s %-2s %s\n"
+    (printf "%-3s %-2s %-1s%-1s%-1s %-2s %s\n"
             (or (:cost card) "")
             (if (:type card)
               (-> card :type cfg/aliases)
               "")
             (if (:text card) "T" "")
-            (if (:attack card) "A" "")
             (if (:defense card) "D" "")
-            (if (:ongoing card) "G" "")
+            (if (:ongoing card) "O" "")
             (or (:power card) "")
             (:name card))))
 
@@ -1496,15 +1491,15 @@
   (let [space-idx (to-space-index game space-*)]
     (update-in game [:state space-idx :cards] update-fn)))
 
-(defn- move* [game from-space-* to-space-* to-top-or-bottom card-idxs]
-  (let [from-cards (get-cards game from-space-*)
-        to-facing (-> game (get-space to-space-*) :facing)
+(defn- move* [game from-* to-* to-top-or-bottom card-idxs]
+  (let [from-cards (get-cards game from-*)
+        to-facing (-> game (get-space to-*) :facing)
         moved (->> card-idxs
                    (map #(nth from-cards %))
                    (map #(assoc % :facing to-facing)))]
     (-> game
-        (update-cards from-space-* #(remove-cards % card-idxs))
-        (update-cards to-space-* #(add-cards % moved to-top-or-bottom)))))
+        (update-cards from-* #(remove-cards % card-idxs))
+        (update-cards to-* #(add-cards % moved to-top-or-bottom)))))
 
 ;; commands
 
@@ -1525,14 +1520,14 @@
      (println)
      (print/print-card-details! (get-card game space-* idx)))))
 
-(defn move [game from-space-* to-space-* to-top-or-bottom & card-idxs]
-  (move* game from-space-* to-space-* to-top-or-bottom card-idxs))
+(defn move [game from-* to-* to-top-or-bottom & card-idxs]
+  (move* game from-* to-* to-top-or-bottom card-idxs))
 
-(defn gain
-  ([game space-*]
-   (gain game space-* 1))
-  ([game space-* n]
-   (move* game space-* :discard :top (range n))))
+(defn defeat-super-villain [game]
+  (update-in game [:state 0 :cards] rest))
+
+(defn refill-line-up [game]
+  (move game :main-deck :line-up :top 0))
 
 (defn refill-deck [game]
   (let [discard-count (count-cards game :discard)
@@ -1562,30 +1557,6 @@
   (let [hand-count (count-cards game :hand)]
     (move* game :hand :discard :top (range hand-count))))
 
-(defn exec-super-villain-plan [game]
-  (if (-> game (get-cards :line-up) empty?)
-    game
-    (let [last-idx (dec (count-cards game :line-up))]
-      (move game :line-up :destroyed :top last-idx))))
-
-(defn refill-line-up [game]
-  (if (>= (count-cards game :line-up) (:line-up-count cfg/defaults))
-    game
-    (let [card (get-card game :main-deck 0)
-          msg (when-let [a (:attack card)]
-                [(format "VILLAIN ATTACK: %s" a)])]
-      (recur (-> game
-                 (move :main-deck :line-up :top 0)
-                 (update :messages concat msg))))))
-
-(defn exec-villains-plan [game]
-  (let [costs (->> (get-cards game :line-up)
-                   (filter #(-> % :type (= :villain)))
-                   (map :cost))]
-    (if (empty? costs)
-      game
-      (move* game :main-deck :destroyed :top (range (apply max costs))))))
-
 (defn flip-super-villain [game]
   (let [[sv & svs] (get-cards game :super-villain)
         new-svs (-> (assoc sv :facing :up) (cons svs))
@@ -1609,9 +1580,7 @@
    (-> game
        (discard-hand)
        (draw n)
-       (exec-super-villain-plan)
        (refill-line-up)
-       (exec-villains-plan)
        (flip-super-villain)
        (advance-countdown))))
 (ns dcdbg.core
@@ -1632,28 +1601,32 @@
   (array-map
    :pg {:doc "(print game): [space [card-idx+]]"
         :fn cmds/print!}
-   :pt {:doc "(print top): space"
-        :fn #(cmds/print! %1 %2 0)}
-   :mt {:doc "(move to top): from-space to-space card-idx+"
+   :mt {:doc "(move to top): from to card-idx+"
         :fn #(apply cmds/move %1 %2 %3 :top %&)}
-   :mb {:doc "(move to bottom): from-space to-space card-idx+"
+   :mb {:doc "(move to bottom): from to card-idx+"
         :fn #(apply cmds/move %1 %2 %3 :bottom %&)}
+   :dsv {:doc "(defeat super-villain)"
+         :fn cmds/defeat-super-villain}
+   :gw {:doc "(gain weakness)"
+        :fn #(cmds/move %1 :weakness :discard :top 0)}
+   :gk {:doc "(gain kick)"
+        :fn #(cmds/move %1 :kick :discard :top 0)}
+   :buy {:doc "(buy): card-idx+"
+         :fn #(apply cmds/move %1 :line-up :discard :top %&)}
+   :dv {:doc "(defeat villain): card-idx+"
+        :fn #(apply cmds/move %1 :line-up :destroyed :top %&)}
+   :rl {:doc "(refill line-up)"
+        :fn cmds/refill-line-up}
    :pl {:doc "(play location): card-idx+"
         :fn #(apply cmds/move %1 :hand :location :bottom %&)}
-   :bl {:doc "(buy line-up): card-idx+"
-        :fn #(apply cmds/move %1 :line-up :discard :top %&)}
-   :ga {:doc "(gain): space [n]"
-        :fn cmds/gain}
-   :di {:doc "(discard): space card-idx+"
-        :fn #(apply cmds/move %1 %2 :discard :top %&)}
-   :de {:doc "(destroy): space card-idx+"
-        :fn #(apply cmds/move %1 %2 :destroyed :top %&)}
+   :di {:doc "(discard): card-idx+"
+        :fn #(apply cmds/move %1 :hand :discard :top %&)}
+   :de {:doc "(destroy): card-idx+"
+        :fn #(apply cmds/move %1 :hand :destroyed :top %&)}
    :rd {:doc "(refill deck)"
         :fn cmds/refill-deck}
    :dr {:doc "(draw): [n]"
         :fn cmds/draw}
-   :rl {:doc "(refill line-up)"
-        :fn #(cmds/move %1 :main-deck :line-up :top 0)}
    :et {:doc "(end turn): [n]"
         :fn cmds/end-turn}))
 

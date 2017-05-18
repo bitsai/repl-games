@@ -48,15 +48,15 @@
   (let [space-idx (to-space-index game space-*)]
     (update-in game [:state space-idx :cards] update-fn)))
 
-(defn- move* [game from-space-* to-space-* to-top-or-bottom card-idxs]
-  (let [from-cards (get-cards game from-space-*)
-        to-facing (-> game (get-space to-space-*) :facing)
+(defn- move* [game from-* to-* to-top-or-bottom card-idxs]
+  (let [from-cards (get-cards game from-*)
+        to-facing (-> game (get-space to-*) :facing)
         moved (->> card-idxs
                    (map #(nth from-cards %))
                    (map #(assoc % :facing to-facing)))]
     (-> game
-        (update-cards from-space-* #(remove-cards % card-idxs))
-        (update-cards to-space-* #(add-cards % moved to-top-or-bottom)))))
+        (update-cards from-* #(remove-cards % card-idxs))
+        (update-cards to-* #(add-cards % moved to-top-or-bottom)))))
 
 ;; commands
 
@@ -77,14 +77,14 @@
      (println)
      (print/print-card-details! (get-card game space-* idx)))))
 
-(defn move [game from-space-* to-space-* to-top-or-bottom & card-idxs]
-  (move* game from-space-* to-space-* to-top-or-bottom card-idxs))
+(defn move [game from-* to-* to-top-or-bottom & card-idxs]
+  (move* game from-* to-* to-top-or-bottom card-idxs))
 
-(defn gain
-  ([game space-*]
-   (gain game space-* 1))
-  ([game space-* n]
-   (move* game space-* :discard :top (range n))))
+(defn defeat-super-villain [game]
+  (update-in game [:state 0 :cards] rest))
+
+(defn refill-line-up [game]
+  (move game :main-deck :line-up :top 0))
 
 (defn refill-deck [game]
   (let [discard-count (count-cards game :discard)
@@ -114,30 +114,6 @@
   (let [hand-count (count-cards game :hand)]
     (move* game :hand :discard :top (range hand-count))))
 
-(defn exec-super-villain-plan [game]
-  (if (-> game (get-cards :line-up) empty?)
-    game
-    (let [last-idx (dec (count-cards game :line-up))]
-      (move game :line-up :destroyed :top last-idx))))
-
-(defn refill-line-up [game]
-  (if (>= (count-cards game :line-up) (:line-up-count cfg/defaults))
-    game
-    (let [card (get-card game :main-deck 0)
-          msg (when-let [a (:attack card)]
-                [(format "VILLAIN ATTACK: %s" a)])]
-      (recur (-> game
-                 (move :main-deck :line-up :top 0)
-                 (update :messages concat msg))))))
-
-(defn exec-villains-plan [game]
-  (let [costs (->> (get-cards game :line-up)
-                   (filter #(-> % :type (= :villain)))
-                   (map :cost))]
-    (if (empty? costs)
-      game
-      (move* game :main-deck :destroyed :top (range (apply max costs))))))
-
 (defn flip-super-villain [game]
   (let [[sv & svs] (get-cards game :super-villain)
         new-svs (-> (assoc sv :facing :up) (cons svs))
@@ -161,8 +137,6 @@
    (-> game
        (discard-hand)
        (draw n)
-       (exec-super-villain-plan)
        (refill-line-up)
-       (exec-villains-plan)
        (flip-super-villain)
        (advance-countdown))))

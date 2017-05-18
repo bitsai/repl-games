@@ -36,7 +36,6 @@
                 :facing :down}))
 
 (def defaults
-  {:line-up-count 5
-   :punch-count 7
-   :super-villain-count 8
+  {:punch-count 7
+   :super-villain-count 4
    :vulnerability-count 3})
