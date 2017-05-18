@@ -1309,7 +1309,7 @@
   (printf "%3s. " card-idx)
   (case (:type card)
     :super-villain
-    (printf "%-3s SV %-1s %s\n"
+    (printf "%-3s VI %-1s %s\n"
             (or (:cost card) "")
             (if (:stack-ongoing card) "O" "")
             (:name card))
