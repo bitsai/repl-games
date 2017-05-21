@@ -1621,7 +1621,7 @@
         :fn #(apply cmds/move %1 %2 :discard :top %&)}
    :de {:doc "(destroy): space-idx card-idx+"
         :fn #(apply cmds/move %1 %2 :destroyed :top %&)}
-   :dw {:dos "(destroy weakness): space-idx card-idx+"
+   :dw {:doc "(destroy weakness): space-idx card-idx+"
         :fn #(apply cmds/move %1 %2 :weakness :top %&)}
    :rd {:doc "(refill deck)"
         :fn cmds/refill-deck}
