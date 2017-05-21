@@ -1617,6 +1617,8 @@
         :fn #(apply cmds/move %1 :line-up :destroyed :top %&)}
    :rl {:doc "(refill line-up)"
         :fn cmds/refill-line-up}
+   :pl {:doc "(play location)"
+        :fn #(apply cmds/move %1 :hand :location :bottom %&)}
    :di {:doc "(discard): space-idx card-idx+"
         :fn #(apply cmds/move %1 %2 :discard :top %&)}
    :de {:doc "(destroy): space-idx card-idx+"
