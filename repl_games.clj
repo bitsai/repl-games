@@ -1599,11 +1599,11 @@
 
 (def command-map
   (array-map
-   :pg {:doc "(print game): [space [card-idx+]]"
+   :pg {:doc "(print game): [space-idx [card-idx+]]"
         :fn cmds/print!}
-   :mt {:doc "(move to top): from to card-idx+"
+   :mt {:doc "(move to top): from-idx to-idx card-idx+"
         :fn #(apply cmds/move %1 %2 %3 :top %&)}
-   :mb {:doc "(move to bottom): from to card-idx+"
+   :mb {:doc "(move to bottom): from-idx to-idx card-idx+"
         :fn #(apply cmds/move %1 %2 %3 :bottom %&)}
    :dsv {:doc "(defeat super-villain)"
          :fn cmds/defeat-super-villain}
@@ -1617,12 +1617,12 @@
         :fn #(apply cmds/move %1 :line-up :destroyed :top %&)}
    :rl {:doc "(refill line-up)"
         :fn cmds/refill-line-up}
-   :di {:doc "(discard): card-idx+"
-        :fn #(apply cmds/move %1 :hand :discard :top %&)}
-   :de {:doc "(destroy): card-idx+"
-        :fn #(apply cmds/move %1 :hand :destroyed :top %&)}
-   :dw {:dos "(destroy weakness): card-idx+"
-        :fn #(apply cmds/move %1 :hand :weakness :top %&)}
+   :di {:doc "(discard): space-idx card-idx+"
+        :fn #(apply cmds/move %1 %2 :discard :top %&)}
+   :de {:doc "(destroy): space-idx card-idx+"
+        :fn #(apply cmds/move %1 %2 :destroyed :top %&)}
+   :dw {:dos "(destroy weakness): space-idx card-idx+"
+        :fn #(apply cmds/move %1 %2 :weakness :top %&)}
    :rd {:doc "(refill deck)"
         :fn cmds/refill-deck}
    :dr {:doc "(draw): [n]"
