@@ -80,9 +80,6 @@
 (defn move [game from-* to-* to-top-or-bottom & card-idxs]
   (move* game from-* to-* to-top-or-bottom card-idxs))
 
-(defn defeat-super-villain [game]
-  (update-in game [:state 0 :cards] rest))
-
 (defn refill-line-up [game]
   (move game :main-deck :line-up :top 0))
 

@@ -54,19 +54,6 @@
                                 :facing :down}]}]}
              (move game :line-up :discard :bottom 0 2))))))
 
-(deftest defeat-super-villain-test
-  (let [game {:state [{:name :super-villain
-                       :type :stack
-                       :facing :down
-                       :cards [{:name "A"
-                                :facing :up}]}]}]
-    (testing "Remove top super-villain."
-      (is (= {:state [{:name :super-villain
-                       :type :stack
-                       :facing :down
-                       :cards []}]}
-             (defeat-super-villain game))))))
-
 (deftest refill-line-up-test
   (let [game {:state [{:name :main-deck
                        :type :stack
