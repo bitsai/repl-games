@@ -49,7 +49,8 @@
     (update-in game [:state space-idx :cards] update-fn)))
 
 (defn- move* [game from-* to-* to-top-or-bottom card-idxs]
-  (let [from-cards (get-cards game from-*)
+  (let [card-idxs (or (seq card-idxs) [0])
+        from-cards (get-cards game from-*)
         to-facing (-> game (get-space to-*) :facing)
         moved (->> card-idxs
                    (map #(nth from-cards %))
@@ -81,7 +82,7 @@
   (move* game from-* to-* to-top-or-bottom card-idxs))
 
 (defn refill-line-up [game]
-  (move game :main-deck :line-up :top 0))
+  (move game :main-deck :line-up :top))
 
 (defn draw
   ([game]
@@ -123,7 +124,7 @@
           (update :messages concat msgs)))))
 
 (defn advance-countdown [game]
-  (move game :countdown :weakness :top 0))
+  (move game :countdown :weakness :top))
 
 (defn end-turn
   ([game]

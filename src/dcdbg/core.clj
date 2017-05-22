@@ -14,27 +14,27 @@
 
 (def command-map
   (array-map
-   :pg {:doc "(print game): [space-idx [card-idx+]]"
+   :pg {:doc "(print game): [space [card-idx+]]"
         :fn cmds/print!}
-   :mt {:doc "(move to top): from-idx to-idx card-idx+"
+   :mt {:doc "(move to top): from to [card-idx+]"
         :fn #(apply cmds/move %1 %2 %3 :top %&)}
-   :mb {:doc "(move to bottom): from-idx to-idx card-idx+"
+   :mb {:doc "(move to bottom): from to [card-idx+]"
         :fn #(apply cmds/move %1 %2 %3 :bottom %&)}
    :gw {:doc "(gain weakness)"
-        :fn #(cmds/move %1 :weakness :discard :top 0)}
+        :fn #(cmds/move %1 :weakness :discard :top)}
    :gk {:doc "(gain kick)"
-        :fn #(cmds/move %1 :kick :discard :top 0)}
-   :bl {:doc "(buy line-up): card-idx+"
+        :fn #(cmds/move %1 :kick :discard :top)}
+   :bl {:doc "(buy line-up): [card-idx+]"
         :fn #(apply cmds/move %1 :line-up :discard :top %&)}
    :rl {:doc "(refill line-up)"
         :fn cmds/refill-line-up}
-   :pl {:doc "(play location): card-idx+"
+   :pl {:doc "(play location): [card-idx+]"
         :fn #(apply cmds/move %1 :hand :location :bottom %&)}
-   :di {:doc "(discard): space-idx card-idx+"
+   :di {:doc "(discard): space [card-idx+]"
         :fn #(apply cmds/move %1 %2 :discard :top %&)}
-   :de {:doc "(destroy): space-idx card-idx+"
+   :de {:doc "(destroy): space [card-idx+]"
         :fn #(apply cmds/move %1 %2 :destroyed :top %&)}
-   :dw {:doc "(destroy weakness): space-idx card-idx+"
+   :dw {:doc "(destroy weakness): space [card-idx+]"
         :fn #(apply cmds/move %1 %2 :weakness :top %&)}
    :dr {:doc "(draw): [n]"
         :fn cmds/draw}

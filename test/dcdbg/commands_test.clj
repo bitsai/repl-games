@@ -18,8 +18,21 @@
                        :facing :down
                        :cards [{:name "D"
                                 :facing :down}]}]}]
-    (testing "By default, move nothing."
-      (is (= game
+    (testing "By default, move top card."
+      (is (= {:state [{:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "B"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}]}
+                      {:name :discard
+                       :type :pile
+                       :facing :down
+                       :cards [{:name "A"
+                                :facing :down}
+                               {:name "D"
+                                :facing :down}]}]}
              (move game :line-up :discard :top))))
     (testing "Move to the top."
       (is (= {:state [{:name :line-up
