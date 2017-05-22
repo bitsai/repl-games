@@ -5,32 +5,32 @@
 
 ;; helpers
 
-(defn- find-space-index [game space-name]
+(defn- find-zone-index [game zone-name]
   (->> game
        (:state)
-       (keep-indexed (fn [idx space]
-                       (when (-> space :name (= space-name))
+       (keep-indexed (fn [idx zone]
+                       (when (-> zone :name (= zone-name))
                          idx)))
        (first)))
 
-(defn- to-space-index [game space-*]
+(defn- to-zone-index [game zone-*]
   (cond
-    (keyword? space-*) (find-space-index game space-*)
-    (number? space-*)  space-*
-    :else              (throw (Exception. "Invalid space-*!"))))
+    (keyword? zone-*) (find-zone-index game zone-*)
+    (number? zone-*)  zone-*
+    :else              (throw (Exception. "Invalid zone-*!"))))
 
-(defn- get-space [game space-*]
-  (let [space-idx (to-space-index game space-*)]
-    (-> game :state (nth space-idx))))
+(defn- get-zone [game zone-*]
+  (let [zone-idx (to-zone-index game zone-*)]
+    (-> game :state (nth zone-idx))))
 
-(defn- get-cards [game space-*]
-  (-> game (get-space space-*) :cards))
+(defn- get-cards [game zone-*]
+  (-> game (get-zone zone-*) :cards))
 
-(defn- get-card [game space-* card-idx]
-  (-> game (get-cards space-*) (nth card-idx)))
+(defn- get-card [game zone-* card-idx]
+  (-> game (get-cards zone-*) (nth card-idx)))
 
-(defn- count-cards [game space-*]
-  (-> game (get-cards space-*) count))
+(defn- count-cards [game zone-*]
+  (-> game (get-cards zone-*) count))
 
 (defn- add-cards [cards new-cards top-or-bottom]
   (case top-or-bottom
@@ -44,14 +44,14 @@
                       card))
                   cards)))
 
-(defn- update-cards [game space-* update-fn]
-  (let [space-idx (to-space-index game space-*)]
-    (update-in game [:state space-idx :cards] update-fn)))
+(defn- update-cards [game zone-* update-fn]
+  (let [zone-idx (to-zone-index game zone-*)]
+    (update-in game [:state zone-idx :cards] update-fn)))
 
 (defn- move* [game from-* to-* top-or-bottom & card-idxs]
   (let [card-idxs (or (seq card-idxs) [0])
         from-cards (get-cards game from-*)
-        to-facing (-> game (get-space to-*) :facing)
+        to-facing (-> game (get-zone to-*) :facing)
         moved (->> card-idxs
                    (map #(nth from-cards %))
                    (map #(assoc % :facing to-facing)))]
@@ -64,28 +64,28 @@
 (defn print!
   ([game]
    (print/print-game! game))
-  ([game space-*]
-   (let [space-idx (to-space-index game space-*)]
+  ([game zone-*]
+   (let [zone-idx (to-zone-index game zone-*)]
      (-> game
          ;; turn cards face-up so they are all visible
-         (update-cards space-* (fn [cards]
+         (update-cards zone-* (fn [cards]
                                  (map #(assoc % :facing :up) cards)))
-         (get-space space-*)
-         (print/print-pile! space-idx))))
-  ([game space-* card-idx & card-idxs]
-   (print/print-card-details! (get-card game space-* card-idx))
+         (get-zone zone-*)
+         (print/print-pile! zone-idx))))
+  ([game zone-* card-idx & card-idxs]
+   (print/print-card-details! (get-card game zone-* card-idx))
    (doseq [idx card-idxs]
      (println)
-     (print/print-card-details! (get-card game space-* idx)))))
+     (print/print-card-details! (get-card game zone-* idx)))))
 
 (defn move [game from-* to-* top-or-bottom card-idxs]
   (apply move* game from-* to-* top-or-bottom card-idxs))
 
 (defn gain
-  ([game space-*]
-   (gain game space-* 1))
-  ([game space-* n]
-   (move game space-* :discard :top (range n))))
+  ([game zone-*]
+   (gain game zone-* 1))
+  ([game zone-* n]
+   (move game zone-* :discard :top (range n))))
 
 (defn draw
   ([game]

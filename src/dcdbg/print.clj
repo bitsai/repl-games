@@ -44,25 +44,25 @@
     (when-let [x (k card)]
       (printf "%s: %s\n" (mk-header k) x))))
 
-(defn print-pile! [{:keys [name cards]} space-idx]
-  (printf "[%2s] %s (%d)\n" space-idx (mk-header name) (count cards))
+(defn print-pile! [{:keys [name cards]} zone-idx]
+  (printf "[%2s] %s (%d)\n" zone-idx (mk-header name) (count cards))
   (->> cards
        (map-indexed (fn [idx c]
                       (when (-> c :facing (= :up))
                         (print-card-summary! c idx))))
        (dorun)))
 
-(defn print-stack! [{:keys [name cards]} space-idx]
-  (printf "[%2s] %s (%d)\n" space-idx (mk-header name) (count cards))
+(defn print-stack! [{:keys [name cards]} zone-idx]
+  (printf "[%2s] %s (%d)\n" zone-idx (mk-header name) (count cards))
   (when (-> cards first :facing (= :up))
     (print-card-summary! (first cards) 0)))
 
 (defn print-game! [{:keys [messages state]}]
   (->> state
-       (map-indexed (fn [idx space]
-                      (case (:type space)
-                        :pile (print-pile! space idx)
-                        :stack (print-stack! space idx))))
+       (map-indexed (fn [idx zone]
+                      (case (:type zone)
+                        :pile (print-pile! zone idx)
+                        :stack (print-stack! zone idx))))
        (dorun))
   (when-let [msgs (seq messages)]
     (println)

@@ -75,7 +75,7 @@
                                   [:hand hand]
                                   [:deck deck]
                                   [:discard []]]
-                    :let [{:keys [facing type]} (get cfg/spaces name)]]
+                    :let [{:keys [facing type]} (get cfg/zones name)]]
                 {:name name
                  :type type
                  :facing facing

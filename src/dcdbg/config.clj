@@ -15,7 +15,7 @@
    :super-villain-count 8
    :vulnerability-count 3})
 
-(def spaces
+(def zones
   (array-map
    :super-villain {:type :stack
                    :facing :down}
