@@ -56,31 +56,6 @@
     :text "At the end of the game, if you have four or more other Equipment in your deck, this card is worth 5 VPs."
     :copies 3}])
 
-(def crisis1
-  [{:name "Bo Staff"
-    :cost 3
-    :victory 1
-    :power "2+"
-    :text "+3 Power if there are one or more Villains in the Line-Up. Otherwise, +2 Power."
-    :copies 2}
-   {:name "Magician's Corset"
-    :cost 5
-    :victory 1
-    :power "0+"
-    :text "Choose any number of players. Each of those players draws a card. +1 Power for each player who draws a card this way (including you)."
-    :copies 1}
-   {:name "Quiver of Arrows"
-    :cost 1
-    :victory 1
-    :text "Choose any number of players. Each of those players reveals the top card of his deck and may discard it."
-    :copies 2}
-   {:name "Signature Trenchcoat"
-    :cost 4
-    :victory 1
-    :power "2?"
-    :text "You may gain a card with cost 5 or less from the destroyed pile. If you choose not to, +2 Power."
-    :copies 2}])
-
 (def forever-evil
   [{:name "Broadsword"
     :cost 6
@@ -145,6 +120,31 @@
     :text "When you destroy this card in any zone, +2 Power."
     :copies 2}])
 
+(def crisis1
+  [{:name "Bo Staff"
+    :cost 3
+    :victory 1
+    :power "2+"
+    :text "+3 Power if there are one or more Villains in the Line-Up. Otherwise, +2 Power."
+    :copies 2}
+   {:name "Magician's Corset"
+    :cost 5
+    :victory 1
+    :power "0+"
+    :text "Choose any number of players. Each of those players draws a card. +1 Power for each player who draws a card this way (including you)."
+    :copies 1}
+   {:name "Quiver of Arrows"
+    :cost 1
+    :victory 1
+    :text "Choose any number of players. Each of those players reveals the top card of his deck and may discard it."
+    :copies 2}
+   {:name "Signature Trenchcoat"
+    :cost 4
+    :victory 1
+    :power "2?"
+    :text "You may gain a card with cost 5 or less from the destroyed pile. If you choose not to, +2 Power."
+    :copies 2}])
+
 (def all
-  (->> (concat base crisis1 forever-evil)
+  (->> (concat base forever-evil crisis1)
        (map #(assoc % :type :equipment))))
