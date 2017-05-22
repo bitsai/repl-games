@@ -22,13 +22,12 @@
             (cond
               (:defense card) "D"
               (:ongoing card) "O"
-              (:stack-ongoing card) "O"
               :else "")
             (or (:power card) "")
             (:name card))))
 
 (defn print-card-details! [card]
-  (doseq [k [:name :type :cost :victory :text :power :attack :defense :ongoing :stack-ongoing :first-appearance-attack]]
+  (doseq [k [:name :type :cost :victory :defense :attack :ongoing :power :text]]
     (when-let [x (k card)]
       (printf "%s: %s\n" (mk-header k) x))))
 

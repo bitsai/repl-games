@@ -365,21 +365,21 @@
                        :facing :down
                        :cards [{:name "SV"
                                 :facing :up
-                                :stack-ongoing "ONGOING"
-                                :first-appearance-attack "ATTACK"}]}]}]
+                                :attack "ATTACK"
+                                :ongoing "ONGOING"}]}]}]
     (testing "Do nothing if top Super-Villain is face-up."
       (is (= game
              (flip-super-villain game))))
     (testing "Flip over a new Super-Villain and show its effects."
-      (is (= {:messages ["SUPER-VILLAIN ONGOING: ONGOING"
-                         "SUPER-VILLAIN ATTACK: ATTACK"]
+      (is (= {:messages ["SUPER-VILLAIN ATTACK: ATTACK"
+                         "SUPER-VILLAIN ONGOING: ONGOING"]
               :state [{:name :super-villain
                        :type :stack
                        :facing :down
                        :cards [{:name "SV"
                                 :facing :up
-                                :stack-ongoing "ONGOING"
-                                :first-appearance-attack "ATTACK"}]}]}
+                                :attack "ATTACK"
+                                :ongoing "ONGOING"}]}]}
              (-> game
                  (assoc-in [:state 0 :cards 0 :facing] :down)
                  (flip-super-villain)))))))

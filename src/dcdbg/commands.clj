@@ -145,10 +145,10 @@
   (if (-> game (get-card :super-villain 0) :facing (= :up))
     game
     (let [[sv & svs] (get-cards game :super-villain)
-          msgs (concat (when-let [o (:stack-ongoing sv)]
-                         [(format "SUPER-VILLAIN ONGOING: %s" o)])
-                       (when-let [a (:first-appearance-attack sv)]
-                         [(format "SUPER-VILLAIN ATTACK: %s" a)]))
+          msgs (concat (when-let [a (:attack sv)]
+                         [(format "SUPER-VILLAIN ATTACK: %s" a)])
+                       (when-let [o (:ongoing sv)]
+                         [(format "SUPER-VILLAIN ONGOING: %s" o)]))
           new-svs (-> sv (assoc :facing :up) (cons svs))]
       (-> game
           (update :messages concat msgs)

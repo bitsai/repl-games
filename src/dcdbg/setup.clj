@@ -61,7 +61,7 @@
                         (mapv #(format "SUPER-HERO: %s" (:text %))))
                    (->> svs
                         (first)
-                        (:stack-ongoing)
+                        (:ongoing)
                         (format "SUPER-VILLAIN ONGOING: %s")))
         state (for [[name cards] [[:super-villain svs]
                                   [:countdown (mk-cards cards/weakness)]
