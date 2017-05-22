@@ -50,10 +50,11 @@
     (concat [x] zs [y])))
 
 (defn mk-game-state [game]
-  (let [svs (setup-super-villains (:super-villain-count cfg/defaults))
-        [line-up main-deck] (split-at 5 (setup-main-deck))
+  (let [{:keys [hand-size line-up-size super-villain-count]} cfg/defaults
+        svs (setup-super-villains super-villain-count)
+        [line-up main-deck] (split-at line-up-size (setup-main-deck))
         shs (setup-super-heroes)
-        [hand deck] (split-at 5 (setup-deck))
+        [hand deck] (split-at hand-size (setup-deck))
         msgs (conj (->> shs
                         (mapv #(format "SUPER-HERO: %s" (:text %))))
                    (->> svs
@@ -72,7 +73,7 @@
                                   [:hand hand]
                                   [:deck deck]
                                   [:discard []]]
-                    :let [{:keys [facing type]} (-> cfg/card-spaces name)]]
+                    :let [{:keys [facing type]} (get cfg/spaces name)]]
                 {:name name
                  :type type
                  :facing facing

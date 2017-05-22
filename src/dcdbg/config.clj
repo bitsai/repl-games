@@ -8,7 +8,14 @@
    :super-power "SP"
    :villain     "VI"})
 
-(def card-spaces
+(def defaults
+  {:hand-size 5
+   :line-up-size 5
+   :punch-count 7
+   :super-villain-count 4
+   :vulnerability-count 3})
+
+(def spaces
   (array-map
    :super-villain {:type :stack
                    :facing :down}
@@ -34,8 +41,3 @@
                 :facing :down}
    :discard    {:type :pile
                 :facing :down}))
-
-(def defaults
-  {:punch-count 7
-   :super-villain-count 4
-   :vulnerability-count 3})

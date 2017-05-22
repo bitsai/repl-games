@@ -114,20 +114,28 @@
     (move game :hand :discard :top (range hand-count))))
 
 (defn refill-line-up [game]
-  (move* game :main-deck :line-up :top))
+  (if (-> game (count-cards :line-up) (>= (:line-up-size cfg/defaults)))
+    game
+    (let [card (get-card game :main-deck 0)
+          msgs (when-let [a (:attack card)]
+                 [(format "VILLAIN ATTACK: %s" a)])]
+      (-> game
+          (update :messages concat msgs)
+          (move* :main-deck :line-up :top)
+          (refill-line-up)))))
 
 (defn flip-super-villain [game]
-  (let [[sv & svs] (get-cards game :super-villain)
-        new-svs (-> (assoc sv :facing :up) (cons svs))
-        msgs (concat (when-let [so (:stack-ongoing sv)]
-                       [(format "SUPER-VILLAIN ONGOING: %s" so)])
-                     (when-let [faa (:first-appearance-attack sv)]
-                       [(format "SUPER-VILLAIN ATTACK: %s" faa)]))]
-    (cond-> game
-      ;; if top super-villain is face-down, flip it up and show effects
-      (-> sv :facing (= :down))
-      (-> (update-cards :super-villain (constantly new-svs))
-          (update :messages concat msgs)))))
+  (if (-> game (get-card :super-villain 0) :facing (= :up))
+    game
+    (let [[sv & svs] (get-cards game :super-villain)
+          msgs (concat (when-let [o (:stack-ongoing sv)]
+                         [(format "SUPER-VILLAIN ONGOING: %s" o)])
+                       (when-let [a (:first-appearance-attack sv)]
+                         [(format "SUPER-VILLAIN ATTACK: %s" a)]))
+          new-svs (-> sv (assoc :facing :up) (cons svs))]
+      (-> game
+          (update :messages concat msgs)
+          (update-cards :super-villain (constantly new-svs))))))
 
 (defn advance-countdown [game]
   (move* game :countdown :weakness :top))

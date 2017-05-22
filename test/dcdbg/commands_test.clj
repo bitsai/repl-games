@@ -228,26 +228,41 @@
                        :type :stack
                        :facing :down
                        :cards [{:name "A"
-                                :facing :down}
+                                :facing :down
+                                :attack "A"}
                                {:name "B"
-                                :facing :down}]}
+                                :facing :down
+                                :attack "B"}]}
                       {:name :line-up
                        :type :pile
                        :facing :up
                        :cards [{:name "C"
+                                :facing :up}
+                               {:name "D"
+                                :facing :up}
+                               {:name "E"
                                 :facing :up}]}]}]
     (testing "Refill line-up from main deck."
-      (is (= {:state [{:name :main-deck
+      (is (= {:messages ["VILLAIN ATTACK: A"
+                         "VILLAIN ATTACK: B"]
+              :state [{:name :main-deck
                        :type :stack
                        :facing :down
-                       :cards [{:name "B"
-                                :facing :down}]}
+                       :cards []}
                       {:name :line-up
                        :type :pile
                        :facing :up
-                       :cards [{:name "A"
-                                :facing :up}
+                       :cards [{:name "B"
+                                :facing :up
+                                :attack "B"}
+                               {:name "A"
+                                :facing :up
+                                :attack "A"}
                                {:name "C"
+                                :facing :up}
+                               {:name "D"
+                                :facing :up}
+                               {:name "E"
                                 :facing :up}]}]}
              (refill-line-up game))))))
 

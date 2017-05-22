@@ -1263,7 +1263,14 @@
    :super-power "SP"
    :villain     "VI"})
 
-(def card-spaces
+(def defaults
+  {:hand-size 5
+   :line-up-size 5
+   :punch-count 7
+   :super-villain-count 4
+   :vulnerability-count 3})
+
+(def spaces
   (array-map
    :super-villain {:type :stack
                    :facing :down}
@@ -1289,11 +1296,6 @@
                 :facing :down}
    :discard    {:type :pile
                 :facing :down}))
-
-(def defaults
-  {:punch-count 7
-   :super-villain-count 4
-   :vulnerability-count 3})
 (ns dcdbg.print
   (:require [clojure.string :as str]
             [dcdbg.config :as cfg]))
@@ -1416,10 +1418,11 @@
     (concat [x] zs [y])))
 
 (defn mk-game-state [game]
-  (let [svs (setup-super-villains (:super-villain-count cfg/defaults))
-        [line-up main-deck] (split-at 5 (setup-main-deck))
+  (let [{:keys [hand-size line-up-size super-villain-count]} cfg/defaults
+        svs (setup-super-villains super-villain-count)
+        [line-up main-deck] (split-at line-up-size (setup-main-deck))
         shs (setup-super-heroes)
-        [hand deck] (split-at 5 (setup-deck))
+        [hand deck] (split-at hand-size (setup-deck))
         msgs (conj (->> shs
                         (mapv #(format "SUPER-HERO: %s" (:text %))))
                    (->> svs
@@ -1438,7 +1441,7 @@
                                   [:hand hand]
                                   [:deck deck]
                                   [:discard []]]
-                    :let [{:keys [facing type]} (-> cfg/card-spaces name)]]
+                    :let [{:keys [facing type]} (get cfg/spaces name)]]
                 {:name name
                  :type type
                  :facing facing
@@ -1564,20 +1567,28 @@
     (move game :hand :discard :top (range hand-count))))
 
 (defn refill-line-up [game]
-  (move* game :main-deck :line-up :top))
+  (if (-> game (count-cards :line-up) (>= (:line-up-size cfg/defaults)))
+    game
+    (let [card (get-card game :main-deck 0)
+          msgs (when-let [a (:attack card)]
+                 [(format "VILLAIN ATTACK: %s" a)])]
+      (-> game
+          (update :messages concat msgs)
+          (move* :main-deck :line-up :top)
+          (refill-line-up)))))
 
 (defn flip-super-villain [game]
-  (let [[sv & svs] (get-cards game :super-villain)
-        new-svs (-> (assoc sv :facing :up) (cons svs))
-        msgs (concat (when-let [so (:stack-ongoing sv)]
-                       [(format "SUPER-VILLAIN ONGOING: %s" so)])
-                     (when-let [faa (:first-appearance-attack sv)]
-                       [(format "SUPER-VILLAIN ATTACK: %s" faa)]))]
-    (cond-> game
-      ;; if top super-villain is face-down, flip it up and show effects
-      (-> sv :facing (= :down))
-      (-> (update-cards :super-villain (constantly new-svs))
-          (update :messages concat msgs)))))
+  (if (-> game (get-card :super-villain 0) :facing (= :up))
+    game
+    (let [[sv & svs] (get-cards game :super-villain)
+          msgs (concat (when-let [o (:stack-ongoing sv)]
+                         [(format "SUPER-VILLAIN ONGOING: %s" o)])
+                       (when-let [a (:first-appearance-attack sv)]
+                         [(format "SUPER-VILLAIN ATTACK: %s" a)]))
+          new-svs (-> sv (assoc :facing :up) (cons svs))]
+      (-> game
+          (update :messages concat msgs)
+          (update-cards :super-villain (constantly new-svs))))))
 
 (defn advance-countdown [game]
   (move* game :countdown :weakness :top))
