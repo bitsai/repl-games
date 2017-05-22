@@ -8,7 +8,7 @@
     :power 4
     :text "At the end of your turn, put this card onto the bottom of its owner's deck before drawing a new hand."}
    {:name "Crisis Anti-Monitor (IM)"
-    :cost "13*"
+    :cost "13+"
     :ongoing "Whenever a Hero is added to the Line-Up, each player puts a Weakness from the stack on top of his deck. Crisis Anti-Monitor costs 1 more to defeat for each card in the Line-Up. Each player must defeat this Villain to win the game."}
    {:name "Atrocitus (IM)"
     :cost 11
@@ -17,11 +17,11 @@
     :power 3
     :text "Destroy up to three cards in your discard pile."}
    {:name "Black Manta (IM)"
-    :cost "10*"
+    :cost "10+"
     :victory 5
     :attack "Each player puts all Equipment from his hand into the Line-Up."
     :ongoing "Black Manta costs 3 more to defeat for each Equipment in the Line-Up."
-    :power "4*"
+    :power "4?"
     :text "You may gain all Equipment in the Line-Up with cost 5 or less and put them into your hand. If you choose not to, +4 Power."}
    {:name "Brainiac (IM)"
     :cost 12
@@ -32,20 +32,20 @@
     :cost 10
     :victory 5
     :attack "Each player flips his Super Hero face down. When this Villain is defeated, each player may discard a random card. If you do, flip your Super Hero face up."
-    :power "4*"
+    :power "4+"
     :text "An additional +1 Power for each foe with a Hero in his discard pile."}
    {:name "Darkseid (IM)"
-    :cost "10*"
+    :cost "10+"
     :victory 5
     :attack "Each player puts all Super Powers from his hand into the Line-Up."
     :ongoing "Darkseid costs 3 more to defeat for each Super Power in the Line-Up."
-    :power "4*"
+    :power "4?"
     :text "You may gain all Super Powers in the Line-Up with cost 5 or less and put them into your hand. If you choose not to, +4 Power."}
    {:name "Deathstroke (IM)"
     :cost 10
     :victory 5
     :attack "Each player destroys a Hero, Super Power, and Equipment in his hand."
-    :power "4*"
+    :power "4?"
     :text "You may gain a Hero and Villain from the Line-Up. If you choose not to, +4 Power."}
    {:name "Hades (IM)"
     :cost 12
@@ -69,11 +69,11 @@
     :attack "Each player reveals his hand and discards all cards with cost 3 or less."
     :text "Draw a card. Double your Power this turn."}
    {:name "Sinestro (IM)"
-    :cost "10*"
+    :cost "10+"
     :victory 5
     :attack "Each player puts all Heroes from his hand into the Line-Up."
     :ongoing "Sinestro costs 3 more to defeat for each Hero in the Line-Up."
-    :power "4*"
+    :power "4?"
     :text "You may gain all Heroes in the Line-Up with cost 5 or less and put them into your hand. If you choose not to, +4 Power."}])
 
 (def all

@@ -101,7 +101,7 @@
   [{:name "Amanda Waller"
     :cost 4
     :victory 1
-    :power "2+"
+    :power "2?"
     :text "You may destroy a card in your hand or discard pile. If it's a Villain, +Power equal to its cost. If you choose not to, +2 Power."
     :copies 2}
    {:name "Catwoman"

@@ -130,7 +130,7 @@
    {:name "Magician's Corset"
     :cost 5
     :victory 1
-    :power "1+"
+    :power "0+"
     :text "Choose any number of players. Each of those players draws a card. +1 Power for each player who draws a card this way (including you)."
     :copies 1}
    {:name "Quiver of Arrows"
