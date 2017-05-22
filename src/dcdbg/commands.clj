@@ -128,6 +128,16 @@
           (move* :main-deck :line-up :top 0)
           (refill-line-up)))))
 
+(defn exec-villains-plan [game]
+  (let [vs (->> (get-cards game :line-up)
+                (filter #(-> % :type (= :villain))))]
+    (if (empty? vs)
+      game
+      (let [max-cost (->> vs
+                          (map :cost)
+                          (apply max))]
+        (move game :main-deck :destroyed :top (range max-cost))))))
+
 (defn flip-super-villain [game]
   (if (-> game (get-card :super-villain 0) :facing (= :up))
     game
@@ -153,5 +163,6 @@
        (draw n)
        (exec-super-villain-plan)
        (refill-line-up)
+       (exec-villains-plan)
        (flip-super-villain)
        (advance-countdown))))

@@ -208,8 +208,9 @@
                       {:name :discard
                        :type :pile
                        :facing :down
-                       :cards []}]}]
-    (testing "Discard entire hand."
+                       :cards [{:name "C"
+                                :facing :down}]}]}]
+    (testing "Discard hand."
       (is (= {:state [{:name :hand
                        :type :pile
                        :facing :up
@@ -220,6 +221,8 @@
                        :cards [{:name "A"
                                 :facing :down}
                                {:name "B"
+                                :facing :down}
+                               {:name "C"
                                 :facing :down}]}]}
              (discard-hand game))))))
 
@@ -294,6 +297,64 @@
                                 :facing :up}]}]}
              (refill-line-up game))))))
 
+(deftest exec-villains-plan-test
+  (let [game1 {:state [{:name :line-up
+                        :type :pile
+                        :facing :up
+                        :cards []}]}
+        game2 {:state [{:name :destroyed
+                        :type :pile
+                        :facing :down
+                        :cards []}
+                       {:name :main-deck
+                        :type :stack
+                        :facing :down
+                        :cards [{:name "A"
+                                 :facing :down}
+                                {:name "B"
+                                 :facing :down}
+                                {:name "C"
+                                 :facing :down}]}
+                       {:name :line-up
+                        :type :pile
+                        :facing :up
+                        :cards [{:name "D"
+                                 :facing :up
+                                 :type :villain
+                                 :cost 1}
+                                {:name "E"
+                                 :facing :up
+                                 :type :villain
+                                 :cost 2}]}]}]
+    (testing "Do nothing if there are no villains in Line-Up."
+      (is (= game1
+             (exec-villains-plan game1))))
+    (testing "Destroy N main deck cards (N = max villain cost in Line-Up)."
+      (is (= {:state [{:name :destroyed
+                       :type :pile
+                       :facing :down
+                       :cards [{:name "A"
+                                :facing :down}
+                               {:name "B"
+                                :facing :down}]}
+                      {:name :main-deck
+                       :type :stack
+                       :facing :down
+                       :cards [{:name "C"
+                                :facing :down}]}
+                      {:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "D"
+                                :facing :up
+                                :type :villain
+                                :cost 1}
+                               {:name "E"
+                                :facing :up
+                                :type :villain
+                                :cost 2}]}]}
+             (exec-villains-plan game2))))))
+
 (deftest flip-super-villain-test
   (let [game {:state [{:name :super-villain
                        :type :stack
@@ -302,10 +363,10 @@
                                 :facing :up
                                 :stack-ongoing "ONGOING"
                                 :first-appearance-attack "ATTACK"}]}]}]
-    (testing "Do nothing if top super-villain is face-up."
+    (testing "Do nothing if top Super-Villain is face-up."
       (is (= game
              (flip-super-villain game))))
-    (testing "If top super-villain is face-down, flip it up and show effects."
+    (testing "Flip over a new Super-Villain and show its effects."
       (is (= {:messages ["SUPER-VILLAIN ONGOING: ONGOING"
                          "SUPER-VILLAIN ATTACK: ATTACK"]
               :state [{:name :super-villain
@@ -323,20 +384,26 @@
   (let [game {:state [{:name :countdown
                        :type :stack
                        :facing :down
-                       :cards [{:name "W"
+                       :cards [{:name "A"
+                                :facing :down}
+                               {:name "B"
                                 :facing :down}]}
                       {:name :weakness
                        :type :stack
                        :facing :up
-                       :cards []}]}]
-    (testing "Advance countdown by flipping a Weakness card over."
+                       :cards [{:name "C"
+                                :facing :up}]}]}]
+    (testing "Flip over the top Weakness card."
       (is (= {:state [{:name :countdown
                        :type :stack
                        :facing :down
-                       :cards []}
+                       :cards [{:name "B"
+                                :facing :down}]}
                       {:name :weakness
                        :type :stack
                        :facing :up
-                       :cards [{:name "W"
+                       :cards [{:name "A"
+                                :facing :up}
+                               {:name "C"
                                 :facing :up}]}]}
              (advance-countdown game))))))
