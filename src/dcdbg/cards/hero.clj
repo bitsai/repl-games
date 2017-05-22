@@ -141,7 +141,7 @@
     :copies 1}
    {:name "Phantom Stranger"
     :cost 5
-    :victory "10*"
+    :victory "10-"
     :text "You may destroy a card in your hand and you may destroy a card in your discard pile. At end of game, this card is worth 1 fewer VP for each card with cost 0 in your deck. (Minimum 0)"
     :copies 1}
    {:name "Power Girl"
