@@ -67,33 +67,53 @@
                                 :facing :down}]}]}
              (move game :line-up :discard :bottom [0 2]))))))
 
-(deftest refill-line-up-test
-  (let [game {:state [{:name :main-deck
+(deftest gain-test
+  (let [game {:state [{:name :kick
                        :type :stack
+                       :facing :up
+                       :cards [{:name "A"
+                                :facing :up}
+                               {:name "B"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}]}
+                      {:name :discard
+                       :type :pile
+                       :facing :down
+                       :cards [{:name "D"
+                                :facing :down}]}]}]
+    (testing "By default, gain 1 card."
+      (is (= {:state [{:name :kick
+                       :type :stack
+                       :facing :up
+                       :cards [{:name "B"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}]}
+                      {:name :discard
+                       :type :pile
+                       :facing :down
+                       :cards [{:name "A"
+                                :facing :down}
+                               {:name "D"
+                                :facing :down}]}]}
+             (gain game :kick))))
+    (testing "Gain multiple cards."
+      (is (= {:state [{:name :kick
+                       :type :stack
+                       :facing :up
+                       :cards [{:name "C"
+                                :facing :up}]}
+                      {:name :discard
+                       :type :pile
                        :facing :down
                        :cards [{:name "A"
                                 :facing :down}
                                {:name "B"
-                                :facing :down}]}
-                      {:name :line-up
-                       :type :pile
-                       :facing :up
-                       :cards [{:name "C"
-                                :facing :up}]}]}]
-    (testing "Refill line-up from main deck."
-      (is (= {:state [{:name :main-deck
-                       :type :stack
-                       :facing :down
-                       :cards [{:name "B"
-                                :facing :down}]}
-                      {:name :line-up
-                       :type :pile
-                       :facing :up
-                       :cards [{:name "A"
-                                :facing :up}
-                               {:name "C"
-                                :facing :up}]}]}
-             (refill-line-up game))))))
+                                :facing :down}
+                               {:name "D"
+                                :facing :down}]}]}
+             (gain game :kick 2))))))
 
 (deftest draw-test
   (let [game {:state [{:name :hand
@@ -202,6 +222,34 @@
                                {:name "B"
                                 :facing :down}]}]}
              (discard-hand game))))))
+
+(deftest refill-line-up-test
+  (let [game {:state [{:name :main-deck
+                       :type :stack
+                       :facing :down
+                       :cards [{:name "A"
+                                :facing :down}
+                               {:name "B"
+                                :facing :down}]}
+                      {:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "C"
+                                :facing :up}]}]}]
+    (testing "Refill line-up from main deck."
+      (is (= {:state [{:name :main-deck
+                       :type :stack
+                       :facing :down
+                       :cards [{:name "B"
+                                :facing :down}]}
+                      {:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "A"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}]}]}
+             (refill-line-up game))))))
 
 (deftest flip-super-villain-test
   (let [game {:state [{:name :super-villain

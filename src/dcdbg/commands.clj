@@ -85,8 +85,7 @@
   ([game space-*]
    (gain game space-* 1))
   ([game space-* n]
-   ;; TODO: implement
-   game))
+   (move game space-* :discard :top (range n))))
 
 (defn draw
   ([game]
