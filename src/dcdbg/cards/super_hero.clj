@@ -34,7 +34,7 @@
     :cost 11
     :victory 6
     :attack "Each player destroys a Hero in his hand or discard pile. If you cannot, gain a Weakness."
-    :text "You may play up to three Heroes with cost 6 or less from the destroyed pile, and then put them on the  bottom of the main deck. If you choose not to, +3 Power."}
+    :text "You may play up to three Heroes with cost 6 or less from the destroyed pile, and then put them on the bottom of the main deck. If you choose not to, +3 Power."}
    {:name "Martian Manhunter"
     :cost 12
     :victory 6
