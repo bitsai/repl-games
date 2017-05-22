@@ -95,22 +95,6 @@
     :defense nil
     :copies 2}])
 
-(def crossover1
-  [{:name "The Hourglass"
-    :cost 4
-    :victory 1
-    :text "Choose another card with cost 6 or less that you played this turn. At end of turn, put that card into your hand."
-    :power nil
-    :defense nil
-    :copies 1}
-   {:name "T-Spheres"
-    :cost 6
-    :victory 2
-    :text "Choose a card name. Reveal the top three cards of your deck. Put all cards with that name into your hand and the rest on top in any order."
-    :power 2
-    :defense nil
-    :copies 1}])
-
 (def all
-  (->> (concat base crisis1 crossover1)
+  (->> (concat base crisis1)
        (map #(assoc % :type :equipment))))

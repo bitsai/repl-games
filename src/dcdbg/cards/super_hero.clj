@@ -48,22 +48,6 @@
    {:name "Zatanna Zatara"
     :text "Once during each of your turns, you may put a card with cost 1 or greater from your hand on the bottom of your deck. If you do, draw a card."}])
 
-(def crossover1
-  [{:name "Mister Terrific"
-    :text "Once during each of your turns, you may discard a Punch. If you do, reveal the top three cards of your deck, draw one Equipment revealed this way, and put the rest back in any order."}
-   {:name "Wildcat"
-    :text "The first time you play a Punch during each of your turns: If you have played a Hero this turn, draw a card. If you have played a Villain this turn, draw a card."}
-   {:name "Jay Garrick"
-    :text "When a card tells you to draw one or more cards, before drawing, reveal the top card of your deck and you may discard it."}
-   {:name "Alan Scott"
-    :text "Each time you play a different Super Power during your turn, reveal the top card of your deck. If the revealed card costs 0, draw it."}
-   {:name "Doctor Fate"
-    :text "When you play two cards with consecutive costs during your turn, +1 Power. When you play three cards with consecutive costs during your turn, draw a card."}
-   {:name "Power Girl"
-    :text "Each time you play a different Super Power during your turn, put a Punch from your discard pile into your hand."}
-   {:name "Stargirl"
-    :text "When you play a Defense card during your turn or avoid an Attack, you may draw a card and then discard a card."}])
-
 (def all
-  (->> (concat base crisis1 crossover1)
+  (->> (concat base crisis1)
        (map #(assoc % :type :super-hero))))

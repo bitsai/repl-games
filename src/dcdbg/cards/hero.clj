@@ -144,29 +144,6 @@
     :defense nil
     :copies 2}])
 
-(def crossover1
-  [{:name "Citizen Steel"
-    :cost 5
-    :victory 1
-    :text "Draw a card. Super-Villains cost you 1 less to defeat this turn for each Punch you play or have played this turn."
-    :power nil
-    :defense nil
-    :copies 1}
-   {:name "Dr. Mid-Nite"
-    :cost 4
-    :victory 1
-    :text "Look at the top two cards of your deck. You may discard any of them and put the rest back in any order."
-    :power 2
-    :defense nil
-    :copies 1}
-   {:name "Liberty Belle"
-    :cost 3
-    :victory 1
-    :text nil
-    :power 2
-    :defense "You may discard this card to avoid an Attack. If you do, draw three cards and put two cards from your hand on top of your deck."
-    :copies 1}])
-
 (def all
-  (->> (concat base crisis1 crossover1)
+  (->> (concat base crisis1)
        (map #(assoc % :type :hero))))

@@ -144,22 +144,6 @@
     :attack "Each foe reveals his hand and discards each card with the same name as a card in the Line-Up."
     :copies 2}])
 
-(def crossover1
-  [{:name "Per Degaton"
-    :cost 5
-    :victory 1
-    :text "Discard any number of cards from your hand. +1 Power for each card you discard or have discarded this turn."
-    :power 2
-    :attack nil
-    :copies 1}
-   {:name "Scythe"
-    :cost 3
-    :victory 1
-    :text nil
-    :power 2
-    :attack "Each foe gains a Weakness unless he reveals a Starter from his hand."
-    :copies 1}])
-
 (def all
-  (->> (concat base crisis1 crossover1)
+  (->> (concat base crisis1)
        (map #(assoc % :type :villain))))

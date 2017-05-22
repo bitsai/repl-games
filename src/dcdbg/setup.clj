@@ -14,7 +14,8 @@
 
 (defn- mk-cards [card-spec]
   (let [n (:copies card-spec 1)]
-    (->> (dissoc card-spec :copies) (repeat n))))
+    ;; use only 1 copy of each card
+    (->> (dissoc card-spec :copies) (repeat 1))))
 
 (defn- flip [cards facing]
   (mapv #(assoc % :facing facing) cards))

@@ -39,13 +39,6 @@
     :ongoing "The first time you play a Weakness or Vulnerability during each of your turns, draw a card."
     :copies 1}])
 
-(def crossover1
-  [{:name "Monument Point"
-    :cost 6
-    :victory 2
-    :ongoing "When you play your first Punch during each of your turns, draw a card."
-    :copies 1}])
-
 (def all
-  (->> (concat base crisis1 crossover1)
+  (->> (concat base crisis1)
        (map #(assoc % :type :location))))

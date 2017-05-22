@@ -60,22 +60,6 @@
     :defense nil
     :copies 3}])
 
-(def crossover1
-  [{:name "Girl Power"
-    :cost 5
-    :victory 1
-    :text nil
-    :power 2
-    :defense "You may reveal this card and discard it or a Punch to avoid an Attack. If you do, draw a card."
-    :copies 1}
-   {:name "Mystic Bolts"
-    :cost 6
-    :victory 2
-    :text "Put up to two cards each with cost 5 or less and each with a different cost from your discard pile into your hand."
-    :power 1
-    :defense nil
-    :copies 1}])
-
 (def all
-  (->> (concat base crisis1 crossover1)
+  (->> (concat base crisis1)
        (map #(assoc % :type :super-power))))
