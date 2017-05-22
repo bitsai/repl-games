@@ -83,11 +83,6 @@
 (defn refill-line-up [game]
   (move game :main-deck :line-up :top 0))
 
-(defn refill-deck [game]
-  (let [discard-count (count-cards game :discard)
-        shuffled (update-cards game :discard rand/shuffle*)]
-    (move* shuffled :discard :deck :bottom (range discard-count))))
-
 (defn draw
   ([game]
    (draw game 1))
@@ -100,7 +95,10 @@
        (move* game :deck :hand :bottom (range n))
        ;; if n > deck size and there are discards, refill deck then draw
        (pos? discard-count)
-       (-> game (refill-deck) (draw n))
+       (-> game
+           (update-cards :discard rand/shuffle*)
+           (move* :discard :deck :bottom (range discard-count))
+           (draw n))
        ;; otherwise, throw exception
        :else
        (throw (Exception. "Not enough cards!"))))))

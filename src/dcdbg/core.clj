@@ -36,8 +36,6 @@
         :fn #(apply cmds/move %1 %2 :destroyed :top %&)}
    :dw {:doc "(destroy weakness): space-idx card-idx+"
         :fn #(apply cmds/move %1 %2 :weakness :top %&)}
-   :rd {:doc "(refill deck)"
-        :fn cmds/refill-deck}
    :dr {:doc "(draw): [n]"
         :fn cmds/draw}
    :et {:doc "(end turn): [n]"

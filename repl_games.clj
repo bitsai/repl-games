@@ -1523,16 +1523,8 @@
 (defn move [game from-* to-* to-top-or-bottom & card-idxs]
   (move* game from-* to-* to-top-or-bottom card-idxs))
 
-(defn defeat-super-villain [game]
-  (update-in game [:state 0 :cards] rest))
-
 (defn refill-line-up [game]
   (move game :main-deck :line-up :top 0))
-
-(defn refill-deck [game]
-  (let [discard-count (count-cards game :discard)
-        shuffled (update-cards game :discard rand/shuffle*)]
-    (move* shuffled :discard :deck :bottom (range discard-count))))
 
 (defn draw
   ([game]
@@ -1546,7 +1538,10 @@
        (move* game :deck :hand :bottom (range n))
        ;; if n > deck size and there are discards, refill deck then draw
        (pos? discard-count)
-       (-> game (refill-deck) (draw n))
+       (-> game
+           (update-cards :discard rand/shuffle*)
+           (move* :discard :deck :bottom (range discard-count))
+           (draw n))
        ;; otherwise, throw exception
        :else
        (throw (Exception. "Not enough cards!"))))))
@@ -1605,16 +1600,12 @@
         :fn #(apply cmds/move %1 %2 %3 :top %&)}
    :mb {:doc "(move to bottom): from-idx to-idx card-idx+"
         :fn #(apply cmds/move %1 %2 %3 :bottom %&)}
-   :dsv {:doc "(defeat super-villain)"
-         :fn cmds/defeat-super-villain}
    :gw {:doc "(gain weakness)"
         :fn #(cmds/move %1 :weakness :discard :top 0)}
    :gk {:doc "(gain kick)"
         :fn #(cmds/move %1 :kick :discard :top 0)}
-   :buy {:doc "(buy): card-idx+"
-         :fn #(apply cmds/move %1 :line-up :discard :top %&)}
-   :dv {:doc "(defeat villain): card-idx+"
-        :fn #(apply cmds/move %1 :line-up :destroyed :top %&)}
+   :bl {:doc "(buy line-up): card-idx+"
+        :fn #(apply cmds/move %1 :line-up :discard :top %&)}
    :rl {:doc "(refill line-up)"
         :fn cmds/refill-line-up}
    :pl {:doc "(play location): card-idx+"
@@ -1625,8 +1616,6 @@
         :fn #(apply cmds/move %1 %2 :destroyed :top %&)}
    :dw {:doc "(destroy weakness): space-idx card-idx+"
         :fn #(apply cmds/move %1 %2 :weakness :top %&)}
-   :rd {:doc "(refill deck)"
-        :fn cmds/refill-deck}
    :dr {:doc "(draw): [n]"
         :fn cmds/draw}
    :et {:doc "(end turn): [n]"

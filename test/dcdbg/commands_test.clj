@@ -82,36 +82,6 @@
                                 :facing :up}]}]}
              (refill-line-up game))))))
 
-(deftest refill-deck-test
-  (let [game {:state [{:name :deck
-                       :type :stack
-                       :facing :down
-                       :cards [{:name "A"
-                                :facing :down}]}
-                      {:name :discard
-                       :type :pile
-                       :facing :down
-                       :cards [{:name "B"
-                                :facing :down}
-                               {:name "C"
-                                :facing :down}]}]}]
-    (testing "Refill deck from discard."
-      (rand/set-seed! 420)
-      (is (= {:state [{:name :deck
-                       :type :stack
-                       :facing :down
-                       :cards [{:name "A"
-                                :facing :down}
-                               {:name "B"
-                                :facing :down}
-                               {:name "C"
-                                :facing :down}]}
-                      {:name :discard
-                       :type :pile
-                       :facing :down
-                       :cards []}]}
-             (refill-deck game))))))
-
 (deftest draw-test
   (let [game {:state [{:name :hand
                        :type :pile
