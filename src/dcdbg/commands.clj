@@ -1,5 +1,6 @@
 (ns dcdbg.commands
-  (:require [dcdbg.config :as cfg]
+  (:require [clojure.string :as str]
+            [dcdbg.config :as cfg]
             [dcdbg.print :as print]
             [repl-games.random :as rand]))
 
@@ -120,9 +121,11 @@
 (defn refill-line-up [game]
   (if (-> game (count-cards :line-up) (>= (:line-up-size cfg/defaults)))
     game
-    (let [card (get-card game :main-deck 0)
-          msgs (when-let [a (:attack card)]
-                 [(format "VILLAIN ATTACK: %s" a)])]
+    (let [{:keys [type attack]} (get-card game :main-deck 0)
+          msgs (when (and (#{:hero :villain} type) attack)
+                 [(format "%s ATTACK: %s"
+                          (-> type name str/upper-case)
+                          attack)])]
       (-> game
           (update :messages concat msgs)
           (move* :main-deck :line-up :top 0)

@@ -260,9 +260,11 @@
                        :facing :down
                        :cards [{:name "A"
                                 :facing :down
+                                :type :hero
                                 :attack "A"}
                                {:name "B"
                                 :facing :down
+                                :type :villain
                                 :attack "B"}]}
                       {:name :line-up
                        :type :pile
@@ -274,7 +276,7 @@
                                {:name "E"
                                 :facing :up}]}]}]
     (testing "Refill Line-Up from main deck."
-      (is (= {:messages ["VILLAIN ATTACK: A"
+      (is (= {:messages ["HERO ATTACK: A"
                          "VILLAIN ATTACK: B"]
               :state [{:name :main-deck
                        :type :stack
@@ -285,9 +287,11 @@
                        :facing :up
                        :cards [{:name "B"
                                 :facing :up
+                                :type :villain
                                 :attack "B"}
                                {:name "A"
                                 :facing :up
+                                :type :hero
                                 :attack "A"}
                                {:name "C"
                                 :facing :up}
