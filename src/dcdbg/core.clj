@@ -26,8 +26,6 @@
         :fn #(cmds/move %1 :kick :discard :top)}
    :bl {:doc "(buy line-up): [card-idx+]"
         :fn #(apply cmds/move %1 :line-up :discard :top %&)}
-   :rl {:doc "(refill line-up)"
-        :fn cmds/refill-line-up}
    :pl {:doc "(play location): [card-idx+]"
         :fn #(apply cmds/move %1 :hand :location :bottom %&)}
    :di {:doc "(discard): space [card-idx+]"

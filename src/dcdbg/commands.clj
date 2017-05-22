@@ -81,9 +81,6 @@
 (defn move [game from-* to-* to-top-or-bottom & card-idxs]
   (move* game from-* to-* to-top-or-bottom card-idxs))
 
-(defn refill-line-up [game]
-  (move game :main-deck :line-up :top))
-
 (defn draw
   ([game]
    (draw game 1))
@@ -109,6 +106,9 @@
 (defn discard-hand [game]
   (let [hand-count (count-cards game :hand)]
     (move* game :hand :discard :top (range hand-count))))
+
+(defn refill-line-up [game]
+  (move game :main-deck :line-up :top))
 
 (defn flip-super-villain [game]
   (let [[sv & svs] (get-cards game :super-villain)
