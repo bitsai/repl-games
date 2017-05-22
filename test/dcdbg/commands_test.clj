@@ -33,7 +33,7 @@
                                 :facing :down}
                                {:name "D"
                                 :facing :down}]}]}
-             (move game :line-up :discard :top))))
+             (move game :line-up :discard :top nil))))
     (testing "Move to the top."
       (is (= {:state [{:name :line-up
                        :type :pile
@@ -49,7 +49,7 @@
                                 :facing :down}
                                {:name "D"
                                 :facing :down}]}]}
-             (move game :line-up :discard :top 0 2))))
+             (move game :line-up :discard :top [0 2]))))
     (testing "Move to the bottom."
       (is (= {:state [{:name :line-up
                        :type :pile
@@ -65,7 +65,7 @@
                                 :facing :down}
                                {:name "C"
                                 :facing :down}]}]}
-             (move game :line-up :discard :bottom 0 2))))))
+             (move game :line-up :discard :bottom [0 2]))))))
 
 (deftest refill-line-up-test
   (let [game {:state [{:name :main-deck

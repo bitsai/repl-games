@@ -48,7 +48,7 @@
   (let [space-idx (to-space-index game space-*)]
     (update-in game [:state space-idx :cards] update-fn)))
 
-(defn- move* [game from-* to-* to-top-or-bottom card-idxs]
+(defn- move* [game from-* to-* top-or-bottom & card-idxs]
   (let [card-idxs (or (seq card-idxs) [0])
         from-cards (get-cards game from-*)
         to-facing (-> game (get-space to-*) :facing)
@@ -57,7 +57,7 @@
                    (map #(assoc % :facing to-facing)))]
     (-> game
         (update-cards from-* #(remove-cards % card-idxs))
-        (update-cards to-* #(add-cards % moved to-top-or-bottom)))))
+        (update-cards to-* #(add-cards % moved top-or-bottom)))))
 
 ;; commands
 
@@ -78,8 +78,15 @@
      (println)
      (print/print-card-details! (get-card game space-* idx)))))
 
-(defn move [game from-* to-* to-top-or-bottom & card-idxs]
-  (move* game from-* to-* to-top-or-bottom card-idxs))
+(defn move [game from-* to-* top-or-bottom card-idxs]
+  (apply move* game from-* to-* top-or-bottom card-idxs))
+
+(defn gain
+  ([game space-*]
+   (gain game space-* 1))
+  ([game space-* n]
+   ;; TODO: implement
+   game))
 
 (defn draw
   ([game]
@@ -90,12 +97,12 @@
      (cond
        ;; if n <= deck size, draw
        (<= n deck-count)
-       (move* game :deck :hand :bottom (range n))
+       (move game :deck :hand :bottom (range n))
        ;; if n > deck size and there are discards, refill deck then draw
        (pos? discard-count)
        (-> game
            (update-cards :discard rand/shuffle*)
-           (move* :discard :deck :bottom (range discard-count))
+           (move :discard :deck :bottom (range discard-count))
            (draw n))
        ;; otherwise, throw exception
        :else
@@ -105,10 +112,10 @@
 
 (defn discard-hand [game]
   (let [hand-count (count-cards game :hand)]
-    (move* game :hand :discard :top (range hand-count))))
+    (move game :hand :discard :top (range hand-count))))
 
 (defn refill-line-up [game]
-  (move game :main-deck :line-up :top))
+  (move* game :main-deck :line-up :top))
 
 (defn flip-super-villain [game]
   (let [[sv & svs] (get-cards game :super-villain)
@@ -124,7 +131,7 @@
           (update :messages concat msgs)))))
 
 (defn advance-countdown [game]
-  (move game :countdown :weakness :top))
+  (move* game :countdown :weakness :top))
 
 (defn end-turn
   ([game]
