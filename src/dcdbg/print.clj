@@ -11,21 +11,8 @@
 
 (defn print-card-summary! [card card-idx]
   (printf "%3s. " card-idx)
-  (case (:type card)
-    :super-villain
-    (printf "%-3s %-2s %-1s%-1s %-2s %s\n"
-            (or (:cost card) "")
-            "VI"
-            (if (:text card) "T" "")
-            (cond
-              (:stack-ongoing card) "O"
-              :else "")
-            (or (:power card) "")
-            (:name card))
-
-    :super-hero
+  (if (-> card :type (= :super-hero))
     (println (:name card))
-
     (printf "%-3s %-2s %-1s%-1s %-2s %s\n"
             (or (:cost card) "")
             (if (:type card)
@@ -35,6 +22,7 @@
             (cond
               (:defense card) "D"
               (:ongoing card) "O"
+              (:stack-ongoing card) "O"
               :else "")
             (or (:power card) "")
             (:name card))))

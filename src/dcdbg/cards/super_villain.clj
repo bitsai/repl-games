@@ -95,4 +95,4 @@
 
 (def all
   (->> crisis1
-       (map #(assoc % :type :super-villain))))
+       (map #(assoc % :type :villain))))
