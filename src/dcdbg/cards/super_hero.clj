@@ -1,53 +1,66 @@
 (ns dcdbg.cards.super-hero)
 
-(def base
+(def forever-evil
   [{:name "The Flash"
-    :text "You go first. The first time a card tells you to draw one or more cards during each of your turns, draw an additional card."}
-   {:name "Superman"
-    :text "+1 Power for each different Super Power you play during your turn."}
-   {:name "Batman"
-    :text "+1 Power for each Equipment you play during your turn."}
-   {:name "Wonder Woman"
-    :text "For each Villain you buy or gain during your turn, draw an extra card at the end of your turn."}
-   {:name "Green Lantern"
-    :text "If you play three or more cards with different names and cost 1 or more during your turn, +3 Power."}
+    :cost 8
+    :victory 4
+    :text "Draw three cards, and then discard a card. (This card starts the game on top of the Super Hero stack)."}
    {:name "Aquaman"
-    :text "You may put any cards with cost 5 or less you buy or gain during your turn on top of your deck."}
-   {:name "Cyborg"
-    :text "If you play one or more Super Powers during your turn, +1 Power. If you play one or more Equipment during your turn, draw a card."}
-   {:name "Martian Manhunter"
-    :text "If you play two or more Villains during your turn, +3 Power. If you play two or more Heroes during your turn, +3 Power."}])
-
-(def crisis1
-  [{:name "The Flash (Crisis)"
-    :text "You go first. Once during each of your turns, if you have played eight or more cards, choose a player. That player draws a card."}
-   {:name "Superman (Crisis)"
-    :text "Once during each of your turns, if you play 7 or greater cost worth of Super Powers, choose a player. That player draws a card."}
-   {:name "Batman (Crisis)"
-    :text "Once during each of your turns, if you have played two or more Equipment, you may choose a player. That player discards his hand, and then draws one fewer cards than he discarded."}
-   {:name "Wonder Woman (Crisis)"
-    :text "When you buy or gain a Villain from the Line-Up, choose a player. That player may destroy a Vulnerability or Weakness in his hand or discard pile."}
-   {:name "Green Lantern (Crisis)"
-    :text "When any player is Attacked, you may discard three cards. If you do, that player avoids the Attack."}
-   {:name "Aquaman (Crisis)"
-    :text "When you buy or gain a card with cost 5 or less during your turn, you may place it into any player's discard pile."}
-   {:name "Cyborg (Crisis)"
-    :text "Once during each of your turns, if you have played a Super Power and Equipment, you may put a card with cost 1 or greater from any player's discard pile on the bottom of the main deck."}
-   {:name "Martian Manhunter (Crisis)"
-    :text "Once during each of your turns, if you have played two or more Heroes, choose a player. That player may put a Hero from his discard pile on top of his deck."}
-   {:name "Animal Man"
-    :text "During each of your turns, if you have played three or more different card types, +2 Power."}
+    :cost 11
+    :victory 6
+    :attack "Each player puts four cards with cost 0 from his discard pile on top of his deck. If you put none there, gain a Weakness."
+    :text "You may put up to three cards from your discard pile on top of your deck. If you choose not to, +3 Power."}
+   {:name "Batman"
+    :cost 11
+    :victory 6
+    :attack "Each player destroys an Equipment in his hand or discard pile. If you cannot, gain a Weakness."
+    :text "You may play up to three Equipment with cost 6 or less from the destroyed pile, and then put them on the bottom of the main deck. If you chose not to, +3 Power."}
    {:name "Constantine"
-    :text "Once during each of your turns, reveal the top card of your deck. If its cost is 1 or greater, you may play it and it has +1 Power. If you do, destroy it at the end of your turn."}
+    :cost 10
+    :victory 5
+    :attack "Each player loses 3 VPs. If you have none to lose, gain a Weakness."
+    :text "Reveal the top three cards of your deck. Draw one, destroy one, and put one on top of your deck. Gain VPs equal to the destroyed card's VP value."}
+   {:name "Cyborg"
+    :cost 10
+    :victory 5
+    :attack "Each player discards a Super Power and an Equipment. If you discard no cards, gain a Weakness."
+    :text "+2 Power for each Super Power and Equipment you play or have played."}
    {:name "Green Arrow"
-    :text "Once during each of your turns, you may discard a Punch card. If you do, you pay 2 less to defeat Villains and Super-Villains this turn."}
-   {:name "Robin"
-    :text "The first time a card tells you to draw a card during each of your turns, you may instead put an Equipment from your discard pile into your hand."}
+    :cost 9
+    :victory 5
+    :attack "Each player discards two Punch cards. For each Punch you fail to discard, gain a Weakness."
+    :text "When you play this card, leave it in front of you for the rest of the game. Ongoing: Punch cards you play have an additional +1 Power."}
+   {:name "Green Lantern"
+    :cost 11
+    :victory 6
+    :attack "Each player destroys a Hero in his hand or discard pile. If you cannot, gain a Weakness."
+    :text "You may play up to three Heroes with cost 6 or less from the destroyed pile, and then put them on the  bottom of the main deck. If you choose not to, +3 Power."}
+   {:name "Martian Manhunter"
+    :cost 12
+    :victory 6
+    :attack "Each player discards a Hero and a Villain. If you discard no cards, gain a Weakness."
+    :text "+2 Power for each Hero and Villain you play or have played this turn."}
+   {:name "Shazam!"
+    :cost 12
+    :victory 6
+    :attack "Each player puts a card with cost 5 or greater from his hand or discard pile on the bottom of the main deck. If you cannot, gain a Weakness."
+    :text "Gain the top two cards of the main deck, play them, and then destroy one of them. (Its effects remain.)"}
+   {:name "Superman"
+    :cost 13
+    :victory 6
+    :attack "Each player destroys a Super Power in his hand or discard pile. If you cannot, gain two Weakness cards."
+    :text "You may play up to three Super Powers from the destroyed pile, and then put them on the bottom of the main deck. If you choose not to, +4 Power."}
    {:name "Swamp Thing"
-    :text "During your turn, you are considered to control each Location in the Line-Up and in play."}
-   {:name "Zatanna Zatara"
-    :text "Once during each of your turns, you may put a card with cost 1 or greater from your hand on the bottom of your deck. If you do, draw a card."}])
+    :cost 9
+    :victory 5
+    :attack "Each player puts a Location he controls into his discard pile. If you cannot, gain a Weakness."
+    :text "+2 Power for each Location in play."}
+   {:name "Wonder Woman"
+    :cost 11
+    :victory 6
+    :attack "Each player destroys a Villain in his hand or discard pile. If you cannot, gain a Weakness."
+    :text "You may play up to three Villains with cost 6 or less from the destroyed pile, and then put them on the bottom of the main deck. If you choose not to, +3 Power."}])
 
 (def all
-  (->> (concat base crisis1)
+  (->> forever-evil
        (map #(assoc % :type :super-hero))))
