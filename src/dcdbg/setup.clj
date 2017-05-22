@@ -13,9 +13,8 @@
 ;; helpers
 
 (defn- mk-cards [card-spec]
-  (let [n (:copies card-spec 1)]
-    ;; use only 1 copy of each card
-    (->> (dissoc card-spec :copies) (repeat 1))))
+  (let [n (:copies card-spec)]
+    (->> (dissoc card-spec :copies) (repeat n))))
 
 (defn- flip [cards facing]
   (mapv #(assoc % :facing facing) cards))
@@ -36,6 +35,8 @@
                super-power/all
                villain/all)
        (mapcat mk-cards)
+       ;; use only 1 copy of each card
+       (distinct)
        (rand/shuffle*)))
 
 (defn- setup-super-heroes []
