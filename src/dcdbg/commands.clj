@@ -113,6 +113,10 @@
   (let [hand-count (count-cards game :hand)]
     (move game :hand :discard :top (range hand-count))))
 
+(defn exec-super-villain-plan [game]
+  (let [line-up-count (count-cards game :line-up)]
+    (move* game :line-up :destroyed :top (dec line-up-count))))
+
 (defn refill-line-up [game]
   (if (-> game (count-cards :line-up) (>= (:line-up-size cfg/defaults)))
     game
@@ -121,7 +125,7 @@
                  [(format "VILLAIN ATTACK: %s" a)])]
       (-> game
           (update :messages concat msgs)
-          (move* :main-deck :line-up :top)
+          (move* :main-deck :line-up :top 0)
           (refill-line-up)))))
 
 (defn flip-super-villain [game]
@@ -138,7 +142,7 @@
           (update-cards :super-villain (constantly new-svs))))))
 
 (defn advance-countdown [game]
-  (move* game :countdown :weakness :top))
+  (move* game :countdown :weakness :top 0))
 
 (defn end-turn
   ([game]
@@ -147,6 +151,7 @@
    (-> game
        (discard-hand)
        (draw n)
+       (exec-super-villain-plan)
        (refill-line-up)
        (flip-super-villain)
        (advance-countdown))))

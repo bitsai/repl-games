@@ -223,6 +223,34 @@
                                 :facing :down}]}]}
              (discard-hand game))))))
 
+(deftest exec-super-villain-plan-test
+  (let [game {:state [{:name :destroyed
+                       :type :pile
+                       :facing :down
+                       :cards [{:name "A"
+                                :facing :down}]}
+                      {:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "B"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}]}]}]
+    (testing "Destroy bottom Line-Up card."
+      (is (= {:state [{:name :destroyed
+                       :type :pile
+                       :facing :down
+                       :cards [{:name "C"
+                                :facing :down}
+                               {:name "A"
+                                :facing :down}]}
+                      {:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:name "B"
+                                :facing :up}]}]}
+             (exec-super-villain-plan game))))))
+
 (deftest refill-line-up-test
   (let [game {:state [{:name :main-deck
                        :type :stack
@@ -242,7 +270,7 @@
                                 :facing :up}
                                {:name "E"
                                 :facing :up}]}]}]
-    (testing "Refill line-up from main deck."
+    (testing "Refill Line-Up from main deck."
       (is (= {:messages ["VILLAIN ATTACK: A"
                          "VILLAIN ATTACK: B"]
               :state [{:name :main-deck
