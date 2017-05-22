@@ -12,7 +12,7 @@
   {:hand-size 5
    :line-up-size 5
    :punch-count 7
-   :super-villain-count 4
+   :super-villain-count 8
    :vulnerability-count 3})
 
 (def spaces
