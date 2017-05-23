@@ -1491,7 +1491,7 @@
       (printf "%s: %s\n" (mk-header k) x))))
 
 (defn print-pile! [{:keys [name cards]} zone-idx]
-  (printf "[%2s] %s (%d)\n" zone-idx (mk-header name) (count cards))
+  (printf "(%2s) %s (%d)\n" zone-idx (mk-header name) (count cards))
   (->> cards
        (map-indexed (fn [idx c]
                       (when (-> c :facing (= :up))
@@ -1499,7 +1499,7 @@
        (dorun)))
 
 (defn print-stack! [{:keys [name cards]} zone-idx]
-  (printf "[%2s] %s (%d)\n" zone-idx (mk-header name) (count cards))
+  (printf "(%2s) %s (%d)\n" zone-idx (mk-header name) (count cards))
   (when (-> cards first :facing (= :up))
     (print-card-summary! (first cards) 0)))
 
@@ -1566,9 +1566,9 @@
         shs (setup-super-heroes)
         [hand deck] (split-at hand-size (setup-deck))
         msgs (conj (->> shs
-                        (mapv #(format "SUPER-HERO [%s] %s" (:name %) (:text %))))
+                        (mapv #(format "SUPER-HERO (%s): %s" (:name %) (:text %))))
                    (let [sv (first svs)]
-                     (format "ONGOING [%s] %s" (:name sv) (:ongoing sv))))
+                     (format "ONGOING (%s): %s" (:name sv) (:ongoing sv))))
         state (for [[name cards] [[:super-villain svs]
                                   [:countdown (mk-cards cards/weakness)]
                                   [:weakness []]
@@ -1716,7 +1716,7 @@
     game
     (let [{:keys [name type attack]} (get-card game :main-deck 0)
           msgs (when (and (#{:hero :villain} type) attack)
-                 [(format "ATTACK [%s] %s" name attack)])]
+                 [(format "ATTACK (%s): %s" name attack)])]
       (-> game
           (update :messages concat msgs)
           (move* :main-deck :line-up :top 0)
@@ -1738,9 +1738,9 @@
     (let [[sv & svs] (get-cards game :super-villain)
           {:keys [name attack ongoing]} sv
           msgs (concat (when attack
-                         [(format "ATTACK [%s] %s" name attack)])
+                         [(format "ATTACK (%s): %s" name attack)])
                        (when ongoing
-                         [(format "ONGOING [%s] %s" name ongoing)]))
+                         [(format "ONGOING (%s): %s" name ongoing)]))
           new-svs (-> sv (assoc :facing :up) (cons svs))]
       (-> game
           (update :messages concat msgs)

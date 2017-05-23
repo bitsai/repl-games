@@ -32,7 +32,7 @@
       (printf "%s: %s\n" (mk-header k) x))))
 
 (defn print-pile! [{:keys [name cards]} zone-idx]
-  (printf "[%2s] %s (%d)\n" zone-idx (mk-header name) (count cards))
+  (printf "(%2s) %s (%d)\n" zone-idx (mk-header name) (count cards))
   (->> cards
        (map-indexed (fn [idx c]
                       (when (-> c :facing (= :up))
@@ -40,7 +40,7 @@
        (dorun)))
 
 (defn print-stack! [{:keys [name cards]} zone-idx]
-  (printf "[%2s] %s (%d)\n" zone-idx (mk-header name) (count cards))
+  (printf "(%2s) %s (%d)\n" zone-idx (mk-header name) (count cards))
   (when (-> cards first :facing (= :up))
     (print-card-summary! (first cards) 0)))
 

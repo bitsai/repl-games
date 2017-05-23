@@ -123,7 +123,7 @@
     game
     (let [{:keys [name type attack]} (get-card game :main-deck 0)
           msgs (when (and (#{:hero :villain} type) attack)
-                 [(format "ATTACK [%s] %s" name attack)])]
+                 [(format "ATTACK (%s): %s" name attack)])]
       (-> game
           (update :messages concat msgs)
           (move* :main-deck :line-up :top 0)
@@ -145,9 +145,9 @@
     (let [[sv & svs] (get-cards game :super-villain)
           {:keys [name attack ongoing]} sv
           msgs (concat (when attack
-                         [(format "ATTACK [%s] %s" name attack)])
+                         [(format "ATTACK (%s): %s" name attack)])
                        (when ongoing
-                         [(format "ONGOING [%s] %s" name ongoing)]))
+                         [(format "ONGOING (%s): %s" name ongoing)]))
           new-svs (-> sv (assoc :facing :up) (cons svs))]
       (-> game
           (update :messages concat msgs)

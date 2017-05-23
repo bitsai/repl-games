@@ -276,8 +276,8 @@
                                {:name "E"
                                 :facing :up}]}]}]
     (testing "Refill Line-Up from main deck."
-      (is (= {:messages ["ATTACK [A] attack"
-                         "ATTACK [B] attack"]
+      (is (= {:messages ["ATTACK (A): attack"
+                         "ATTACK (B): attack"]
               :state [{:name :main-deck
                        :type :stack
                        :facing :down
@@ -371,8 +371,8 @@
       (is (= game
              (flip-super-villain game))))
     (testing "Flip over a new Super-Villain and show its effects."
-      (is (= {:messages ["ATTACK [SV] attack"
-                         "ONGOING [SV] ongoing"]
+      (is (= {:messages ["ATTACK (SV): attack"
+                         "ONGOING (SV): ongoing"]
               :state [{:name :super-villain
                        :type :stack
                        :facing :down
