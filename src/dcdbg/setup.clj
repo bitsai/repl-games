@@ -1,12 +1,5 @@
 (ns dcdbg.setup
-  (:require [dcdbg.cards.core :as cards]
-            [dcdbg.cards.equipment :as equipment]
-            [dcdbg.cards.hero :as hero]
-            [dcdbg.cards.location :as location]
-            [dcdbg.cards.super-hero :as super-hero]
-            [dcdbg.cards.super-power :as super-power]
-            [dcdbg.cards.super-villain :as super-villain]
-            [dcdbg.cards.villain :as villain]
+  (:require [dcdbg.cards :as cards]
             [dcdbg.config :as cfg]
             [repl-games.random :as rand]))
 
@@ -29,11 +22,11 @@
        (rand/shuffle*)))
 
 (defn- setup-main-deck []
-  (->> (concat equipment/all
-               hero/all
-               location/all
-               super-power/all
-               villain/all)
+  (->> (concat cards/equipment
+               cards/hero
+               cards/location
+               cards/super-power
+               cards/villain)
        (mapcat mk-cards)
        ;; use only 1 copy of each card
        (distinct)
@@ -41,11 +34,11 @@
 
 (defn- setup-super-heroes []
   ;; use The Flash
-  (take 1 super-hero/all))
+  (take 1 cards/super-hero))
 
 (defn- setup-super-villains [n]
   ;; use Ra's Al-Ghul, Crisis Anti-Monitor, and N - 2 randoms
-  (let [[x y & zs] super-villain/all
+  (let [[x y & zs] cards/super-villain
         zs (->> zs (rand/shuffle*) (take (- n 2)))]
     ;; set Ra's Al-Ghul on top, Crisis Anti-Monitor on bottom
     (concat [x] zs [y])))
