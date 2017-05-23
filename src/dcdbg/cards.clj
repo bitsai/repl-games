@@ -7,14 +7,6 @@
             [dcdbg.cards.super-villain :as super-villain]
             [dcdbg.cards.villain :as villain]))
 
-(def punch
-  {:name "Punch"
-   :type :starter
-   :cost 0
-   :victory 0
-   :power 1
-   :copies 36})
-
 (def kick
   {:name "Kick"
    :type :super-power
@@ -22,6 +14,14 @@
    :victory 1
    :power 2
    :copies 16})
+
+(def punch
+  {:name "Punch"
+   :type :starter
+   :cost 0
+   :victory 0
+   :power 1
+   :copies 36})
 
 (def vulnerability
   {:name "Vulnerability"
