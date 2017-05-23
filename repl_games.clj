@@ -1553,11 +1553,9 @@
         shs (setup-super-heroes)
         [hand deck] (split-at hand-size (setup-deck))
         msgs (conj (->> shs
-                        (mapv #(format "SUPER-HERO: %s" (:text %))))
-                   (->> svs
-                        (first)
-                        (:ongoing)
-                        (format "SUPER-VILLAIN ONGOING: %s")))
+                        (mapv #(format "SUPER HERO [%s] %s" (:name %) (:text %))))
+                   (let [sv (first svs)]
+                     (format "ONGOING [%s] %s" (:name sv) (:ongoing sv))))
         state (for [[name cards] [[:super-villain svs]
                                   [:countdown (mk-cards cards/weakness)]
                                   [:weakness []]
@@ -1703,11 +1701,9 @@
 (defn refill-line-up [game]
   (if (-> game (count-cards :line-up) (>= (:line-up-size cfg/defaults)))
     game
-    (let [{:keys [type attack]} (get-card game :main-deck 0)
+    (let [{:keys [name type attack]} (get-card game :main-deck 0)
           msgs (when (and (#{:hero :villain} type) attack)
-                 [(format "%s ATTACK: %s"
-                          (-> type name str/upper-case)
-                          attack)])]
+                 [(format "ATTACK [%s] %s" name attack)])]
       (-> game
           (update :messages concat msgs)
           (move* :main-deck :line-up :top 0)
@@ -1727,10 +1723,11 @@
   (if (-> game (get-card :super-villain 0) :facing (= :up))
     game
     (let [[sv & svs] (get-cards game :super-villain)
-          msgs (concat (when-let [a (:attack sv)]
-                         [(format "SUPER-VILLAIN ATTACK: %s" a)])
-                       (when-let [o (:ongoing sv)]
-                         [(format "SUPER-VILLAIN ONGOING: %s" o)]))
+          {:keys [name attack ongoing]} sv
+          msgs (concat (when attack
+                         [(format "ATTACK [%s] %s" name attack)])
+                       (when ongoing
+                         [(format "ONGOING [%s] %s" name ongoing)]))
           new-svs (-> sv (assoc :facing :up) (cons svs))]
       (-> game
           (update :messages concat msgs)

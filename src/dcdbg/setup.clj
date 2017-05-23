@@ -58,11 +58,9 @@
         shs (setup-super-heroes)
         [hand deck] (split-at hand-size (setup-deck))
         msgs (conj (->> shs
-                        (mapv #(format "SUPER-HERO: %s" (:text %))))
-                   (->> svs
-                        (first)
-                        (:ongoing)
-                        (format "SUPER-VILLAIN ONGOING: %s")))
+                        (mapv #(format "SUPER HERO [%s] %s" (:name %) (:text %))))
+                   (let [sv (first svs)]
+                     (format "ONGOING [%s] %s" (:name sv) (:ongoing sv))))
         state (for [[name cards] [[:super-villain svs]
                                   [:countdown (mk-cards cards/weakness)]
                                   [:weakness []]

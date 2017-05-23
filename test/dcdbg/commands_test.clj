@@ -261,11 +261,11 @@
                        :cards [{:name "A"
                                 :facing :down
                                 :type :hero
-                                :attack "A"}
+                                :attack "attack"}
                                {:name "B"
                                 :facing :down
                                 :type :villain
-                                :attack "B"}]}
+                                :attack "attack"}]}
                       {:name :line-up
                        :type :pile
                        :facing :up
@@ -276,8 +276,8 @@
                                {:name "E"
                                 :facing :up}]}]}]
     (testing "Refill Line-Up from main deck."
-      (is (= {:messages ["HERO ATTACK: A"
-                         "VILLAIN ATTACK: B"]
+      (is (= {:messages ["ATTACK [A] attack"
+                         "ATTACK [B] attack"]
               :state [{:name :main-deck
                        :type :stack
                        :facing :down
@@ -288,11 +288,11 @@
                        :cards [{:name "B"
                                 :facing :up
                                 :type :villain
-                                :attack "B"}
+                                :attack "attack"}
                                {:name "A"
                                 :facing :up
                                 :type :hero
-                                :attack "A"}
+                                :attack "attack"}
                                {:name "C"
                                 :facing :up}
                                {:name "D"
@@ -365,21 +365,21 @@
                        :facing :down
                        :cards [{:name "SV"
                                 :facing :up
-                                :attack "ATTACK"
-                                :ongoing "ONGOING"}]}]}]
+                                :attack "attack"
+                                :ongoing "ongoing"}]}]}]
     (testing "Do nothing if top Super-Villain is face-up."
       (is (= game
              (flip-super-villain game))))
     (testing "Flip over a new Super-Villain and show its effects."
-      (is (= {:messages ["SUPER-VILLAIN ATTACK: ATTACK"
-                         "SUPER-VILLAIN ONGOING: ONGOING"]
+      (is (= {:messages ["ATTACK [SV] attack"
+                         "ONGOING [SV] ongoing"]
               :state [{:name :super-villain
                        :type :stack
                        :facing :down
                        :cards [{:name "SV"
                                 :facing :up
-                                :attack "ATTACK"
-                                :ongoing "ONGOING"}]}]}
+                                :attack "attack"
+                                :ongoing "ongoing"}]}]}
              (-> game
                  (assoc-in [:state 0 :cards 0 :facing] :down)
                  (flip-super-villain)))))))
