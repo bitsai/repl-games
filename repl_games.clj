@@ -1451,17 +1451,17 @@
   (printf "%3s. " card-idx)
   (if (-> card :type (= :super-hero))
     (println (:name card))
-    (printf "%-3s %-2s %-1s%-1s %-2s %s\n"
-            (or (:cost card) "")
+    (printf "%-2s %-3s %-1s %-2s %-1s %s\n"
             (if (:type card)
               (-> card :type cfg/aliases)
               "")
-            (if (:text card) "T" "")
+            (or (:cost card) "")
             (cond
               (:defense card) "D"
               (:ongoing card) "O"
               :else "")
             (or (:power card) "")
+            (if (:text card) "T" "")
             (:name card))))
 
 (defn print-card-details! [card]
