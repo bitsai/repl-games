@@ -1535,9 +1535,8 @@
        (rand/shuffle*)))
 
 (defn- setup-super-heroes []
-  ;; use The Flash and 1 random
-  (let [[x & xs] super-hero/all]
-    [x (rand/rand-nth* xs)]))
+  ;; use The Flash
+  (take 1 super-hero/all))
 
 (defn- setup-super-villains [n]
   ;; use Ra's Al-Ghul, Crisis Anti-Monitor, and N - 2 randoms
