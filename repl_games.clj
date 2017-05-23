@@ -1118,7 +1118,7 @@
     :text "At the end of your turn, put this card onto the bottom of its owner's deck before drawing a new hand."}
    {:name "Crisis Anti-Monitor (IM)"
     :cost "13+"
-    :ongoing "Whenever a Hero is added to the Line-Up, each player puts a Weakness from the stack on top of his deck. Crisis Anti-Monitor costs 1 more to defeat for each card in the Line-Up. Each player must defeat this Villain to win the game."}
+    :ongoing "Add the top card of the main deck to the Line-Up. Whenever a Hero is added to the Line-Up, each player puts a Weakness from the stack on top of his deck. Crisis Anti-Monitor costs 1 more to defeat for each card in the Line-Up. Each player must defeat this Villain to win the game."}
    {:name "Atrocitus (IM)"
     :cost 11
     :victory 5
