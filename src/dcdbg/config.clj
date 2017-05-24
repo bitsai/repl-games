@@ -6,6 +6,7 @@
    :location    "LO"
    :starter     "ST"
    :super-power "SP"
+   :super-villain "VI"
    :villain     "VI"})
 
 (def defaults

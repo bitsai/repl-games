@@ -13,21 +13,21 @@
   (printf "%3s. " card-idx)
   (if (-> card :type (= :super-hero))
     (println (:name card))
-    (printf "%-2s %-3s %-1s %-2s %-1s %s\n"
+    (printf "%-2s %-3s %-1s %-1s %-1s %s\n"
             (if (:type card)
               (-> card :type cfg/aliases)
               "")
             (or (:cost card) "")
+            (if (:text card) "T" "")
             (cond
-              (:defense card) "D"
               (:ongoing card) "O"
+              (:defense card) "D"
               :else "")
             (or (:power card) "")
-            (if (:text card) "T" "")
             (:name card))))
 
 (defn print-card-details! [card]
-  (doseq [k [:name :type :cost :victory :defense :attack :ongoing :power :text]]
+  (doseq [k [:name :type :cost :victory :text :attack :ongoing :defense :power]]
     (when-let [x (k card)]
       (printf "%s: %s\n" (mk-header k) x))))
 
