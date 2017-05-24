@@ -1,12 +1,12 @@
 (ns dcdbg.setup
-  (:require [dcdbg.cards :as cards]
+  (:require [dcdbg.cards.core :as cards]
             [dcdbg.config :as cfg]
             [repl-games.random :as rand]))
 
 ;; helpers
 
 (defn- mk-cards [card-spec]
-  (let [n (:copies card-spec)]
+  (let [n (:copies card-spec 1)]
     (->> (dissoc card-spec :copies) (repeat n))))
 
 (defn- flip [cards facing]
@@ -38,10 +38,11 @@
 
 (defn- setup-super-villains [n]
   ;; use Ra's Al-Ghul, Crisis Anti-Monitor, and N - 2 randoms
-  (let [[x y & zs] cards/super-villain
-        zs (->> zs (rand/shuffle*) (take (- n 2)))]
+  (let [[x & svs] cards/super-villain
+        ys (->> svs butlast (rand/shuffle*) (take (- n 2)))
+        z (last svs)]
     ;; set Ra's Al-Ghul on top, Crisis Anti-Monitor on bottom
-    (concat [x] zs [y])))
+    (concat [x] ys [z])))
 
 (defn mk-game-state [game]
   (let [{:keys [hand-size line-up-size super-villain-count]} cfg/defaults
