@@ -9,8 +9,16 @@
           :parse-fn #(str/replace % "Impossible Mode" "IM")}
    :type {:index 1
           :parse-fn #(-> % (str/replace " " "-") str/lower-case keyword)}
-   :cost {:index 2}
-   :victory {:index 3}
+   :cost {:index 2
+          :parse-fn #(try
+                       (Long. %)
+                       (catch Throwable t
+                         %))}
+   :victory {:index 3
+             :parse-fn #(try
+                          (Long. %)
+                          (catch Throwable t
+                            %))}
    :copies {:index 10
             :parse-fn #(Long. %)}})
 
@@ -24,6 +32,11 @@
    {:re #"\s*ONGOING:\s+" :k :ongoing}
    {:re #"\s*Ongoing:\s+" :k :ongoing}
    {:re #"\s*Defense:\s+" :k :defense}])
+
+(def card-power-res
+  [#"^\+(\d) Power$"
+   #"^\+(\d) Power\.\s*"
+   #"^\+(\d) Power,?\s+and\s+"])
 
 (defn- get-card-files []
   (-> "resources/dcdbg"
@@ -41,8 +54,7 @@
   (let [text (get row card-text-index)]
     (when (seq text)
       (reduce (fn [{:keys [text] :as acc} {:keys [re k]}]
-                (if (or (empty? text)
-                        (not (re-find re text)))
+                (if-not (and text (re-find re text))
                   acc
                   (let [[x y] (str/split text re)
                         acc (assoc acc k y)]
@@ -52,12 +64,25 @@
               {:text text}
               card-text-sections))))
 
+(defn- parse-card-power [parsed]
+  (if-let [text (:text parsed)]
+    (if-let [re (first (filter #(re-find % text) card-power-res))]
+      (let [[_ y] (str/split text re)
+            [_ power] (re-find re text)
+            parsed (assoc parsed :power (Long. power))]
+        (if (seq y)
+          (assoc parsed :text y)
+          (dissoc parsed :text)))
+      parsed)
+    parsed))
+
 (defn- parse-csv-row [row set]
   (when (-> row first seq)
-    (merge (->> csv-fields
-                (keep #(parse-field % row))
-                (into {:set set}))
-           (parse-card-text row))))
+    (-> (->> csv-fields
+             (keep #(parse-field % row))
+             (into {:set set}))
+        (merge (parse-card-text row))
+        (parse-card-power))))
 
 (defn- parse-csv-file [file]
   (let [set (-> file (.getName) (str/split #"\.") first keyword)]
