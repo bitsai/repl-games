@@ -4,16 +4,26 @@
             [clojure.pprint :as pprint]
             [clojure.string :as str]))
 
-(def config
+(def csv-fields
   {:name {:index 0
           :parse-fn #(str/replace % "Impossible Mode" "IM")}
    :type {:index 1
           :parse-fn #(-> % (str/replace " " "-") str/lower-case keyword)}
    :cost {:index 2}
    :victory {:index 3}
-   :text {:index 9}
    :copies {:index 10
             :parse-fn #(Long. %)}})
+
+(def card-text-index 9)
+
+(def card-text-sections
+  [{:re #"\s+TO BEAT:\s+" :k :to-beat}
+   {:re #"\s+FIRST APPEARANCE -- ATTACK:\s+" :k :attack}
+   {:re #"\s*Attack:\s+" :k :attack}
+   {:re #"\s*Stack Ongoing:\s+" :k :ongoing}
+   {:re #"\s*ONGOING:\s+" :k :ongoing}
+   {:re #"\s*Ongoing:\s+" :k :ongoing}
+   {:re #"\s*Defense:\s+" :k :defense}])
 
 (defn- get-card-files []
   (-> "resources/dcdbg"
@@ -27,11 +37,27 @@
     (when (seq v)
       [k (parse-fn v)])))
 
+(defn- parse-card-text [row]
+  (let [text (get row card-text-index)]
+    (when (seq text)
+      (reduce (fn [{:keys [text] :as acc} {:keys [re k]}]
+                (if (or (empty? text)
+                        (not (re-find re text)))
+                  acc
+                  (let [[x y] (str/split text re)
+                        acc (assoc acc k y)]
+                    (if (seq x)
+                      (assoc acc :text x)
+                      (dissoc acc :text)))))
+              {:text text}
+              card-text-sections))))
+
 (defn- parse-csv-row [row set]
   (when (-> row first seq)
-    (->> config
-         (keep #(parse-field % row))
-         (into {:set set}))))
+    (merge (->> csv-fields
+                (keep #(parse-field % row))
+                (into {:set set}))
+           (parse-card-text row))))
 
 (defn- parse-csv-file [file]
   (let [set (-> file (.getName) (str/split #"\.") first keyword)]
