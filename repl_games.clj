@@ -403,7 +403,8 @@
   (mapv (fn [idx r c]
           (let [max-life (cond-> (:max-life c)
                            ;; sheriff gets 2 additional life points
-                           (= r :sheriff) (+ 2))]
+                           (= r :sheriff)
+                           (+ 2))]
             (-> c
                 (assoc :role r)
                 (assoc :max-life max-life)
@@ -528,7 +529,8 @@
   :victory 1,
   :copies 3,
   :text
-  "If you play or have played a Super Power or Equipment this turn, +3 Power. Otherwise, +1 Power."}
+  "If you play or have played a Super Power or Equipment this turn, +3 Power. Otherwise, +1 Power.",
+  :power "*"}
  {:set :base,
   :name "J'onn J'onnz",
   :type :hero,
@@ -551,7 +553,8 @@
   :victory 1,
   :copies 1,
   :text
-  "You may destroy a card in your discard pile. If you do, +3 Power. Otherwise, +1 Power."}
+  "You may destroy a card in your discard pile. If you do, +3 Power. Otherwise, +1 Power.",
+  :power "*"}
  {:set :base,
   :name "Man of Steel",
   :type :hero,
@@ -567,7 +570,8 @@
   :victory 1,
   :copies 2,
   :text
-  "If your discard pile is empty, +4 Power. Otherwise, +2 Power."}
+  "If your discard pile is empty, +4 Power. Otherwise, +2 Power.",
+  :power "*"}
  {:set :base,
   :name "Princess Diana of Themyscira",
   :type :hero,
@@ -596,7 +600,8 @@
   :cost 4,
   :victory 1,
   :copies 2,
-  :text "If you control a Location, +5 Power. Otherwise, +2 Power."}
+  :text "If you control a Location, +5 Power. Otherwise, +2 Power.",
+  :power "*"}
  {:set :base,
   :name "Zatanna Zatara",
   :type :hero,
@@ -694,7 +699,8 @@
   :victory 1,
   :copies 2,
   :text
-  "You may pay 3 Power. If you do, gain the top card of the main deck. Use this ability any number of times this turn. If you choose not to, +1 Power instead."}
+  "You may pay 3 Power. If you do, gain the top card of the main deck. Use this ability any number of times this turn. If you choose not to, +1 Power instead.",
+  :power "*"}
  {:set :base,
   :name "Scarecrow",
   :type :villain,
@@ -710,7 +716,8 @@
   :victory 2,
   :copies 2,
   :text
-  "When you buy or gain this Villain, you may put him on top of your deck. +3 Power."}
+  "When you buy or gain this Villain, you may put him on top of your deck. +3 Power.",
+  :power "*"}
  {:set :base,
   :name "Starro",
   :type :villain,
@@ -794,7 +801,8 @@
   :victory 1,
   :copies 3,
   :text
-  "If this is the first card you play this turn, discard your hand and draw five cards. Otherwise, +1 Power."}
+  "If this is the first card you play this turn, discard your hand and draw five cards. Otherwise, +1 Power.",
+  :power "*"}
  {:set :base,
   :name "The Bat-Signal",
   :type :equipment,
@@ -844,7 +852,8 @@
   :victory 1,
   :copies 3,
   :text
-  "Reveal the top card of your deck. If its cost is 1 or greater, +3 Power. Otherwise, +2 Power."}
+  "Reveal the top card of your deck. If its cost is 1 or greater, +3 Power. Otherwise, +2 Power.",
+  :power "*"}
  {:set :base,
   :name "Utility Belt",
   :type :equipment,
@@ -957,7 +966,8 @@
   :text
   "You may destroy two cards in your hand. If you do, +5 Power. Otherwise +3 Power.",
   :attack
-  "Each player discards two cards unless he reveals a Villain from his hand."}
+  "Each player discards two cards unless he reveals a Villain from his hand.",
+  :power "*"}
  {:set :base,
   :name "Deathstroke",
   :type :super-villain,
@@ -966,7 +976,8 @@
   :text
   "You may gain a Hero or Villain from the Line-Up. If you choose not to, +3 Power.",
   :attack
-  "Each player reveals his hand and destroys a Hero, Super Power, or Equipment in his hand or discard pile."}
+  "Each player reveals his hand and destroys a Hero, Super Power, or Equipment in his hand or discard pile.",
+  :power "*"}
  {:set :base,
   :name "The Joker",
   :type :super-villain,
@@ -1001,7 +1012,8 @@
   :text
   "Reveal the top card of the main deck. If it's a Hero, +3 Power and then destroy it. Otherwise, put it into your hand.",
   :attack
-  "Each player reveals his hand and discards a card for each Hero he revealed this way."}
+  "Each player reveals his hand and discards a card for each Hero he revealed this way.",
+  :power "*"}
  {:set :base,
   :name "The Flash",
   :type :super-hero,
@@ -1011,11 +1023,13 @@
   :name "Superman",
   :type :super-hero,
   :text
-  "+1 Power for each different Super Power you play during your turn."}
+  "+1 Power for each different Super Power you play during your turn.",
+  :power "*"}
  {:set :base,
   :name "Batman",
   :type :super-hero,
-  :text "+1 Power for each Equipment you play during your turn."}
+  :text "+1 Power for each Equipment you play during your turn.",
+  :power "*"}
  {:set :base,
   :name "Wonder Woman",
   :type :super-hero,
@@ -1025,7 +1039,8 @@
   :name "Green Lantern",
   :type :super-hero,
   :text
-  "If you play three or more cards with different names and cost 1 or more during your turn, +3 Power."}
+  "If you play three or more cards with different names and cost 1 or more during your turn, +3 Power.",
+  :power "*"}
  {:set :base,
   :name "Aquaman",
   :type :super-hero,
@@ -1035,12 +1050,14 @@
   :name "Cyborg",
   :type :super-hero,
   :text
-  "If you play one or more Super Powers during your turn, +1 Power. If you play one or more Equipment during your turn, draw a card."}
+  "If you play one or more Super Powers during your turn, +1 Power. If you play one or more Equipment during your turn, draw a card.",
+  :power "*"}
  {:set :base,
   :name "Martian Manhunter",
   :type :super-hero,
   :text
-  "If you play two or more Villains during your turn, +3 Power. If you play two or more Heroes during your turn, +3 Power."}
+  "If you play two or more Villains during your turn, +3 Power. If you play two or more Heroes during your turn, +3 Power.",
+  :power "*"}
  {:set :crisis-1,
   :name "Animal Man",
   :type :hero,
@@ -1057,7 +1074,8 @@
   :victory 2,
   :copies 2,
   :text
-  "You may gain a card with cost 4 or less from the Line-Up, and then put it into any player's hand. If you choose not, to +2 Power."}
+  "You may gain a card with cost 4 or less from the Line-Up, and then put it into any player's hand. If you choose not, to +2 Power.",
+  :power "*"}
  {:set :crisis-1,
   :name "John Constantine",
   :type :hero,
@@ -1101,7 +1119,8 @@
   :text
   "You may gain a card from the Line-Up with the same name as a card in your hand. If you choose not to, +1 Power.",
   :attack
-  "Each foe reveals his hand and discards each card with the same name as a card in the Line-Up."}
+  "Each foe reveals his hand and discards each card with the same name as a card in the Line-Up.",
+  :power "*"}
  {:set :crisis-1,
   :name "Flight",
   :type :super-power,
@@ -1133,7 +1152,8 @@
   :victory 1,
   :copies 2,
   :text
-  "+3 Power if there are one or more Villains in the Line-Up. Otherwise, +2 Power."}
+  "+3 Power if there are one or more Villains in the Line-Up. Otherwise, +2 Power.",
+  :power "*"}
  {:set :crisis-1,
   :name "Magician's Corset",
   :type :equipment,
@@ -1141,7 +1161,8 @@
   :victory 1,
   :copies 1,
   :text
-  "Choose any number of players. Each of those players draws a card. +1 Power for each player who draws a card this way (including you)."}
+  "Choose any number of players. Each of those players draws a card. +1 Power for each player who draws a card this way (including you).",
+  :power "*"}
  {:set :crisis-1,
   :name "Quiver of Arrows",
   :type :equipment,
@@ -1157,7 +1178,8 @@
   :victory 1,
   :copies 2,
   :text
-  "You may gain a card with cost 5 or less from the destroyed pile. IF you choose not to,  +2 Power."}
+  "You may gain a card with cost 5 or less from the destroyed pile. IF you choose not to,  +2 Power.",
+  :power "*"}
  {:set :crisis-1,
   :name "House of Mystery",
   :type :location,
@@ -1203,7 +1225,8 @@
   :attack
   "Each player puts all Equipment from his hand into the Line-Up.",
   :ongoing
-  "Black Manta costs 3 more to defeat for each Equipment in the Line-Up."}
+  "Black Manta costs 3 more to defeat for each Equipment in the Line-Up.",
+  :power "*"}
  {:set :crisis-1,
   :name "Brainiac (IM)",
   :type :super-villain,
@@ -1233,7 +1256,8 @@
   :attack
   "Each player puts all Super Powers from his hand into the Line-Up.",
   :ongoing
-  "Darkseid costs 3 more to defeat for each Super Power in the Line-Up."}
+  "Darkseid costs 3 more to defeat for each Super Power in the Line-Up.",
+  :power "*"}
  {:set :crisis-1,
   :name "Deathstroke (IM)",
   :type :super-villain,
@@ -1242,7 +1266,8 @@
   :text
   "You may gain a Hero and Villain from the Line-Up. If you choose not to, +4 Power.",
   :attack
-  "Each player destroys a Hero, Super Power, and Equipment in his hand."}
+  "Each player destroys a Hero, Super Power, and Equipment in his hand.",
+  :power "*"}
  {:set :crisis-1,
   :name "Hades (IM)",
   :type :super-villain,
@@ -1288,7 +1313,8 @@
   :attack
   "Each player puts all Heroes from his hand into the Line-Up.",
   :ongoing
-  "Sinestro costs 3 more to defeat for each Hero in the Line-Up."}
+  "Sinestro costs 3 more to defeat for each Hero in the Line-Up.",
+  :power "*"}
  {:set :crisis-1,
   :name "Crisis Anti-Monitor (IM)",
   :type :super-villain,
@@ -1339,12 +1365,14 @@
   :name "Animal Man",
   :type :super-hero,
   :text
-  "During each of your turns, if you have played three or more different card types, +2 Power."}
+  "During each of your turns, if you have played three or more different card types, +2 Power.",
+  :power "*"}
  {:set :crisis-1,
   :name "Constantine",
   :type :super-hero,
   :text
-  "Once during each of your turns, reveal the top card of your deck. If its cost is 1 or greater, you may play it and it has +1 Power. If you do, destroy it at the end of your turn."}
+  "Once during each of your turns, reveal the top card of your deck. If its cost is 1 or greater, you may play it and it has +1 Power. If you do, destroy it at the end of your turn.",
+  :power "*"}
  {:set :crisis-1,
   :name "Green Arrow",
   :type :super-hero,
@@ -1475,7 +1503,8 @@
   :victory 1,
   :copies 2,
   :text
-  "You may destroy a card in your hand or discard pile. If it's a Villain, +Power equal to its cost. If you choose not to, +2 Power."}
+  "You may destroy a card in your hand or discard pile. If it's a Villain, +Power equal to its cost. If you choose not to, +2 Power.",
+  :power "*"}
  {:set :forever-evil,
   :name "Catwoman",
   :type :hero,
@@ -1527,7 +1556,8 @@
   :victory 2,
   :copies 1,
   :text
-  "Add the top card of the Main Deck to the Line-Up. +1 Power for each different cost among cards in the Line-Up."}
+  "Add the top card of the Main Deck to the Line-Up. +1 Power for each different cost among cards in the Line-Up.",
+  :power "*"}
  {:set :forever-evil,
   :name "Phantom Stranger",
   :type :hero,
@@ -1592,7 +1622,8 @@
   :victory 1,
   :copies 2,
   :text
-  "You may destroy a card in your hand or discard pile. If it's a Super Power, +Power equal to its cost. If you choose not to, +2 Power."}
+  "You may destroy a card in your hand or discard pile. If it's a Super Power, +Power equal to its cost. If you choose not to, +2 Power.",
+  :power "*"}
  {:set :forever-evil,
   :name "Deathstorm",
   :type :villain,
@@ -1623,7 +1654,8 @@
   :victory 1,
   :copies 2,
   :text
-  "+4 Power if there there are no cards with cost 3 or less in your discard pile. Otherwise, +2 Power."}
+  "+4 Power if there there are no cards with cost 3 or less in your discard pile. Otherwise, +2 Power.",
+  :power "*"}
  {:set :forever-evil,
   :name "Grid",
   :type :villain,
@@ -1656,7 +1688,8 @@
   :victory 2,
   :copies 1,
   :text
-  "You may destroy an Equipment in the Line-Up. +1 Power for each different Equipment in the destroyed pile."}
+  "You may destroy an Equipment in the Line-Up. +1 Power for each different Equipment in the destroyed pile.",
+  :power "*"}
  {:set :forever-evil,
   :name "Power Ring",
   :type :villain,
@@ -1664,7 +1697,8 @@
   :victory 2,
   :copies 1,
   :text
-  "You may destroy a Hero in the Line-Up. +1 Power for each different Hero in the destroyed pile."}
+  "You may destroy a Hero in the Line-Up. +1 Power for each different Hero in the destroyed pile.",
+  :power "*"}
  {:set :forever-evil,
   :name "Royal Flush Gang",
   :type :villain,
@@ -1680,7 +1714,8 @@
   :victory 3,
   :copies 1,
   :text
-  "You may destroy a Villain in the Line-Up. +1 Power for each different Villain in the destroyed pile."}
+  "You may destroy a Villain in the Line-Up. +1 Power for each different Villain in the destroyed pile.",
+  :power "*"}
  {:set :forever-evil,
   :name "Ultraman",
   :type :villain,
@@ -1688,7 +1723,8 @@
   :victory 3,
   :copies 1,
   :text
-  "You may destroy a card in the Line-Up. +1 Power for each different Super Power in the destroyed pile."}
+  "You may destroy a card in the Line-Up. +1 Power for each different Super Power in the destroyed pile.",
+  :power "*"}
  {:set :forever-evil,
   :name "Bizarro Power",
   :type :super-power,
@@ -1757,7 +1793,8 @@
   :victory 1,
   :copies 2,
   :text
-  "You may destroy a card in your hand or discard pile. If it's an Equipment, +Power equal to its cost. If you choose not to, +2 Power."}
+  "You may destroy a card in your hand or discard pile. If it's an Equipment, +Power equal to its cost. If you choose not to, +2 Power.",
+  :power "*"}
  {:set :forever-evil,
   :name "Transmutation",
   :type :super-power,
@@ -1860,7 +1897,8 @@
   :victory 1,
   :copies 2,
   :text
-  "You may destroy a card in your hand or discard pile. If it's a Hero, +Power equal to its cost. If you choose not to, +2 Power."}
+  "You may destroy a card in your hand or discard pile. If it's a Hero, +Power equal to its cost. If you choose not to, +2 Power.",
+  :power "*"}
  {:set :forever-evil,
   :name "Sledgehammer",
   :type :equipment,
@@ -1875,7 +1913,8 @@
   :cost 1,
   :victory 0,
   :copies 2,
-  :text "When you destroy this card in any zone, +2 Power."}
+  :text "When you destroy this card in any zone, +2 Power.",
+  :power "*"}
  {:set :forever-evil,
   :name "Belle Reve",
   :type :location,
@@ -1935,7 +1974,8 @@
   :text
   "You may put up to three cards from your discard pile on top of your deck. If you choose not to, +3 Power.",
   :attack
-  "Each player puts four cards with cost 0 from his discard pile on top of his deck. If you put none there, gain a Weakness."}
+  "Each player puts four cards with cost 0 from his discard pile on top of his deck. If you put none there, gain a Weakness.",
+  :power "*"}
  {:set :forever-evil,
   :name "Batman",
   :type :super-hero,
@@ -1944,7 +1984,8 @@
   :text
   "You may play up to three Equipment with cost 6 or less from the destroyed pile, and then put them on the bottom of the main deck. If you chose not to, +3 Power.",
   :attack
-  "Each player destroys an Equipment in his hand or discard pile. If you cannot, gain a Weakness."}
+  "Each player destroys an Equipment in his hand or discard pile. If you cannot, gain a Weakness.",
+  :power "*"}
  {:set :forever-evil,
   :name "Constantine",
   :type :super-hero,
@@ -1962,7 +2003,8 @@
   :text
   "+2 Power for each Super Power and Equipment you play or have played.",
   :attack
-  "Each player discards a Super Power and an Equipment. If you discard no cards, gain a Weakness."}
+  "Each player discards a Super Power and an Equipment. If you discard no cards, gain a Weakness.",
+  :power "*"}
  {:set :forever-evil,
   :name "Green Arrow",
   :type :super-hero,
@@ -1981,7 +2023,8 @@
   :text
   "You may play up to three Heroes with cost 6 or less from the destroyed pile, and then put them on the  bottom of the main deck. If you choose not to, +3 Power.",
   :attack
-  "Each player destroys a Hero in his hand or discard pile. If you cannot, gain a Weakness."}
+  "Each player destroys a Hero in his hand or discard pile. If you cannot, gain a Weakness.",
+  :power "*"}
  {:set :forever-evil,
   :name "Martian Manhunter",
   :type :super-hero,
@@ -1990,7 +2033,8 @@
   :text
   "+2 Power for each Hero and Villain you play or have played this turn.",
   :attack
-  "Each player discards a Hero and a Villain. If you discard no cards, gain a Weakness."}
+  "Each player discards a Hero and a Villain. If you discard no cards, gain a Weakness.",
+  :power "*"}
  {:set :forever-evil,
   :name "Shazam!",
   :type :super-hero,
@@ -2008,7 +2052,8 @@
   :text
   "You may play up to three Super Powers from the destroyed pile, and then put them on the bottom of the main deck. If you choose not to, +4 Power.",
   :attack
-  "Each player destroys a Super Power in his hand or discard pile. If you cannot, gain two Weakness cards."}
+  "Each player destroys a Super Power in his hand or discard pile. If you cannot, gain two Weakness cards.",
+  :power "*"}
  {:set :forever-evil,
   :name "Swamp Thing",
   :type :super-hero,
@@ -2016,7 +2061,8 @@
   :victory 5,
   :text "+2 Power for each Location in play.",
   :attack
-  "Each player puts a Location he controls into his discard pile. If you cannot, gain a Weakness."}
+  "Each player puts a Location he controls into his discard pile. If you cannot, gain a Weakness.",
+  :power "*"}
  {:set :forever-evil,
   :name "Wonder Woman",
   :type :super-hero,
@@ -2025,7 +2071,8 @@
   :text
   "You may play up to three Villains with cost 6 or less from the destroyed pile, and then put them on the bottom of the main deck. If you choose not to, +3 Power.",
   :attack
-  "Each player destroys a Villain in his hand or discard pile. If you cannot, gain a Weakness."}
+  "Each player destroys a Villain in his hand or discard pile. If you cannot, gain a Weakness.",
+  :power "*"}
  {:set :forever-evil,
   :name "Bizarro",
   :type :super-villain,
@@ -2039,7 +2086,8 @@
  {:set :forever-evil,
   :name "Deathstroke",
   :type :super-villain,
-  :text "+1 Power for each card you destroy during your turn."}
+  :text "+1 Power for each card you destroy during your turn.",
+  :power "*"}
  {:set :forever-evil,
   :name "Harley Quinn",
   :type :super-villain,
@@ -2064,7 +2112,8 @@
   :name "Bane",
   :type :super-villain,
   :text
-  "If the first card you play during each of your turns has cost 1 or greater, you may destroy it. If you do, +2 Power."}]
+  "If the first card you play during each of your turns has cost 1 or greater, you may destroy it. If you do, +2 Power.",
+  :power "*"}]
 )
 (ns dcdbg.cards.core
   (:require [dcdbg.cards.compiled :as compiled]))

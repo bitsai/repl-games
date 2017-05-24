@@ -57,9 +57,15 @@
       (assoc parsed :text (or y "") :power (Long. power)))
     parsed))
 
+(defn- parse-variable-power [{:keys [text power] :as parsed}]
+  (cond-> parsed
+    (and (re-find #"\+\d Power" text) (not power))
+    (assoc :power "*")))
+
 (defn- remove-empty-text [{:keys [text] :as parsed}]
   (cond-> parsed
-    (empty? text) (dissoc :text)))
+    (empty? text)
+    (dissoc :text)))
 
 (defn- parse-card-text [row]
   (-> (reduce (fn [{:keys [text] :as acc} {:keys [re k]}]
@@ -70,6 +76,7 @@
               {:text (get row card-text-index)}
               card-text-sections)
       (parse-card-power)
+      (parse-variable-power)
       (remove-empty-text)))
 
 (defn- parse-csv-row [row set]
