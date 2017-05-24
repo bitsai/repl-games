@@ -21,8 +21,7 @@
   (mapv (fn [idx r c]
           (let [max-life (cond-> (:max-life c)
                            ;; sheriff gets 2 additional life points
-                           (= r :sheriff)
-                           (+ 2))]
+                           (= r :sheriff) (+ 2))]
             (-> c
                 (assoc :role r)
                 (assoc :max-life max-life)

@@ -50,39 +50,34 @@
     (when (seq v)
       [k (parse-fn v)])))
 
-(defn- parse-card-text [row]
-  (let [text (get row card-text-index)]
-    (when (seq text)
-      (reduce (fn [{:keys [text] :as acc} {:keys [re k]}]
-                (if-not (and text (re-find re text))
-                  acc
-                  (let [[x y] (str/split text re)
-                        acc (assoc acc k y)]
-                    (if (seq x)
-                      (assoc acc :text x)
-                      (dissoc acc :text)))))
-              {:text text}
-              card-text-sections))))
-
-(defn- parse-card-power [parsed]
-  (if-let [text (:text parsed)]
-    (if-let [re (first (filter #(re-find % text) card-power-res))]
-      (let [[_ y] (str/split text re)
-            [_ power] (re-find re text)
-            parsed (assoc parsed :power (Long. power))]
-        (if (seq y)
-          (assoc parsed :text y)
-          (dissoc parsed :text)))
-      parsed)
+(defn- parse-card-power [{:keys [text] :as parsed}]
+  (if-let [re (first (filter #(re-find % text) card-power-res))]
+    (let [[_ y] (str/split text re)
+          [_ power] (re-find re text)]
+      (assoc parsed :text (or y "") :power (Long. power)))
     parsed))
+
+(defn- remove-empty-text [{:keys [text] :as parsed}]
+  (cond-> parsed
+    (empty? text) (dissoc :text)))
+
+(defn- parse-card-text [row]
+  (-> (reduce (fn [{:keys [text] :as acc} {:keys [re k]}]
+                (if-not (re-find re text)
+                  acc
+                  (let [[x y] (str/split text re)]
+                    (assoc acc :text x k y))))
+              {:text (get row card-text-index)}
+              card-text-sections)
+      (parse-card-power)
+      (remove-empty-text)))
 
 (defn- parse-csv-row [row set]
   (when (-> row first seq)
-    (-> (->> csv-fields
+    (merge (->> csv-fields
              (keep #(parse-field % row))
              (into {:set set}))
-        (merge (parse-card-text row))
-        (parse-card-power))))
+           (parse-card-text row))))
 
 (defn- parse-csv-file [file]
   (let [set (-> file (.getName) (str/split #"\.") first keyword)]
