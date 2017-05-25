@@ -54,7 +54,7 @@
                         (mapv #(format "SUPER-HERO (%s): %s" (:name %) (:text %))))
                    (let [sv (first svs)]
                      (format "ONGOING (%s): %s" (:name sv) (:ongoing sv))))
-        state (for [[name cards] [[:super-villain svs]
+        zones (for [[name cards] [[:super-villain svs]
                                   [:weakness (mk-cards cards/weakness)]
                                   [:timer []]
                                   [:kick (mk-cards cards/kick)]
@@ -73,6 +73,6 @@
                  :cards (flip cards facing)})]
     (-> game
         (assoc :messages msgs)
-        (assoc :state (vec state))
+        (assoc :zones (vec zones))
         ;; flip first super-villain face up
-        (assoc-in [:state 0 :cards 0 :facing] :up))))
+        (assoc-in [:zones 0 :cards 0 :facing] :up))))

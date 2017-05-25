@@ -8,7 +8,7 @@
 
 (defn- find-zone-index [game zone-name]
   (->> game
-       (:state)
+       (:zones)
        (keep-indexed (fn [idx zone]
                        (when (-> zone :name (= zone-name))
                          idx)))
@@ -22,7 +22,7 @@
 
 (defn- get-zone [game zone-*]
   (let [zone-idx (to-zone-index game zone-*)]
-    (-> game :state (nth zone-idx))))
+    (-> game :zones (nth zone-idx))))
 
 (defn- get-cards [game zone-*]
   (-> game (get-zone zone-*) :cards))
@@ -47,7 +47,7 @@
 
 (defn- update-cards [game zone-* update-fn]
   (let [zone-idx (to-zone-index game zone-*)]
-    (update-in game [:state zone-idx :cards] update-fn)))
+    (update-in game [:zones zone-idx :cards] update-fn)))
 
 (defn- move* [game from-* to-* top-or-bottom & card-idxs]
   (let [card-idxs (or (seq card-idxs) [0])

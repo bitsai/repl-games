@@ -44,8 +44,8 @@
   (when (-> cards first :facing (= :up))
     (print-card-summary! (first cards) 0)))
 
-(defn print-game! [{:keys [messages state]}]
-  (->> state
+(defn print-game! [{:keys [messages zones]}]
+  (->> zones
        (map-indexed (fn [idx zone]
                       (case (:type zone)
                         :pile (print-pile! zone idx)

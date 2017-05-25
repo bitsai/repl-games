@@ -2234,8 +2234,8 @@
   (when (-> cards first :facing (= :up))
     (print-card-summary! (first cards) 0)))
 
-(defn print-game! [{:keys [messages state]}]
-  (->> state
+(defn print-game! [{:keys [messages zones]}]
+  (->> zones
        (map-indexed (fn [idx zone]
                       (case (:type zone)
                         :pile (print-pile! zone idx)
@@ -2301,7 +2301,7 @@
                         (mapv #(format "SUPER-HERO (%s): %s" (:name %) (:text %))))
                    (let [sv (first svs)]
                      (format "ONGOING (%s): %s" (:name sv) (:ongoing sv))))
-        state (for [[name cards] [[:super-villain svs]
+        zones (for [[name cards] [[:super-villain svs]
                                   [:weakness (mk-cards cards/weakness)]
                                   [:timer []]
                                   [:kick (mk-cards cards/kick)]
@@ -2320,9 +2320,9 @@
                  :cards (flip cards facing)})]
     (-> game
         (assoc :messages msgs)
-        (assoc :state (vec state))
+        (assoc :zones (vec zones))
         ;; flip first super-villain face up
-        (assoc-in [:state 0 :cards 0 :facing] :up))))
+        (assoc-in [:zones 0 :cards 0 :facing] :up))))
 (ns dcdbg.commands
   (:require [clojure.string :as str]
             [dcdbg.config :as cfg]
@@ -2333,7 +2333,7 @@
 
 (defn- find-zone-index [game zone-name]
   (->> game
-       (:state)
+       (:zones)
        (keep-indexed (fn [idx zone]
                        (when (-> zone :name (= zone-name))
                          idx)))
@@ -2347,7 +2347,7 @@
 
 (defn- get-zone [game zone-*]
   (let [zone-idx (to-zone-index game zone-*)]
-    (-> game :state (nth zone-idx))))
+    (-> game :zones (nth zone-idx))))
 
 (defn- get-cards [game zone-*]
   (-> game (get-zone zone-*) :cards))
@@ -2372,7 +2372,7 @@
 
 (defn- update-cards [game zone-* update-fn]
   (let [zone-idx (to-zone-index game zone-*)]
-    (update-in game [:state zone-idx :cards] update-fn)))
+    (update-in game [:zones zone-idx :cards] update-fn)))
 
 (defn- move* [game from-* to-* top-or-bottom & card-idxs]
   (let [card-idxs (or (seq card-idxs) [0])

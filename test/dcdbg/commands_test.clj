@@ -4,7 +4,7 @@
             [repl-games.random :as rand]))
 
 (deftest move-test
-  (let [game {:state [{:name :line-up
+  (let [game {:zones [{:name :line-up
                        :type :pile
                        :facing :up
                        :cards [{:name "A"
@@ -19,7 +19,7 @@
                        :cards [{:name "D"
                                 :facing :down}]}]}]
     (testing "By default, move top card."
-      (is (= {:state [{:name :line-up
+      (is (= {:zones [{:name :line-up
                        :type :pile
                        :facing :up
                        :cards [{:name "B"
@@ -35,7 +35,7 @@
                                 :facing :down}]}]}
              (move game :line-up :discard :top nil))))
     (testing "Move to the top."
-      (is (= {:state [{:name :line-up
+      (is (= {:zones [{:name :line-up
                        :type :pile
                        :facing :up
                        :cards [{:name "B"
@@ -51,7 +51,7 @@
                                 :facing :down}]}]}
              (move game :line-up :discard :top [0 2]))))
     (testing "Move to the bottom."
-      (is (= {:state [{:name :line-up
+      (is (= {:zones [{:name :line-up
                        :type :pile
                        :facing :up
                        :cards [{:name "B"
@@ -68,7 +68,7 @@
              (move game :line-up :discard :bottom [0 2]))))))
 
 (deftest gain-test
-  (let [game {:state [{:name :kick
+  (let [game {:zones [{:name :kick
                        :type :stack
                        :facing :up
                        :cards [{:name "A"
@@ -83,7 +83,7 @@
                        :cards [{:name "D"
                                 :facing :down}]}]}]
     (testing "By default, gain 1 card."
-      (is (= {:state [{:name :kick
+      (is (= {:zones [{:name :kick
                        :type :stack
                        :facing :up
                        :cards [{:name "B"
@@ -99,7 +99,7 @@
                                 :facing :down}]}]}
              (gain game :kick))))
     (testing "Gain multiple cards."
-      (is (= {:state [{:name :kick
+      (is (= {:zones [{:name :kick
                        :type :stack
                        :facing :up
                        :cards [{:name "C"
@@ -116,7 +116,7 @@
              (gain game :kick 2))))))
 
 (deftest draw-test
-  (let [game {:state [{:name :hand
+  (let [game {:zones [{:name :hand
                        :type :pile
                        :facing :up
                        :cards [{:name "A"
@@ -134,7 +134,7 @@
                        :cards [{:name "D"
                                 :facing :down}]}]}]
     (testing "By default, draw 1 card."
-      (is (= {:state [{:name :hand
+      (is (= {:zones [{:name :hand
                        :type :pile
                        :facing :up
                        :cards [{:name "A"
@@ -153,7 +153,7 @@
                                 :facing :down}]}]}
              (draw game))))
     (testing "Draw multiple cards."
-      (is (= {:state [{:name :hand
+      (is (= {:zones [{:name :hand
                        :type :pile
                        :facing :up
                        :cards [{:name "A"
@@ -173,7 +173,7 @@
                                 :facing :down}]}]}
              (draw game 2))))
     (testing "If necessary, refill deck from discard then draw."
-      (is (= {:state [{:name :hand
+      (is (= {:zones [{:name :hand
                        :type :pile
                        :facing :up
                        :cards [{:name "A"
@@ -198,7 +198,7 @@
                    (draw game 4))))))
 
 (deftest discard-hand-test
-  (let [game {:state [{:name :hand
+  (let [game {:zones [{:name :hand
                        :type :pile
                        :facing :up
                        :cards [{:name "A"
@@ -211,7 +211,7 @@
                        :cards [{:name "C"
                                 :facing :down}]}]}]
     (testing "Discard hand."
-      (is (= {:state [{:name :hand
+      (is (= {:zones [{:name :hand
                        :type :pile
                        :facing :up
                        :cards []}
@@ -227,7 +227,7 @@
              (discard-hand game))))))
 
 (deftest exec-super-villain-plan-test
-  (let [game1 {:state [{:name :destroyed
+  (let [game1 {:zones [{:name :destroyed
                         :type :pile
                         :facing :down
                         :cards []}
@@ -242,7 +242,7 @@
                                  :facing :up}
                                 {:name "D"
                                  :facing :up}]}]}
-        game2 {:state [{:name :destroyed
+        game2 {:zones [{:name :destroyed
                         :type :pile
                         :facing :down
                         :cards [{:name "A"
@@ -264,7 +264,7 @@
       (is (= game1
              (exec-super-villain-plan game1))))
     (testing "Destroy bottom Line-Up card."
-      (is (= {:state [{:name :destroyed
+      (is (= {:zones [{:name :destroyed
                        :type :pile
                        :facing :down
                        :cards [{:name "F"
@@ -285,7 +285,7 @@
              (exec-super-villain-plan game2))))))
 
 (deftest advance-timer-test
-  (let [game {:state [{:name :weakness
+  (let [game {:zones [{:name :weakness
                        :type :stack
                        :facing :down
                        :cards [{:name "A"
@@ -298,7 +298,7 @@
                        :cards [{:name "C"
                                 :facing :up}]}]}]
     (testing "Flip over the top Weakness card."
-      (is (= {:state [{:name :weakness
+      (is (= {:zones [{:name :weakness
                        :type :stack
                        :facing :down
                        :cards [{:name "B"
@@ -313,7 +313,7 @@
              (advance-timer game))))))
 
 (deftest refill-line-up-test
-  (let [game {:state [{:name :main-deck
+  (let [game {:zones [{:name :main-deck
                        :type :stack
                        :facing :down
                        :cards [{:name "A"
@@ -336,7 +336,7 @@
     (testing "Refill Line-Up from main deck."
       (is (= {:messages ["ATTACK (A): attack"
                          "ATTACK (B): attack"]
-              :state [{:name :main-deck
+              :zones [{:name :main-deck
                        :type :stack
                        :facing :down
                        :cards []}
@@ -360,7 +360,7 @@
              (refill-line-up game))))))
 
 (deftest flip-super-villain-test
-  (let [game {:state [{:name :super-villain
+  (let [game {:zones [{:name :super-villain
                        :type :stack
                        :facing :down
                        :cards [{:name "SV"
@@ -373,7 +373,7 @@
     (testing "Flip over a new Super-Villain and show its effects."
       (is (= {:messages ["ATTACK (SV): attack"
                          "ONGOING (SV): ongoing"]
-              :state [{:name :super-villain
+              :zones [{:name :super-villain
                        :type :stack
                        :facing :down
                        :cards [{:name "SV"
@@ -381,5 +381,5 @@
                                 :attack "attack"
                                 :ongoing "ongoing"}]}]}
              (-> game
-                 (assoc-in [:state 0 :cards 0 :facing] :down)
+                 (assoc-in [:zones 0 :cards 0 :facing] :down)
                  (flip-super-villain)))))))
