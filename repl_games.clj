@@ -2253,9 +2253,7 @@
 
 (defn- mk-cards [card-spec]
   (let [n (:copies card-spec 1)]
-    (->> (dissoc card-spec :copies)
-         (repeat n)
-         (map #(assoc % :id (rand/uniform))))))
+    (->> (dissoc card-spec :copies) (repeat n))))
 
 (defn- flip [cards facing]
   (mapv #(assoc % :facing facing) cards))
@@ -2318,7 +2316,8 @@
                 {:name name
                  :type type
                  :facing facing
-                 :cards (flip cards facing)})]
+                 :cards (->> (flip cards facing)
+                             (map #(assoc % :id (rand/uniform))))})]
     (-> game
         (assoc :messages msgs)
         (assoc :zones (vec zones))
@@ -2439,7 +2438,9 @@
 
 (defn discard-hand [game]
   (let [hand-count (count-cards game :hand)]
-    (move game :hand :discard :top (range hand-count))))
+    (if (zero? hand-count)
+      game
+      (move game :hand :discard :top (range hand-count)))))
 
 (defn exec-super-villain-plan [game]
   (let [line-up-count (count-cards game :line-up)
