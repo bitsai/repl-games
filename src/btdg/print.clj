@@ -34,17 +34,13 @@
                    die)))
 
 (defn print-game! [game]
-  (let [active-player-idx (-> game :state :active-player-idx)
-        active-die-idxs (-> game :state :active-die-idxs)]
-    (->> game
-         (:state)
-         (:players)
-         (map-indexed (partial print-player! active-player-idx))
-         (dorun))
-    (println (format " ARROWS %d" (-> game :state :arrows)))
-    (println (format " DICE ROLLS %d" (-> game :state :dice-rolls)))
-    (->> game
-         (:state)
-         (:dice)
-         (map-indexed (partial print-die! active-die-idxs))
-         (dorun))))
+  (->> game
+       (:players)
+       (map-indexed (partial print-player! (:active-player-idx game)))
+       (dorun))
+  (println (format " ARROWS %d" (:arrows game)))
+  (println (format " DICE ROLLS %d" (:dice-rolls game)))
+  (->> game
+       (:dice)
+       (map-indexed (partial print-die! (:active-die-idxs game)))
+       (dorun)))

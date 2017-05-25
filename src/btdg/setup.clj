@@ -18,7 +18,7 @@
        (take n)))
 
 (defn- setup-players [roles characters]
-  (mapv (fn [idx r c]
+  (mapv (fn [r c]
           (let [max-life (cond-> (:max-life c)
                            ;; sheriff gets 2 additional life points
                            (= r :sheriff)
@@ -28,7 +28,6 @@
                 (assoc :max-life max-life)
                 (assoc :life max-life)
                 (assoc :arrows 0))))
-        (range)
         roles
         characters))
 
@@ -38,13 +37,11 @@
                            (:outlaw-count cfg/defaults)
                            (:deputy-count cfg/defaults))
         characters (setup-characters (count roles))
-        players (setup-players roles characters)
-        state {:players players
-               ;; make first player active
-               :active-player-idx 0
-               :arrows (:arrow-count cfg/defaults)}]
+        players (setup-players roles characters)]
     (-> game
-        ;; set initial state
-        (assoc :state state)
+        (assoc :players players)
+        ;; make first player active
+        (assoc :active-player-idx 0)
+        (assoc :arrows (:arrow-count cfg/defaults))
         ;; init dice
         (cmds/init-dice))))
