@@ -43,7 +43,7 @@
 
 (def location (get-cards :location))
 
-(def super-hero (get-cards :super-hero :forever-evil))
+(def super-hero (get-cards :super-hero :base))
 
 (def super-power (get-cards :super-power))
 
