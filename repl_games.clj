@@ -2189,9 +2189,9 @@
   (array-map
    :super-villain {:type :stack
                    :facing :down}
-   :countdown     {:type :stack
-                   :facing :down}
    :weakness      {:type :stack
+                   :facing :down}
+   :timer         {:type :stack
                    :facing :up}
    :kick          {:type :stack
                    :facing :up}
@@ -2325,8 +2325,8 @@
                    (let [sv (first svs)]
                      (format "ONGOING (%s): %s" (:name sv) (:ongoing sv))))
         state (for [[name cards] [[:super-villain svs]
-                                  [:countdown (mk-cards cards/weakness)]
-                                  [:weakness []]
+                                  [:weakness (mk-cards cards/weakness)]
+                                  [:timer []]
                                   [:kick (mk-cards cards/kick)]
                                   [:destroyed []]
                                   [:main-deck main-deck]
@@ -2464,7 +2464,12 @@
 
 (defn exec-super-villain-plan [game]
   (let [line-up-count (count-cards game :line-up)]
-    (move* game :line-up :destroyed :top (dec line-up-count))))
+    (if (< line-up-count (:line-up-size cfg/defaults))
+      game
+      (move* game :line-up :destroyed :top (dec line-up-count)))))
+
+(defn advance-timer [game]
+  (move* game :weakness :timer :top 0))
 
 (defn refill-line-up [game]
   (if (-> game (count-cards :line-up) (>= (:line-up-size cfg/defaults)))
@@ -2476,16 +2481,6 @@
           (update :messages concat msgs)
           (move* :main-deck :line-up :top 0)
           (refill-line-up)))))
-
-(defn exec-villains-plan [game]
-  (let [vs (->> (get-cards game :line-up)
-                (filter #(-> % :type (= :villain))))]
-    (if (empty? vs)
-      game
-      (let [max-cost (->> vs
-                          (map :cost)
-                          (apply max))]
-        (move game :main-deck :destroyed :top (range max-cost))))))
 
 (defn flip-super-villain [game]
   (if (-> game (get-card :super-villain 0) :facing (= :up))
@@ -2501,21 +2496,17 @@
           (update :messages concat msgs)
           (update-cards :super-villain (constantly new-svs))))))
 
-(defn advance-countdown [game]
-  (move* game :countdown :weakness :top 0))
-
 (defn end-turn
   ([game]
    (end-turn game 5))
   ([game n]
    (-> game
        (discard-hand)
-       (draw n)
        (exec-super-villain-plan)
+       (advance-timer)
+       (draw n)
        (refill-line-up)
-       (exec-villains-plan)
-       (flip-super-villain)
-       (advance-countdown))))
+       (flip-super-villain))))
 (ns dcdbg.core
   (:require [dcdbg.commands :as cmds]
             [dcdbg.print :as print]
@@ -2548,8 +2539,6 @@
         :fn #(cmds/move %1 %2 :discard :top %&)}
    :de {:doc "(destroy): zone-* [card-idx+]"
         :fn #(cmds/move %1 %2 :destroyed :top %&)}
-   :dw {:doc "(destroy weakness): zone-* [card-idx+]"
-        :fn #(cmds/move %1 %2 :weakness :top %&)}
    :dr {:doc "(draw): [n]"
         :fn cmds/draw}
    :et {:doc "(end turn): [n]"

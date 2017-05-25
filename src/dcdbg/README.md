@@ -1,5 +1,5 @@
 # dcdbg
 
-A Solitaire variant of DC Comics Deck-Building Game, based on the [BoardGameGeek Solo Variant](https://boardgamegeek.com/filepage/92787/dc-comics-dbg-solo-variant).
+A Solitaire variant of DC Comics Deck-Building Game, based on the [BoardGameGeek Solitaire variant](https://boardgamegeek.com/filepage/101516/dc-dbg-bgg-solitaire-variant-casey-hughes-contribu).
 
 Uses the base game, Forever Evil, and Crisis Expansion Pack 1; uses only 1 copy of each card.

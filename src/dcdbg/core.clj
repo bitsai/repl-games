@@ -30,8 +30,6 @@
         :fn #(cmds/move %1 %2 :discard :top %&)}
    :de {:doc "(destroy): zone-* [card-idx+]"
         :fn #(cmds/move %1 %2 :destroyed :top %&)}
-   :dw {:doc "(destroy weakness): zone-* [card-idx+]"
-        :fn #(cmds/move %1 %2 :weakness :top %&)}
    :dr {:doc "(draw): [n]"
         :fn cmds/draw}
    :et {:doc "(end turn): [n]"

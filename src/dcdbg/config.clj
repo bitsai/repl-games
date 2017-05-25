@@ -20,9 +20,9 @@
   (array-map
    :super-villain {:type :stack
                    :facing :down}
-   :countdown     {:type :stack
-                   :facing :down}
    :weakness      {:type :stack
+                   :facing :down}
+   :timer         {:type :stack
                    :facing :up}
    :kick          {:type :stack
                    :facing :up}

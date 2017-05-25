@@ -55,8 +55,8 @@
                    (let [sv (first svs)]
                      (format "ONGOING (%s): %s" (:name sv) (:ongoing sv))))
         state (for [[name cards] [[:super-villain svs]
-                                  [:countdown (mk-cards cards/weakness)]
-                                  [:weakness []]
+                                  [:weakness (mk-cards cards/weakness)]
+                                  [:timer []]
                                   [:kick (mk-cards cards/kick)]
                                   [:destroyed []]
                                   [:main-deck main-deck]

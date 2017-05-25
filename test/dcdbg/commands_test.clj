@@ -227,23 +227,47 @@
              (discard-hand game))))))
 
 (deftest exec-super-villain-plan-test
-  (let [game {:state [{:name :destroyed
-                       :type :pile
-                       :facing :down
-                       :cards [{:name "A"
-                                :facing :down}]}
-                      {:name :line-up
-                       :type :pile
-                       :facing :up
-                       :cards [{:name "B"
-                                :facing :up}
-                               {:name "C"
-                                :facing :up}]}]}]
+  (let [game1 {:state [{:name :destroyed
+                        :type :pile
+                        :facing :down
+                        :cards []}
+                       {:name :line-up
+                        :type :pile
+                        :facing :up
+                        :cards [{:name "A"
+                                 :facing :up}
+                                {:name "B"
+                                 :facing :up}
+                                {:name "C"
+                                 :facing :up}
+                                {:name "D"
+                                 :facing :up}]}]}
+        game2 {:state [{:name :destroyed
+                        :type :pile
+                        :facing :down
+                        :cards [{:name "A"
+                                 :facing :down}]}
+                       {:name :line-up
+                        :type :pile
+                        :facing :up
+                        :cards [{:name "B"
+                                 :facing :up}
+                                {:name "C"
+                                 :facing :up}
+                                {:name "D"
+                                 :facing :up}
+                                {:name "E"
+                                 :facing :up}
+                                {:name "F"
+                                 :facing :up}]}]}]
+    (testing "Do nothing if a Line-Up card was purchased."
+      (is (= game1
+             (exec-super-villain-plan game1))))
     (testing "Destroy bottom Line-Up card."
       (is (= {:state [{:name :destroyed
                        :type :pile
                        :facing :down
-                       :cards [{:name "C"
+                       :cards [{:name "F"
                                 :facing :down}
                                {:name "A"
                                 :facing :down}]}
@@ -251,8 +275,42 @@
                        :type :pile
                        :facing :up
                        :cards [{:name "B"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}
+                               {:name "D"
+                                :facing :up}
+                               {:name "E"
                                 :facing :up}]}]}
-             (exec-super-villain-plan game))))))
+             (exec-super-villain-plan game2))))))
+
+(deftest advance-timer-test
+  (let [game {:state [{:name :weakness
+                       :type :stack
+                       :facing :down
+                       :cards [{:name "A"
+                                :facing :down}
+                               {:name "B"
+                                :facing :down}]}
+                      {:name :timer
+                       :type :stack
+                       :facing :up
+                       :cards [{:name "C"
+                                :facing :up}]}]}]
+    (testing "Flip over the top Weakness card."
+      (is (= {:state [{:name :weakness
+                       :type :stack
+                       :facing :down
+                       :cards [{:name "B"
+                                :facing :down}]}
+                      {:name :timer
+                       :type :stack
+                       :facing :up
+                       :cards [{:name "A"
+                                :facing :up}
+                               {:name "C"
+                                :facing :up}]}]}
+             (advance-timer game))))))
 
 (deftest refill-line-up-test
   (let [game {:state [{:name :main-deck
@@ -301,64 +359,6 @@
                                 :facing :up}]}]}
              (refill-line-up game))))))
 
-(deftest exec-villains-plan-test
-  (let [game1 {:state [{:name :line-up
-                        :type :pile
-                        :facing :up
-                        :cards []}]}
-        game2 {:state [{:name :destroyed
-                        :type :pile
-                        :facing :down
-                        :cards []}
-                       {:name :main-deck
-                        :type :stack
-                        :facing :down
-                        :cards [{:name "A"
-                                 :facing :down}
-                                {:name "B"
-                                 :facing :down}
-                                {:name "C"
-                                 :facing :down}]}
-                       {:name :line-up
-                        :type :pile
-                        :facing :up
-                        :cards [{:name "D"
-                                 :facing :up
-                                 :type :villain
-                                 :cost 1}
-                                {:name "E"
-                                 :facing :up
-                                 :type :villain
-                                 :cost 2}]}]}]
-    (testing "Do nothing if there are no villains in Line-Up."
-      (is (= game1
-             (exec-villains-plan game1))))
-    (testing "Destroy N main deck cards (N = max villain cost in Line-Up)."
-      (is (= {:state [{:name :destroyed
-                       :type :pile
-                       :facing :down
-                       :cards [{:name "A"
-                                :facing :down}
-                               {:name "B"
-                                :facing :down}]}
-                      {:name :main-deck
-                       :type :stack
-                       :facing :down
-                       :cards [{:name "C"
-                                :facing :down}]}
-                      {:name :line-up
-                       :type :pile
-                       :facing :up
-                       :cards [{:name "D"
-                                :facing :up
-                                :type :villain
-                                :cost 1}
-                               {:name "E"
-                                :facing :up
-                                :type :villain
-                                :cost 2}]}]}
-             (exec-villains-plan game2))))))
-
 (deftest flip-super-villain-test
   (let [game {:state [{:name :super-villain
                        :type :stack
@@ -383,31 +383,3 @@
              (-> game
                  (assoc-in [:state 0 :cards 0 :facing] :down)
                  (flip-super-villain)))))))
-
-(deftest advance-countdown-test
-  (let [game {:state [{:name :countdown
-                       :type :stack
-                       :facing :down
-                       :cards [{:name "A"
-                                :facing :down}
-                               {:name "B"
-                                :facing :down}]}
-                      {:name :weakness
-                       :type :stack
-                       :facing :up
-                       :cards [{:name "C"
-                                :facing :up}]}]}]
-    (testing "Flip over the top Weakness card."
-      (is (= {:state [{:name :countdown
-                       :type :stack
-                       :facing :down
-                       :cards [{:name "B"
-                                :facing :down}]}
-                      {:name :weakness
-                       :type :stack
-                       :facing :up
-                       :cards [{:name "A"
-                                :facing :up}
-                               {:name "C"
-                                :facing :up}]}]}
-             (advance-countdown game))))))
