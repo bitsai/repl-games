@@ -2317,13 +2317,14 @@
                  :type type
                  :facing facing
                  :cards (->> (flip cards facing)
-                             (map #(assoc % :id (rand/uniform))))})]
+                             (mapv #(assoc % :id (rand/uniform))))})]
     (-> game
         (assoc :messages msgs)
         (assoc :zones (vec zones))
         ;; flip first super-villain face up
         (assoc-in [:zones 0 :cards 0 :facing] :up)
-        (assoc :last-line-up-id (-> line-up last :id)))))
+        ;; store :id of last Line-Up card
+        (assoc :last-line-up-id (-> zones (nth 6) :cards last :id)))))
 (ns dcdbg.commands
   (:require [clojure.string :as str]
             [dcdbg.config :as cfg]
