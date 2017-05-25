@@ -116,7 +116,7 @@
 
 (defn exec-super-villain-plan [game]
   (let [line-up-count (count-cards game :line-up)
-        last-line-up-id (->> line-up-count dec (get-card game :line-up) :id)]
+        last-line-up-id (-> game (get-cards :line-up) last :id)]
     (if (-> game :last-line-up-id (not= last-line-up-id))
       game
       (move* game :line-up :destroyed :top (dec line-up-count)))))
@@ -126,7 +126,7 @@
 
 (defn refill-line-up [game]
   (let [line-up-count (count-cards game :line-up)
-        last-line-up-id (->> line-up-count dec (get-card game :line-up) :id)]
+        last-line-up-id (-> game (get-cards :line-up) last :id)]
     (if (>= line-up-count (:line-up-size cfg/defaults))
       (assoc game :last-line-up-id last-line-up-id)
       (let [{:keys [name type attack]} (get-card game :main-deck 0)
