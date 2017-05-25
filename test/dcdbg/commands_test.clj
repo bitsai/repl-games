@@ -198,18 +198,25 @@
                    (draw game 4))))))
 
 (deftest discard-hand-test
-  (let [game {:zones [{:name :hand
-                       :type :pile
-                       :facing :up
-                       :cards [{:name "A"
-                                :facing :up}
-                               {:name "B"
-                                :facing :up}]}
-                      {:name :discard
-                       :type :pile
-                       :facing :down
-                       :cards [{:name "C"
-                                :facing :down}]}]}]
+  (let [game1 {:zones [{:name :hand
+                        :type :pile
+                        :facing :up
+                        :cards []}]}
+        game2 {:zones [{:name :hand
+                        :type :pile
+                        :facing :up
+                        :cards [{:name "A"
+                                 :facing :up}
+                                {:name "B"
+                                 :facing :up}]}
+                       {:name :discard
+                        :type :pile
+                        :facing :down
+                        :cards [{:name "C"
+                                 :facing :down}]}]}]
+    (testing "Do nothing if hand is empty."
+      (is (= game1
+             (discard-hand game1))))
     (testing "Discard hand."
       (is (= {:zones [{:name :hand
                        :type :pile
@@ -224,7 +231,7 @@
                                 :facing :down}
                                {:name "C"
                                 :facing :down}]}]}
-             (discard-hand game))))))
+             (discard-hand game2))))))
 
 (deftest exec-super-villain-plan-test
   (let [game {:zones [{:name :destroyed

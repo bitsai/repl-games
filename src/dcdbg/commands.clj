@@ -112,7 +112,9 @@
 
 (defn discard-hand [game]
   (let [hand-count (count-cards game :hand)]
-    (move game :hand :discard :top (range hand-count))))
+    (if (zero? hand-count)
+      game
+      (move game :hand :discard :top (range hand-count)))))
 
 (defn exec-super-villain-plan [game]
   (let [line-up-count (count-cards game :line-up)
