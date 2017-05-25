@@ -39,8 +39,7 @@
   (rand/set-seed! seed)
   ;; mk-game-state should update :messages and :state
   (mk-game-state {:commands [[:setup seed]]
-                  :messages nil
-                  :state nil}))
+                  :messages nil}))
 
 (defn update-game [game cmd-name cmd-fn args]
   ;; iff an updated game is produced ...
@@ -2254,7 +2253,9 @@
 
 (defn- mk-cards [card-spec]
   (let [n (:copies card-spec 1)]
-    (->> (dissoc card-spec :copies) (repeat n))))
+    (->> (dissoc card-spec :copies)
+         (repeat n)
+         (map #(assoc % :id (rand/uniform))))))
 
 (defn- flip [cards facing]
   (mapv #(assoc % :facing facing) cards))
@@ -2322,7 +2323,8 @@
         (assoc :messages msgs)
         (assoc :zones (vec zones))
         ;; flip first super-villain face up
-        (assoc-in [:zones 0 :cards 0 :facing] :up))))
+        (assoc-in [:zones 0 :cards 0 :facing] :up)
+        (assoc :last-line-up-id (-> line-up last :id)))))
 (ns dcdbg.commands
   (:require [clojure.string :as str]
             [dcdbg.config :as cfg]
@@ -2440,8 +2442,9 @@
     (move game :hand :discard :top (range hand-count))))
 
 (defn exec-super-villain-plan [game]
-  (let [line-up-count (count-cards game :line-up)]
-    (if (< line-up-count (:line-up-size cfg/defaults))
+  (let [line-up-count (count-cards game :line-up)
+        last-line-up-id (->> line-up-count dec (get-card game :line-up) :id)]
+    (if (-> game :last-line-up-id (not= last-line-up-id))
       game
       (move* game :line-up :destroyed :top (dec line-up-count)))))
 
@@ -2449,15 +2452,17 @@
   (move* game :weakness :timer :top 0))
 
 (defn refill-line-up [game]
-  (if (-> game (count-cards :line-up) (>= (:line-up-size cfg/defaults)))
-    game
-    (let [{:keys [name type attack]} (get-card game :main-deck 0)
-          msgs (when (and (#{:hero :villain} type) attack)
-                 [(format "ATTACK (%s): %s" name attack)])]
-      (-> game
-          (update :messages concat msgs)
-          (move* :main-deck :line-up :top 0)
-          (refill-line-up)))))
+  (let [line-up-count (count-cards game :line-up)
+        last-line-up-id (->> line-up-count dec (get-card game :line-up) :id)]
+    (if (>= line-up-count (:line-up-size cfg/defaults))
+      (assoc game :last-line-up-id last-line-up-id)
+      (let [{:keys [name type attack]} (get-card game :main-deck 0)
+            msgs (when (and (#{:hero :villain} type) attack)
+                   [(format "ATTACK (%s): %s" name attack)])]
+        (-> game
+            (update :messages concat msgs)
+            (move* :main-deck :line-up :top 0)
+            (refill-line-up))))))
 
 (defn flip-super-villain [game]
   (if (-> game (get-card :super-villain 0) :facing (= :up))

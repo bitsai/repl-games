@@ -227,62 +227,45 @@
              (discard-hand game))))))
 
 (deftest exec-super-villain-plan-test
-  (let [game1 {:zones [{:name :destroyed
-                        :type :pile
-                        :facing :down
-                        :cards []}
-                       {:name :line-up
-                        :type :pile
-                        :facing :up
-                        :cards [{:name "A"
-                                 :facing :up}
-                                {:name "B"
-                                 :facing :up}
-                                {:name "C"
-                                 :facing :up}
-                                {:name "D"
-                                 :facing :up}]}]}
-        game2 {:zones [{:name :destroyed
-                        :type :pile
-                        :facing :down
-                        :cards [{:name "A"
-                                 :facing :down}]}
-                       {:name :line-up
-                        :type :pile
-                        :facing :up
-                        :cards [{:name "B"
-                                 :facing :up}
-                                {:name "C"
-                                 :facing :up}
-                                {:name "D"
-                                 :facing :up}
-                                {:name "E"
-                                 :facing :up}
-                                {:name "F"
-                                 :facing :up}]}]}]
-    (testing "Do nothing if a Line-Up card was purchased."
-      (is (= game1
-             (exec-super-villain-plan game1))))
-    (testing "Destroy bottom Line-Up card."
-      (is (= {:zones [{:name :destroyed
+  (let [game {:zones [{:name :destroyed
                        :type :pile
                        :facing :down
-                       :cards [{:name "F"
-                                :facing :down}
-                               {:name "A"
+                       :cards [{:id 0
+                                :name "A"
                                 :facing :down}]}
                       {:name :line-up
                        :type :pile
                        :facing :up
-                       :cards [{:name "B"
+                       :cards [{:id 1
+                                :name "B"
                                 :facing :up}
-                               {:name "C"
-                                :facing :up}
-                               {:name "D"
-                                :facing :up}
-                               {:name "E"
-                                :facing :up}]}]}
-             (exec-super-villain-plan game2))))))
+                               {:id 2
+                                :name "C"
+                                :facing :up}]}]
+              :last-line-up-id 3}]
+    (testing "Do nothing if last Line-Up card was purchased."
+      (is (= game
+             (exec-super-villain-plan game))))
+    (testing "Destroy last Line-Up card."
+      (is (= {:zones [{:name :destroyed
+                       :type :pile
+                       :facing :down
+                       :cards [{:id 2
+                                :name "C"
+                                :facing :down}
+                               {:id 0
+                                :name "A"
+                                :facing :down}]}
+                      {:name :line-up
+                       :type :pile
+                       :facing :up
+                       :cards [{:id 1
+                                :name "B"
+                                :facing :up}]}]
+              :last-line-up-id 2}
+             (-> game
+                 (assoc :last-line-up-id 2)
+                 (exec-super-villain-plan)))))))
 
 (deftest advance-timer-test
   (let [game {:zones [{:name :weakness
@@ -316,22 +299,27 @@
   (let [game {:zones [{:name :main-deck
                        :type :stack
                        :facing :down
-                       :cards [{:name "A"
+                       :cards [{:id 0
+                                :name "A"
                                 :facing :down
                                 :type :hero
                                 :attack "attack"}
-                               {:name "B"
+                               {:id 1
+                                :name "B"
                                 :facing :down
                                 :type :villain
                                 :attack "attack"}]}
                       {:name :line-up
                        :type :pile
                        :facing :up
-                       :cards [{:name "C"
+                       :cards [{:id 2
+                                :name "C"
                                 :facing :up}
-                               {:name "D"
+                               {:id 3
+                                :name "D"
                                 :facing :up}
-                               {:name "E"
+                               {:id 4
+                                :name "E"
                                 :facing :up}]}]}]
     (testing "Refill Line-Up from main deck."
       (is (= {:messages ["ATTACK (A): attack"
@@ -343,20 +331,26 @@
                       {:name :line-up
                        :type :pile
                        :facing :up
-                       :cards [{:name "B"
+                       :cards [{:id 1
+                                :name "B"
                                 :facing :up
                                 :type :villain
                                 :attack "attack"}
-                               {:name "A"
+                               {:id 0
+                                :name "A"
                                 :facing :up
                                 :type :hero
                                 :attack "attack"}
-                               {:name "C"
+                               {:id 2
+                                :name "C"
                                 :facing :up}
-                               {:name "D"
+                               {:id 3
+                                :name "D"
                                 :facing :up}
-                               {:name "E"
-                                :facing :up}]}]}
+                               {:id 4
+                                :name "E"
+                                :facing :up}]}]
+              :last-line-up-id 4}
              (refill-line-up game))))))
 
 (deftest flip-super-villain-test

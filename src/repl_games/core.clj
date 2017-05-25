@@ -6,8 +6,7 @@
   (rand/set-seed! seed)
   ;; mk-game-state should update :messages and :state
   (mk-game-state {:commands [[:setup seed]]
-                  :messages nil
-                  :state nil}))
+                  :messages nil}))
 
 (defn update-game [game cmd-name cmd-fn args]
   ;; iff an updated game is produced ...

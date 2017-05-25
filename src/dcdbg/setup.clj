@@ -7,7 +7,9 @@
 
 (defn- mk-cards [card-spec]
   (let [n (:copies card-spec 1)]
-    (->> (dissoc card-spec :copies) (repeat n))))
+    (->> (dissoc card-spec :copies)
+         (repeat n)
+         (map #(assoc % :id (rand/uniform))))))
 
 (defn- flip [cards facing]
   (mapv #(assoc % :facing facing) cards))
@@ -75,4 +77,5 @@
         (assoc :messages msgs)
         (assoc :zones (vec zones))
         ;; flip first super-villain face up
-        (assoc-in [:zones 0 :cards 0 :facing] :up))))
+        (assoc-in [:zones 0 :cards 0 :facing] :up)
+        (assoc :last-line-up-id (-> line-up last :id)))))
