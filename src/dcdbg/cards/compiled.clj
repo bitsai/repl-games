@@ -1397,7 +1397,8 @@
   :victory 1,
   :copies 3,
   :text
-  "+Power equal to your VPs. If you have 5 or more VPs, destroy this card at the end of your turn."}
+  "+Power equal to your VPs. If you have 5 or more VPs, destroy this card at the end of your turn.",
+  :power "*"}
  {:set :forever-evil,
   :name "Pandora's Box",
   :type :equipment,

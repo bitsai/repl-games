@@ -59,7 +59,7 @@
 
 (defn- parse-optional-power [{:keys [text power] :as parsed}]
   (cond-> parsed
-    (and (re-find #"\+\d Power" text) (not power))
+    (and (re-find #"\+(\d )?Power" text) (not power))
     (assoc :power "*")))
 
 (defn- remove-choose-foe [text]
