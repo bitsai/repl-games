@@ -4,23 +4,20 @@
             [clojure.pprint :as pprint]
             [clojure.string :as str]))
 
+(defn- parse-long [x]
+  (try
+    (Long. x)
+    (catch Throwable t
+      x)))
+
 (def csv-fields
   {:name {:index 0
           :parse-fn #(str/replace % "Impossible Mode" "IM")}
    :type {:index 1
           :parse-fn #(-> % (str/replace " " "-") str/lower-case keyword)}
-   :cost {:index 2
-          :parse-fn #(try
-                       (Long. %)
-                       (catch Throwable t
-                         %))}
-   :victory {:index 3
-             :parse-fn #(try
-                          (Long. %)
-                          (catch Throwable t
-                            %))}
-   :copies {:index 10
-            :parse-fn #(Long. %)}})
+   :cost {:index 2 :parse-fn parse-long}
+   :victory {:index 3 :parse-fn parse-long}
+   :copies {:index 10 :parse-fn parse-long}})
 
 (def card-text-index 9)
 
@@ -57,7 +54,7 @@
     (let [[_ power] (re-find re text)]
       (-> parsed
           (update :text str/replace re (or replacement ""))
-          (assoc :power (Long. power))))
+          (assoc :power (parse-long power))))
     parsed))
 
 (defn- parse-optional-power [{:keys [text power] :as parsed}]
