@@ -71,7 +71,7 @@
       (str/replace "choose a foe." "")))
 
 (defn- capitalize-first-letter [text]
-  (if (re-matches #"^[a-z]+.*" text)
+  (if (re-matches #"^[a-z].*" text)
     (let [[x & xs] (str/split text #" ")]
       (str/join " " (cons (str/capitalize x) xs)))
     text))
