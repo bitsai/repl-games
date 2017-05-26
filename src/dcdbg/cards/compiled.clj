@@ -244,8 +244,8 @@
   :victory 2,
   :copies 2,
   :text
-  "When you buy or gain this Villain, you may put him on top of your deck. +3 Power.",
-  :power "*"}
+  "When you buy or gain this Villain, you may put him on top of your deck.",
+  :power 3}
  {:set :base,
   :name "Starro",
   :type :villain,
@@ -463,7 +463,7 @@
   :type :super-villain,
   :cost 8,
   :victory 4,
-  :text "draw a card.",
+  :text "Draw a card.",
   :attack
   "Each player discards the top card of his deck. If you discarded a card with cost 1 or more, choose one: Destroy it; or discard your hand.",
   :power 3}
@@ -482,7 +482,7 @@
   :cost 9,
   :victory 5,
   :text
-  "an additional +1 Power for each foe with a Hero in his discard pile.",
+  "An additional +1 Power for each foe with a Hero in his discard pile.",
   :attack
   "Each player flips his Super Hero face down until this Villain is defeated.",
   :power 2}
@@ -512,7 +512,7 @@
   :cost 10,
   :victory 5,
   :text
-  "each foe chooses, He discards a random card; or you draw a card.",
+  "Each foe chooses, He discards a random card; or you draw a card.",
   :attack
   "Each player puts a card from his hand into the discard pile of the player on his left. If the card you received has a cost of 1 or greater, put a Weakness on top of your deck.",
   :power 2}
@@ -593,7 +593,7 @@
   :victory 1,
   :copies 3,
   :text
-  "choose a card type. Reveal the top card of your deck. If it has that card type, draw it.",
+  "Choose a card type. Reveal the top card of your deck. If it has that card type, draw it.",
   :power 2}
  {:set :crisis-1,
   :name "Captain Atom",
@@ -770,7 +770,7 @@
   :cost 10,
   :victory 5,
   :text
-  "an additional +1 Power for each foe with a Hero in his discard pile.",
+  "An additional +1 Power for each foe with a Hero in his discard pile.",
   :attack
   "Each player flips his Super Hero face down. When this Villain is defeated, each player may discard a random card. If you do, flip your Super Hero face up.",
   :power 4}
@@ -811,7 +811,7 @@
   :cost 10,
   :victory 5,
   :text
-  "each foe chooses: They discard two random cards or you draw two cards.",
+  "Each foe chooses: They discard two random cards or you draw two cards.",
   :attack
   "Each player puts a random card from his hand into the discard pile of the player on his left. If the card has cost 0, repeat this process.",
   :power 2}
@@ -1039,7 +1039,6 @@
   :cost 3,
   :victory 1,
   :copies 2,
-  :text "choose a foe.",
   :attack "Steal 1 VP from that foe.",
   :power 1}
  {:set :forever-evil,
@@ -1057,7 +1056,7 @@
   :cost 3,
   :victory 1,
   :copies 2,
-  :text "Draw a card and choose a foe.",
+  :text "Draw a card.",
   :attack
   "That foe puts a Location he controls into his discard pile."}
  {:set :forever-evil,
@@ -1166,7 +1165,7 @@
   :cost 6,
   :victory 2,
   :copies 1,
-  :text "Draw two cards and choose a foe.",
+  :text "Draw two cards.",
   :attack "That foe discards a card with cost 1 or greater."}
  {:set :forever-evil,
   :name "Emperor Penguin",
@@ -1259,7 +1258,7 @@
   :cost 6,
   :victory -1,
   :copies 2,
-  :text "gain a Weakness.",
+  :text "Gain a Weakness.",
   :attack "Each foe gains a Weakness.",
   :power 4}
  {:set :forever-evil,
@@ -1310,7 +1309,6 @@
   :cost 4,
   :victory 1,
   :copies 2,
-  :text "choose a foe.",
   :attack
   "That foe reveals his hand. Choose one card revealed this way to be discarded.",
   :power 2}
@@ -1337,7 +1335,7 @@
   :cost 9,
   :victory 3,
   :copies 1,
-  :text "draw two cards.",
+  :text "Draw two cards.",
   :power 3}
  {:set :forever-evil,
   :name "Word of Power",
@@ -1353,7 +1351,6 @@
   :cost 6,
   :victory 2,
   :copies 2,
-  :text "choose a foe.",
   :attack
   "Destroy a card with cost 1, 2, or 3 in that foe's discard pile.",
   :power 2}

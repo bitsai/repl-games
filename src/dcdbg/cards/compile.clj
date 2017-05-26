@@ -34,9 +34,10 @@
    {:re #"\s*Defense:\s+" :k :defense}])
 
 (def card-power-res
-  [#"^\+(\d) Power$"
-   #"^\+(\d) Power\.\s*"
-   #"^\+(\d) Power,?\s+and\s+"])
+  [{:re #"^\+(\d) Power$"}
+   {:re #"^\+(\d) Power\.\s*"}
+   {:re #"^\+(\d) Power,?\s+and\s+"}
+   {:re #"\. \+(\d) Power\.$" :replacement "."}])
 
 (defn- get-card-files []
   (-> "resources/dcdbg"
@@ -45,21 +46,35 @@
       (rest)))
 
 (defn- parse-field [[k {:keys [index parse-fn]}] row]
-  (let [parse-fn (or parse-fn identity)
-        v (get row index)]
+  (let [v (get row index)]
     (when (seq v)
       [k (parse-fn v)])))
 
 (defn- parse-card-power [{:keys [text] :as parsed}]
-  (if-let [re (first (filter #(re-find % text) card-power-res))]
+  (if-let [{:keys [re replacement]} (->> card-power-res
+                                         (filter #(re-find (:re %) text))
+                                         (first))]
     (let [[_ power] (re-find re text)]
-      (assoc parsed :text (str/replace text re "") :power (Long. power)))
+      (-> parsed
+          (update :text str/replace re (or replacement ""))
+          (assoc :power (Long. power))))
     parsed))
 
-(defn- parse-variable-power [{:keys [text power] :as parsed}]
+(defn- parse-optional-power [{:keys [text power] :as parsed}]
   (cond-> parsed
     (and (re-find #"\+\d Power" text) (not power))
     (assoc :power "*")))
+
+(defn- remove-choose-foe [text]
+  (-> text
+      (str/replace " and choose a foe." ".")
+      (str/replace "choose a foe." "")))
+
+(defn- capitalize-first-letter [text]
+  (if (re-matches #"^[a-z]+.*" text)
+    (let [[x & xs] (str/split text #" ")]
+      (str/join " " (cons (str/capitalize x) xs)))
+    text))
 
 (defn- remove-empty-text [{:keys [text] :as parsed}]
   (cond-> parsed
@@ -75,14 +90,16 @@
               {:text (get row card-text-index)}
               card-text-sections)
       (parse-card-power)
-      (parse-variable-power)
+      (parse-optional-power)
+      (update :text remove-choose-foe)
+      (update :text capitalize-first-letter)
       (remove-empty-text)))
 
 (defn- parse-csv-row [row set]
   (when (-> row first seq)
     (merge (->> csv-fields
-             (keep #(parse-field % row))
-             (into {:set set}))
+                (keep #(parse-field % row))
+                (into {:set set}))
            (parse-card-text row))))
 
 (defn- parse-csv-file [file]
