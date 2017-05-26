@@ -52,9 +52,8 @@
 
 (defn- parse-card-power [{:keys [text] :as parsed}]
   (if-let [re (first (filter #(re-find % text) card-power-res))]
-    (let [[_ y] (str/split text re)
-          [_ power] (re-find re text)]
-      (assoc parsed :text (or y "") :power (Long. power)))
+    (let [[_ power] (re-find re text)]
+      (assoc parsed :text (str/replace text re "") :power (Long. power)))
     parsed))
 
 (defn- parse-variable-power [{:keys [text power] :as parsed}]
