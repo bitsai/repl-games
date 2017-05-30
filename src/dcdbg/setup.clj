@@ -18,7 +18,7 @@
   (->> [[cards/punch (-> cfg/defaults :punch-count)]
         [cards/vulnerability (-> cfg/defaults :vulnerability-count)]]
        (mapcat (fn [[card-spec n]]
-                 (->> card-spec (mk-cards) (take n))))
+                 (->> card-spec mk-cards (take n))))
        (rand/shuffle*)))
 
 (defn- setup-main-deck []
@@ -33,13 +33,14 @@
        (rand/shuffle*)))
 
 (defn- setup-super-heroes []
-  ;; use The Flash
-  (take 1 cards/super-hero))
+  ;; use The Flash and 1 random
+  (let [[x & xs] cards/super-hero]
+    [x (-> xs rand/shuffle* first)]))
 
 (defn- setup-super-villains [n]
   ;; use Ra's Al-Ghul, Crisis Anti-Monitor, and N - 2 randoms
   (let [[x & svs] cards/super-villain
-        ys (->> svs butlast (rand/shuffle*) (take (- n 2)))
+        ys (->> svs butlast rand/shuffle* (take (- n 2)))
         z (last svs)]
     ;; set Ra's Al-Ghul on top, Crisis Anti-Monitor on bottom
     (concat [x] ys [z])))

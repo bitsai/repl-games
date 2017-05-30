@@ -31,11 +31,12 @@
    :text "Weakness cards reduce your score at the end of the game."
    :copies 20})
 
-(defn- get-cards [type & [set]]
-  (let [cards (filter #(-> % :type (= type)) compiled/cards)]
+(defn- get-cards [type & sets]
+  (let [sets (set sets)
+        cards (filter #(-> % :type (= type)) compiled/cards)]
     (if-not set
       cards
-      (filter #(-> % :set (= set)) cards))))
+      (filter #(-> % :set sets) cards))))
 
 (def equipment (get-cards :equipment))
 
@@ -43,7 +44,7 @@
 
 (def location (get-cards :location))
 
-(def super-hero (get-cards :super-hero :base))
+(def super-hero (get-cards :super-hero :base :crisis-1))
 
 (def super-power (get-cards :super-power))
 
