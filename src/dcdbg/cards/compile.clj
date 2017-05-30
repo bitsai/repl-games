@@ -34,7 +34,7 @@
   [{:re #"^\+(\d) Power$"}
    {:re #"^\+(\d) Power\.\s*"}
    {:re #"^\+(\d) Power,?\s+and\s+"}
-   {:re #"\. \+(\d) Power\.$" :replacement "."}])
+   {:re #"\. \+(\d) Power\." :replacement "."}])
 
 (defn- get-card-files []
   (-> "resources/dcdbg"

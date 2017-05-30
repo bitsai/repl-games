@@ -1479,8 +1479,8 @@
   :victory 0,
   :copies 1,
   :text
-  "When you buy or gain this card, gain 1 VP. +3 Power. Each player puts a card with VP value 1 or less from their discard pile on top of their deck.",
-  :power "*"}
+  "When you buy or gain this card, gain 1 VP. Each player puts a card with VP value 1 or less from their discard pile on top of their deck.",
+  :power 3}
  {:set :crossover-5,
   :name "Iris West",
   :type :hero,
@@ -1488,8 +1488,8 @@
   :victory 0,
   :copies 1,
   :text
-  "When you buy or gain this card, gain 1 VP. +1 Power. Look at the top of each player's deck.",
-  :power "*"}
+  "When you buy or gain this card, gain 1 VP. Look at the top of each player's deck.",
+  :power 1}
  {:set :crossover-5,
   :name "James Jesse",
   :type :hero,
@@ -1497,8 +1497,8 @@
   :victory 0,
   :copies 1,
   :text
-  "When you buy or gain this card, gain 1 VP. +2 Power. If you Teamworked this turn, draw a card.",
-  :power "*"}
+  "When you buy or gain this card, gain 1 VP. If you Teamworked this turn, draw a card.",
+  :power 2}
  {:set :crossover-5,
   :name "Patty Spivot",
   :type :hero,
@@ -1549,8 +1549,8 @@
   :victory 0,
   :copies 1,
   :text
-  "When you buy or gain this card, gain 1 VP. +2 Power. You may pay 1 VP. If you do, gain an Equipment from the Line-Up and put it into your hand.",
-  :power "*"}
+  "When you buy or gain this card, gain 1 VP. You may pay 1 VP. If you do, gain an Equipment from the Line-Up and put it into your hand.",
+  :power 2}
  {:set :crossover-5,
   :name "Tar Pit",
   :type :villain,
@@ -1574,8 +1574,8 @@
   :victory 0,
   :copies 1,
   :text
-  "When you buy or gain this card, gain 1 VP. +2 Power. Destroy a card in your hand. If that card has cost 1 or greater, draw two cards.",
-  :power "*"}
+  "When you buy or gain this card, gain 1 VP. Destroy a card in your hand. If that card has cost 1 or greater, draw two cards.",
+  :power 2}
  {:set :crossover-5,
   :name "Lightning Strike",
   :type :super-power,
@@ -1634,8 +1634,8 @@
   :victory 0,
   :copies 1,
   :text
-  "When you buy or gain this card, gain 1 VP. +2 Power. Each time you Teamwork this turn, gain 1 VP.",
-  :power "*"}
+  "When you buy or gain this card, gain 1 VP. Each time you Teamwork this turn, gain 1 VP.",
+  :power 2}
  {:set :crossover-5,
   :name "Loot!",
   :type :equipment,
