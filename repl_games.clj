@@ -2410,11 +2410,12 @@
    :text "Weakness cards reduce your score at the end of the game."
    :copies 20})
 
-(defn- get-cards [type & [set]]
-  (let [cards (filter #(-> % :type (= type)) compiled/cards)]
+(defn- get-cards [type & sets]
+  (let [sets (set sets)
+        cards (filter #(-> % :type (= type)) compiled/cards)]
     (if-not set
       cards
-      (filter #(-> % :set (= set)) cards))))
+      (filter #(-> % :set sets) cards))))
 
 (def equipment (get-cards :equipment))
 
@@ -2422,7 +2423,7 @@
 
 (def location (get-cards :location))
 
-(def super-hero (get-cards :super-hero :base))
+(def super-hero (get-cards :super-hero :base :crisis-1))
 
 (def super-power (get-cards :super-power))
 
@@ -2550,7 +2551,7 @@
   (->> [[cards/punch (-> cfg/defaults :punch-count)]
         [cards/vulnerability (-> cfg/defaults :vulnerability-count)]]
        (mapcat (fn [[card-spec n]]
-                 (->> card-spec (mk-cards) (take n))))
+                 (->> card-spec mk-cards (take n))))
        (rand/shuffle*)))
 
 (defn- setup-main-deck []
@@ -2565,13 +2566,14 @@
        (rand/shuffle*)))
 
 (defn- setup-super-heroes []
-  ;; use The Flash
-  (take 1 cards/super-hero))
+  ;; use The Flash and 1 random
+  (let [[x & xs] cards/super-hero]
+    [x (-> xs rand/shuffle* first)]))
 
 (defn- setup-super-villains [n]
   ;; use Ra's Al-Ghul, Crisis Anti-Monitor, and N - 2 randoms
   (let [[x & svs] cards/super-villain
-        ys (->> svs butlast (rand/shuffle*) (take (- n 2)))
+        ys (->> svs butlast rand/shuffle* (take (- n 2)))
         z (last svs)]
     ;; set Ra's Al-Ghul on top, Crisis Anti-Monitor on bottom
     (concat [x] ys [z])))
