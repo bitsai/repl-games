@@ -2413,7 +2413,7 @@
 (defn- get-cards [type & sets]
   (let [sets (set sets)
         cards (filter #(-> % :type (= type)) compiled/cards)]
-    (if-not set
+    (if (empty? sets)
       cards
       (filter #(-> % :set sets) cards))))
 
