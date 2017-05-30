@@ -1024,6 +1024,294 @@
   "Each player must destroy the top card of his deck. Remove this Crisis only if each of those cards has cost 1 or greater.",
   :ongoing
   "At the start of your turn, resolve the current Super-Villain's First Appearance -- Attack against you. If it doesn't have one, discard a random card instead."}
+ {:set :crossover-5,
+  :name "Captain Boomerang Jr.",
+  :type :hero,
+  :cost 5,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. +3 Power. Each player puts a card with VP value 1 or less from their discard pile on top of their deck.",
+  :power "*"}
+ {:set :crossover-5,
+  :name "Iris West",
+  :type :hero,
+  :cost 2,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. +1 Power. Look at the top of each player's deck.",
+  :power "*"}
+ {:set :crossover-5,
+  :name "James Jesse",
+  :type :hero,
+  :cost 4,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. +2 Power. If you Teamworked this turn, draw a card.",
+  :power "*"}
+ {:set :crossover-5,
+  :name "Patty Spivot",
+  :type :hero,
+  :cost 3,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. Teamwork a foe. If you draw or have drawn one or more cards this turn, Teamwork a foe."}
+ {:set :crossover-5,
+  :name "Pied Piper",
+  :type :hero,
+  :cost 6,
+  :victory 0,
+  :copies 1,
+  :text "When you buy or gain this card, gain 2 VPs. Teamwork a foe.",
+  :defense
+  "You may reveal this card from your hand to avoid an Attack. If you do, gain 1 VP."}
+ {:set :crossover-5,
+  :name "Abra Kadabra",
+  :type :villain,
+  :cost 7,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 4 VPs. Play the top card of the main deck. At end of turn, return it or pay 2 VPs to gain it."}
+ {:set :crossover-5,
+  :name "Dr. Alchemy",
+  :type :villain,
+  :cost 2,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. Gain a card from the Line-Up and put it into your hand. Then, put a card with the same cost from your hand into the Line-Up."}
+ {:set :crossover-5,
+  :name "Girder",
+  :type :villain,
+  :cost 4,
+  :victory 0,
+  :copies 1,
+  :text "When you buy or gain this card, gain 1 VP.",
+  :defense
+  "You may discard this card to avoid an Attack. If you do, draw a card and gain 1 VP.",
+  :power 2}
+ {:set :crossover-5,
+  :name "Magenta",
+  :type :villain,
+  :cost 5,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. +2 Power. You may pay 1 VP. If you do, gain an Equipment from the Line-Up and put it into your hand.",
+  :power "*"}
+ {:set :crossover-5,
+  :name "Tar Pit",
+  :type :villain,
+  :cost 3,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. Draw a card. You may pay 1 VP. If you do, destroy a card in your hand and/or discard pile."}
+ {:set :crossover-5,
+  :name "The Top",
+  :type :villain,
+  :cost 6,
+  :victory 0,
+  :copies 1,
+  :text "When you buy or gain this card, gain 2 VPs. Teamwork a foe.",
+  :attack "Steal 1 VP from each foe."}
+ {:set :crossover-5,
+  :name "Engulfing Flames",
+  :type :super-power,
+  :cost 5,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. +2 Power. Destroy a card in your hand. If that card has cost 1 or greater, draw two cards.",
+  :power "*"}
+ {:set :crossover-5,
+  :name "Lightning Strike",
+  :type :super-power,
+  :cost 6,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 2 VPs. Draw two cards. +1 Power for each card you discard or have discarded this turn.",
+  :power "*"}
+ {:set :crossover-5,
+  :name "Mirror Images",
+  :type :super-power,
+  :cost 5,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. Play the top card of your deck. You may put a card with that cost from your discard pile into your hand."}
+ {:set :crossover-5,
+  :name "Phasing",
+  :type :super-power,
+  :cost 7,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 3 VPs. +1 Power for each card in your hand.",
+  :power "*"}
+ {:set :crossover-5,
+  :name "Tornado",
+  :type :super-power,
+  :cost 4,
+  :victory 0,
+  :copies 1,
+  :text "When you buy or gain this card, gain 1 VP. Draw a card.",
+  :attack
+  "Look at that foe's hand. Put a card from their hand on top of their deck."}
+ {:set :crossover-5,
+  :name "Air-Walk Shoes",
+  :type :equipment,
+  :cost 3,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. Put a card with VP value 1 or less from your discard pile into your hand."}
+ {:set :crossover-5,
+  :name "Back of Tricks",
+  :type :equipment,
+  :cost 6,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 2 VPs. Pay X VPs: +X Power and draw X cards."}
+ {:set :crossover-5,
+  :name "Cold Gun",
+  :type :equipment,
+  :cost 3,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. +2 Power. Each time you Teamwork this turn, gain 1 VP.",
+  :power "*"}
+ {:set :crossover-5,
+  :name "Loot!",
+  :type :equipment,
+  :cost 4,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 7 VPs. If you do not own this card, steal 2 VPs from its owner."}
+ {:set :crossover-5,
+  :name "Mirror Gun",
+  :type :equipment,
+  :cost 4,
+  :victory 0,
+  :copies 1,
+  :text
+  "When you buy or gain this card, gain 1 VP. Put a copy of each card you have already played this turn from your discard pile into your hand."}
+ {:set :crossover-5,
+  :name "Iron Heights",
+  :type :location,
+  :cost 4,
+  :victory 0,
+  :copies 1,
+  :text "When you buy or gain this card, gain 1 VP.",
+  :ongoing
+  "Defense: You may give the attacker 1 VP. If you do, avoid that Attack."}
+ {:set :crossover-5,
+  :name "Rogues Safe House",
+  :type :location,
+  :cost 4,
+  :victory 0,
+  :copies 1,
+  :text "When you buy or gain this card, gain 1 VP.",
+  :ongoing "Each time you Teamwork a foe, +1 Power."}
+ {:set :crossover-5,
+  :name "The Flash",
+  :type :super-hero,
+  :cost 8,
+  :victory 0,
+  :text
+  "When you defeat The Flash, remove him from the game, gain 6 VPs, and you may destroy a Punch in play.",
+  :ongoing "Super-Villains lose their Teamwork abilities."}
+ {:set :crossover-5,
+  :name "Jesse Quick",
+  :type :super-hero,
+  :cost 9,
+  :victory 5,
+  :text
+  "Look at the top card of each foe's deck. FIRST APPEARANCE - ATTACK: Each player destroys the top card of their deck. (Teamwork abilities are now active.)",
+  :power 3}
+ {:set :crossover-5,
+  :name "Jay Garrick",
+  :type :super-hero,
+  :cost 10,
+  :victory 5,
+  :text
+  "Draw two cards and gain 1 VP. FIRST APPEARANCE - ATTACK: Each player passes a card from their hand to the discard pile of the player on their left. If you pass a card with cost 1 or greater, gain 1 VP."}
+ {:set :crossover-5,
+  :name "Hawkman",
+  :type :super-hero,
+  :cost 11,
+  :victory 6,
+  :text
+  "Gain 2 VPs. FIRST APPEARANCE - ATTACK: Each player discards cards until they have discarded 5 power worth of cards. If your hand empties this way, gain 1 VP.",
+  :power 3}
+ {:set :crossover-5,
+  :name "Max Mercury",
+  :type :super-hero,
+  :cost 12,
+  :victory 6,
+  :text
+  "Draw two cards. Teamwork a foe. FIRST APPEARANCE - ATTACK: Each player adds the top card of the main deck to the Line-Up. Lose a number of VPs equal to the VP calue of that card (*=3)."}
+ {:set :crossover-5,
+  :name "Wally West",
+  :type :super-hero,
+  :cost 13,
+  :victory 6,
+  :text "Draw three cards.",
+  :ongoing
+  "Wally West cannot be defeated unless you have played nine or more cards this turn. FIRST APPEARANCE - ATTACK: Each player gains two cards with cost 0 from the destroyed pile."}
+ {:set :crossover-5,
+  :name "Bart Allen",
+  :type :super-hero,
+  :cost 14,
+  :victory 7,
+  :text
+  "Gain two cards from the Line-Up and put them into your hand. Then, refill the Line-Up. FIRST APPEARANCE - ATTACK: Each player reveals their hand and gains a Weakness for each different card with VP Value 1 or greater revealed this way."}
+ {:set :crossover-5,
+  :name "The Flash [Return from the Speed Force]",
+  :type :super-hero,
+  :cost 15,
+  :victory 7,
+  :ongoing
+  "At the start of your turn, lose 1 VP. Each time you play a card from your hand, discard a card. Players may Teamwork any number of different foes."}
+ {:set :crossover-5,
+  :name "Captain Cold",
+  :type :super-villain,
+  :text
+  "The first time you buy a card with cost 3 or less from the Line-Up during each of your turns, you may Teamwork a foe. Teamwork: That foe gains 1 VP."}
+ {:set :crossover-5,
+  :name "Heatwave",
+  :type :super-villain,
+  :text
+  "The first time you destroy a card with cost 2 or greater during each of your turns, gain the top card of the main deck and put it on top of your deck. Teamwork: That foe gains 1 VP."}
+ {:set :crossover-5,
+  :name "Mirror Master",
+  :type :super-villain,
+  :text
+  "Each time you play a Hero, Villain, or Equipment, +1 Power if you have played another card wth that cost this turn. Teamwork: That foe gains 1 VP.",
+  :power "*"}
+ {:set :crossover-5,
+  :name "Trickster",
+  :type :super-villain,
+  :text
+  "Each time you would shuffle your discard pile, you may leave one of those cards in your discard pile. Teamwork: That foe gains 1 VP."}
+ {:set :crossover-5,
+  :name "Weather Wizard",
+  :type :super-villain,
+  :text
+  "Discard two cards: Draw a card. Teamwork: That foe gains 1 VP."}
+ {:set :crossover-5,
+  :name "Golden Glider",
+  :type :super-villain,
+  :text
+  "Each time you play a card you don't own, draw a card. Teamwork: That foe gains 1 VP."}
  {:set :forever-evil,
   :name "Amanda Waller",
   :type :hero,
