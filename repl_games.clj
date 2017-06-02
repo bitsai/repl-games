@@ -2417,19 +2417,19 @@
       cards
       (filter #(-> % :set sets) cards))))
 
-(def equipment (get-cards :equipment))
+(def equipment (get-cards :equipment :base :crossover-5))
 
-(def hero (get-cards :hero))
+(def hero (get-cards :hero :base :crossover-5))
 
-(def location (get-cards :location))
+(def location (get-cards :location :base :crossover-5))
 
 (def super-hero (get-cards :super-hero :base :crisis-1))
 
-(def super-power (get-cards :super-power))
+(def super-power (get-cards :super-power :base :crossover-5))
 
 (def super-villain (get-cards :super-villain :crisis-1))
 
-(def villain (get-cards :villain))
+(def villain (get-cards :villain :base :crossover-5))
 (ns dcdbg.config)
 
 (def aliases
