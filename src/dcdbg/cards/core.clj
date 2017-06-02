@@ -44,7 +44,7 @@
 
 (def location (get-cards :location :base :crossover-5))
 
-(def super-hero (get-cards :super-hero :base :crisis-1))
+(def super-hero (get-cards :super-hero :base))
 
 (def super-power (get-cards :super-power :base :crossover-5))
 
