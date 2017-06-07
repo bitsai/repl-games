@@ -108,7 +108,7 @@
        :else
        (throw (Exception. "Not enough cards!"))))))
 
-;; end turn helpers and command
+;; end turn
 
 (defn discard-hand [game]
   (let [hand-count (count-cards game :hand)]

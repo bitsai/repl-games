@@ -1,53 +1,66 @@
 (ns dcdbg.cards.core
-  (:require [dcdbg.cards.compiled :as compiled]))
+  (:require [dcdbg.cards.compiled :as compiled])
+  (:import [java.util UUID]))
+
+;; helpers
+
+(defn- mk-cards [card-spec]
+  (let [n (:copies card-spec 1)]
+    (->> (dissoc card-spec :copies)
+         (repeat n)
+         (map #(assoc % :id (str (UUID/randomUUID)))))))
+
+(defn- get-cards [sets types]
+  (let [sets (set sets)
+        types (set types)]
+    (->> compiled/cards
+         (filter #(and (-> % :set sets) (-> % :type types)))
+         (mapcat mk-cards))))
+
+;; cards
 
 (def kick
-  {:name "Kick"
-   :type :super-power
-   :cost 3
-   :victory 1
-   :power 2
-   :copies 16})
+  (mk-cards {:name "Kick"
+             :type :super-power
+             :cost 3
+             :victory 1
+             :power 2
+             :copies 16}))
 
 (def punch
-  {:name "Punch"
-   :type :starter
-   :cost 0
-   :victory 0
-   :power 1
-   :copies 36})
+  (mk-cards {:name "Punch"
+             :type :starter
+             :cost 0
+             :victory 0
+             :power 1
+             :copies 36}))
 
 (def vulnerability
-  {:name "Vulnerability"
-   :type :starter
-   :cost 0
-   :victory 0
-   :copies 16})
+  (mk-cards {:name "Vulnerability"
+             :type :starter
+             :cost 0
+             :victory 0
+             :copies 16}))
 
 (def weakness
-  {:name "Weakness"
-   :cost 0
-   :victory -1
-   :text "Weakness cards reduce your score at the end of the game."
-   :copies 20})
+  (mk-cards {:name "Weakness"
+             :cost 0
+             :victory -1
+             :text "Weakness cards reduce your score at the end of the game."
+             :copies 20}))
 
-(defn- get-cards [type & sets]
-  (let [sets (set sets)
-        cards (filter #(-> % :type (= type)) compiled/cards)]
-    (if (empty? sets)
-      cards
-      (filter #(-> % :set sets) cards))))
+(def main-deck-base (get-cards [:base] [:equipment
+                                        :hero
+                                        :location
+                                        :super-power
+                                        :villain]))
 
-(def equipment (get-cards :equipment :base :crossover-5))
+(def main-deck-crossover-5 (get-cards [:crossover-5] [:equipment
+                                                      :hero
+                                                      :location
+                                                      :super-power
+                                                      :villain]))
 
-(def hero (get-cards :hero :base :crossover-5))
+(def super-hero (get-cards [:base] [:super-hero]))
 
-(def location (get-cards :location :base :crossover-5))
-
-(def super-hero (get-cards :super-hero :base))
-
-(def super-power (get-cards :super-power :base :crossover-5))
-
-(def super-villain (get-cards :super-villain :crisis-1))
-
-(def villain (get-cards :villain :base :crossover-5))
+(def super-villain (get-cards [:crisis-1] [:super-villain]))

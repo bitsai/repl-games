@@ -5,37 +5,10 @@
 
 ;; helpers
 
-(defn- mk-cards [card-spec]
-  (let [n (:copies card-spec 1)]
-    (->> (dissoc card-spec :copies) (repeat n))))
-
 (defn- flip [cards facing]
   (mapv #(assoc % :facing facing) cards))
 
 ;; setup
-
-(defn- setup-deck []
-  (->> [[cards/punch (-> cfg/defaults :punch-count)]
-        [cards/vulnerability (-> cfg/defaults :vulnerability-count)]]
-       (mapcat (fn [[card-spec n]]
-                 (->> card-spec mk-cards (take n))))
-       (rand/shuffle*)))
-
-(defn- setup-main-deck []
-  (->> (concat cards/equipment
-               cards/hero
-               cards/location
-               cards/super-power
-               cards/villain)
-       (mapcat mk-cards)
-       ;; use only 1 copy of each card
-       (distinct)
-       (rand/shuffle*)))
-
-(defn- setup-super-heroes []
-  ;; use The Flash and 1 random
-  (let [[x & xs] cards/super-hero]
-    [x (-> xs rand/shuffle* first)]))
 
 (defn- setup-super-villains [n]
   ;; use Ra's Al-Ghul, Crisis Anti-Monitor, and N - 2 randoms
@@ -44,6 +17,24 @@
         z (last svs)]
     ;; set Ra's Al-Ghul on top, Crisis Anti-Monitor on bottom
     (concat [x] ys [z])))
+
+(defn- setup-main-deck []
+  (let [n (-> cards/main-deck-base count (/ 2))
+        [xs ys] (->> cards/main-deck-base rand/shuffle* (split-at n))]
+    (-> cards/main-deck-crossover-5
+        (concat xs)
+        (rand/shuffle*)
+        (concat ys))))
+
+(defn- setup-super-heroes []
+  ;; use The Flash and 1 random
+  (let [[x & xs] cards/super-hero]
+    [x (-> xs rand/shuffle* first)]))
+
+(defn- setup-deck []
+  (-> (take (:vulnerability-count cfg/defaults) cards/vulnerability)
+      (concat (take (:punch-count cfg/defaults) cards/punch))
+      (rand/shuffle*)))
 
 (defn mk-game-state [game]
   (let [{:keys [hand-size line-up-size super-villain-count]} cfg/defaults
@@ -56,9 +47,9 @@
                    (let [sv (first svs)]
                      (format "ONGOING (%s): %s" (:name sv) (:ongoing sv))))
         zones (for [[name cards] [[:super-villain svs]
-                                  [:weakness (mk-cards cards/weakness)]
+                                  [:weakness cards/weakness]
                                   [:timer []]
-                                  [:kick (mk-cards cards/kick)]
+                                  [:kick cards/kick]
                                   [:destroyed []]
                                   [:main-deck main-deck]
                                   [:line-up line-up]
@@ -71,8 +62,7 @@
                 {:name name
                  :type type
                  :facing facing
-                 :cards (->> (flip cards facing)
-                             (mapv #(assoc % :id (rand/uniform))))})]
+                 :cards (flip cards facing)})]
     (-> game
         (assoc :messages msgs)
         (assoc :zones (vec zones))

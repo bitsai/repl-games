@@ -2378,58 +2378,71 @@
   :power "*"}]
 )
 (ns dcdbg.cards.core
-  (:require [dcdbg.cards.compiled :as compiled]))
+  (:require [dcdbg.cards.compiled :as compiled])
+  (:import [java.util UUID]))
+
+;; helpers
+
+(defn- mk-cards [card-spec]
+  (let [n (:copies card-spec 1)]
+    (->> (dissoc card-spec :copies)
+         (repeat n)
+         (map #(assoc % :id (str (UUID/randomUUID)))))))
+
+(defn- get-cards [sets types]
+  (let [sets (set sets)
+        types (set types)]
+    (->> compiled/cards
+         (filter #(and (-> % :set sets) (-> % :type types)))
+         (mapcat mk-cards))))
+
+;; cards
 
 (def kick
-  {:name "Kick"
-   :type :super-power
-   :cost 3
-   :victory 1
-   :power 2
-   :copies 16})
+  (mk-cards {:name "Kick"
+             :type :super-power
+             :cost 3
+             :victory 1
+             :power 2
+             :copies 16}))
 
 (def punch
-  {:name "Punch"
-   :type :starter
-   :cost 0
-   :victory 0
-   :power 1
-   :copies 36})
+  (mk-cards {:name "Punch"
+             :type :starter
+             :cost 0
+             :victory 0
+             :power 1
+             :copies 36}))
 
 (def vulnerability
-  {:name "Vulnerability"
-   :type :starter
-   :cost 0
-   :victory 0
-   :copies 16})
+  (mk-cards {:name "Vulnerability"
+             :type :starter
+             :cost 0
+             :victory 0
+             :copies 16}))
 
 (def weakness
-  {:name "Weakness"
-   :cost 0
-   :victory -1
-   :text "Weakness cards reduce your score at the end of the game."
-   :copies 20})
+  (mk-cards {:name "Weakness"
+             :cost 0
+             :victory -1
+             :text "Weakness cards reduce your score at the end of the game."
+             :copies 20}))
 
-(defn- get-cards [type & sets]
-  (let [sets (set sets)
-        cards (filter #(-> % :type (= type)) compiled/cards)]
-    (if (empty? sets)
-      cards
-      (filter #(-> % :set sets) cards))))
+(def main-deck-base (get-cards [:base] [:equipment
+                                        :hero
+                                        :location
+                                        :super-power
+                                        :villain]))
 
-(def equipment (get-cards :equipment :base :crossover-5))
+(def main-deck-crossover-5 (get-cards [:crossover-5] [:equipment
+                                                      :hero
+                                                      :location
+                                                      :super-power
+                                                      :villain]))
 
-(def hero (get-cards :hero :base :crossover-5))
+(def super-hero (get-cards [:base] [:super-hero]))
 
-(def location (get-cards :location :base :crossover-5))
-
-(def super-hero (get-cards :super-hero :base))
-
-(def super-power (get-cards :super-power :base :crossover-5))
-
-(def super-villain (get-cards :super-villain :crisis-1))
-
-(def villain (get-cards :villain :base :crossover-5))
+(def super-villain (get-cards [:crisis-1] [:super-villain]))
 (ns dcdbg.config)
 
 (def aliases
@@ -2538,37 +2551,10 @@
 
 ;; helpers
 
-(defn- mk-cards [card-spec]
-  (let [n (:copies card-spec 1)]
-    (->> (dissoc card-spec :copies) (repeat n))))
-
 (defn- flip [cards facing]
   (mapv #(assoc % :facing facing) cards))
 
 ;; setup
-
-(defn- setup-deck []
-  (->> [[cards/punch (-> cfg/defaults :punch-count)]
-        [cards/vulnerability (-> cfg/defaults :vulnerability-count)]]
-       (mapcat (fn [[card-spec n]]
-                 (->> card-spec mk-cards (take n))))
-       (rand/shuffle*)))
-
-(defn- setup-main-deck []
-  (->> (concat cards/equipment
-               cards/hero
-               cards/location
-               cards/super-power
-               cards/villain)
-       (mapcat mk-cards)
-       ;; use only 1 copy of each card
-       (distinct)
-       (rand/shuffle*)))
-
-(defn- setup-super-heroes []
-  ;; use The Flash and 1 random
-  (let [[x & xs] cards/super-hero]
-    [x (-> xs rand/shuffle* first)]))
 
 (defn- setup-super-villains [n]
   ;; use Ra's Al-Ghul, Crisis Anti-Monitor, and N - 2 randoms
@@ -2577,6 +2563,24 @@
         z (last svs)]
     ;; set Ra's Al-Ghul on top, Crisis Anti-Monitor on bottom
     (concat [x] ys [z])))
+
+(defn- setup-main-deck []
+  (let [n (-> cards/main-deck-base count (/ 2))
+        [xs ys] (->> cards/main-deck-base rand/shuffle* (split-at n))]
+    (-> cards/main-deck-crossover-5
+        (concat xs)
+        (rand/shuffle*)
+        (concat ys))))
+
+(defn- setup-super-heroes []
+  ;; use The Flash and 1 random
+  (let [[x & xs] cards/super-hero]
+    [x (-> xs rand/shuffle* first)]))
+
+(defn- setup-deck []
+  (-> (take (:vulnerability-count cfg/defaults) cards/vulnerability)
+      (concat (take (:punch-count cfg/defaults) cards/punch))
+      (rand/shuffle*)))
 
 (defn mk-game-state [game]
   (let [{:keys [hand-size line-up-size super-villain-count]} cfg/defaults
@@ -2589,9 +2593,9 @@
                    (let [sv (first svs)]
                      (format "ONGOING (%s): %s" (:name sv) (:ongoing sv))))
         zones (for [[name cards] [[:super-villain svs]
-                                  [:weakness (mk-cards cards/weakness)]
+                                  [:weakness cards/weakness]
                                   [:timer []]
-                                  [:kick (mk-cards cards/kick)]
+                                  [:kick cards/kick]
                                   [:destroyed []]
                                   [:main-deck main-deck]
                                   [:line-up line-up]
@@ -2604,8 +2608,7 @@
                 {:name name
                  :type type
                  :facing facing
-                 :cards (->> (flip cards facing)
-                             (mapv #(assoc % :id (rand/uniform))))})]
+                 :cards (flip cards facing)})]
     (-> game
         (assoc :messages msgs)
         (assoc :zones (vec zones))
@@ -2723,7 +2726,7 @@
        :else
        (throw (Exception. "Not enough cards!"))))))
 
-;; end turn helpers and command
+;; end turn
 
 (defn discard-hand [game]
   (let [hand-count (count-cards game :hand)]
