@@ -2552,7 +2552,7 @@
 ;; helpers
 
 (defn- flip [cards facing]
-  (mapv #(assoc % :facing facing) cards))
+  (map #(assoc % :facing facing) cards))
 
 ;; setup
 
@@ -2578,9 +2578,10 @@
     [x (-> xs rand/shuffle* first)]))
 
 (defn- setup-deck []
-  (-> (take (:vulnerability-count cfg/defaults) cards/vulnerability)
-      (concat (take (:punch-count cfg/defaults) cards/punch))
-      (rand/shuffle*)))
+  (let [{:keys [punch-count vulnerability-count]} cfg/defaults]
+    (-> (take vulnerability-count cards/vulnerability)
+        (concat (take punch-count cards/punch))
+        (rand/shuffle*))))
 
 (defn mk-game-state [game]
   (let [{:keys [hand-size line-up-size super-villain-count]} cfg/defaults
@@ -2608,7 +2609,7 @@
                 {:name name
                  :type type
                  :facing facing
-                 :cards (flip cards facing)})]
+                 :cards (vec (flip cards facing))})]
     (-> game
         (assoc :messages msgs)
         (assoc :zones (vec zones))
