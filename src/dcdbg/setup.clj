@@ -27,8 +27,9 @@
         (concat ys))))
 
 (defn- setup-super-heroes []
-  ;; use The Flash
-  (take 1 cards/super-hero))
+  ;; use The Flash and 1 random
+  (let [[x & xs] cards/super-hero]
+    [x (-> xs rand/shuffle* first)]))
 
 (defn- setup-deck []
   (let [{:keys [punch-count vulnerability-count]} cfg/defaults]
