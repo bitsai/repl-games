@@ -77,7 +77,7 @@
                  :luck 3}
     :initiative 4
     :abilities {"Double-Shot (Shotgun)" "Once per turn, when you kill an Enemy with a Shotgun, you gain +1 Shot with that Shotgun."}
-    :starting-items ["Shotgun" "US Marshal Badge"]
+    :starting-items ["Shotgun" "Marshal Badge"]
     :health 10
     :defense 3
     :sanity 10
@@ -93,15 +93,15 @@
     :text "Anytime you draw a Loot card, you may discard it and draw a new one. You must keep the second card drawn. You are also +1 Combat."}
    {:class "Bandido"
     :name "Twin Guns"
-    :text "You may fire two 1 Hand Icon Guns per turn with no penalty for the off-hand Gun."
+    :text "You may fire two Single-Handed Guns per turn with no penalty for the off-hand Gun."
     :extra-starting-gear ["Pistol"]}
 
    {:class "Gunslinger"
     :name "Pistol Fanning"
-    :text "Use 1 Grit to double the number of Shots you get with a 1 Hand Icon Gun for one Attack. (Limit once per turn). To use this ability, you must have 1 Hand Icon open."}
+    :text "Use 1 Grit to double the number of Shots you get with a Single-Handed Gun for one Attack. (Limit once per turn). To use this ability, you must have a Hand slot open."}
    {:class "Gunslinger"
     :name "Quickdraw"
-    :text "During the first turn of a Fight, you are Initiative 10 and may gain +1 Shot with a 1 Hand Icon Gun."}
+    :text "During the first turn of a Fight, you are Initiative 10 and may gain +1 Shot with a Single-Handed Gun."}
    {:class "Gunslinger"
     :name "Reload"
     :text "Use 2 Grit to re-fill D6 Shots back into your Six Shooter Template."}
