@@ -21,8 +21,7 @@
     :gear {"Weapon Kit" "+2 Weapon Effort"
            "Blast Pistol" "6 capacity"
            "Common Armor" "+1 Armor"
-           "Burst Fire Unit" "Choose one weapon and modify it, on a hit roll Effort
-three times, distribute between targets as desired (note: if this weapon is lost or destroyed, the Burst Fire Unit is also lost)"}}
+           "Burst Fire Unit" "Choose one weapon and modify it, on a hit roll Effort three times, distribute between targets as desired (note: if this weapon is lost or destroyed, the Burst Fire Unit is also lost)"}}
    {:class "ZURIN"
     :bio-form "GENO"
     :stats {:str 0 :dex 0 :con 0 :int 0 :wis 7 :cha 0}

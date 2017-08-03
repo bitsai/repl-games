@@ -63,4 +63,30 @@
     :actions-per-turn 2
     :actions {"ATTACK-STONE LASH" "CLOSE Weapon Effort, can also be used to destroy any inanimate object in a single Attack"
               "ATTACK-STONE BITE" "CLOSE Weapon Effort, if over 8 Effort in one Attack, destroy one item on target"
-              "INT SPELL-VENOM SCENT" "Any enemy engaging at close range with a Bore Worm must make a CON check each turn or become dizzy with noxious gas emitted from small holes in the Worm's shell. The dizziness causes 1 Poison Damage, and makes any rolls HARD for that target"}}])
+              "INT SPELL-VENOM SCENT" "Any enemy engaging at close range with a Bore Worm must make a CON check each turn or become dizzy with noxious gas emitted from small holes in the Worm's shell. The dizziness causes 1 Poison Damage, and makes any rolls HARD for that target"}}
+   {:name "MINOTAUR BERSERK"
+    :hearts 3
+    :rolls "+3 STR, +3 WEAPON DAMAGE"
+    :actions-per-turn 1
+    :actions {"ATTACK-BATTLE AXE" "Weapon Damage, a huge, brutal weapon"
+              "ATTACK-CLEAVE" "Bracing and spinning its massive axe, The Berserk hits all CLOSE enemies with a Weapon attack on a single Attempt roll"}}
+   {:name "GOBLINS, GERBLINS, & GOBLINGS"
+    :hearts 1
+    :rolls "+2 STR, +2 DEX"
+    :actions-per-turn 1
+    :actions {"ATTACK-CRUMMY WEAPON" "Weapon Effort, with equipment no one wants to steal"
+              "ATTACK-HOME MADE BOW" "Weapon Effort, cannot shoot beyond FAR distance"}}
+   ;; SLIME CUBE
+   {:name "BLIND HORROR"
+    :hearts 2
+    :rolls "+5 DEX, +2 ALL OTHERS"
+    :actions-per-turn 1
+    :actions {"ATTACK-SPIKED TAIL" "CLOSE Weapon Effort, rolls with DEX to attack, ignores armor (rolls on target rather than hero armor)"
+              "ATTACK-FIRE RAY" "Magic Effort, a ranged attack that sears a target within FAR range. Those hit also take 1D4 burn damage on their next turn"
+              "WIS POWER-HEAL WITH FLAMES" "The Horror uses its turn to heal itself with Magical Effort"}}
+   {:name "FLAMING SKULL"
+    :hearts 2
+    :rolls "+2 STATS, +4 MAGIC EFFECTS"
+    :actions-per-turn 1
+    :actions {"INT SPELL-PARALYZE" "A single target is struck motionless without making a HARD INT Check. Paralysis lasts 4 ROUNDS OR until the Check is made"
+              "ATTACK-MAGMA BOMB" "These cackling fiends spit a blob of molten fire at a target or area. Anything NEAR the impact site for the next 4 ROUNDS must make a DEX Check or take Magical Fire Damage. Successful Checks result in half damage"}}])
