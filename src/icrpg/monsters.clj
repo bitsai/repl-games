@@ -109,4 +109,39 @@
     :actions {"LEVITATE" "Does not need terrain to move, always in flight, can rise up to FAR height"
               "INT SPELL-PARALYZE" "A single target is struck motionless without making a HARD INT Check. Paralysis lasts 4 ROUNDS OR until the Check is made"
               "FIRE SWORD" "On its turn, the Skull can conjure a blazing sword which will engage combatants on its own. The sword is spectral, and cannot be harmed. It fights with normal Attempts and Weapon Effort, and vanishes only when the Skull is killed or flees"
-              "ATTACK-MAGMA BOMB" "These cackling fiends spit a blob of molten fire at a target or area. Anything NEAR the impact site for the next 4 ROUNDS must make a DEX Check or take Magical Fire Damage. Successful Checks result in half damage"}}])
+              "ATTACK-MAGMA BOMB" "These cackling fiends spit a blob of molten fire at a target or area. Anything NEAR the impact site for the next 4 ROUNDS must make a DEX Check or take Magical Fire Damage. Successful Checks result in half damage"}}
+   {:name "GARGOLETH"
+    :hearts 6
+    :rolls "+8 STATS, +8 WEAPON DAMAGE"
+    :actions-per-turn "1-3"
+    :actions {"ATTACK-TENTACLE" "FAR Weapon Effort, hits all targets NEAR a point of attack. Targets there must make a DEX check to evade. Those who fail roll again, a 10 or less results in being grabbed by the tentacle. Inflicts 1D4 ship damage"
+              "ATTACK-CRUSHING BEAK" "Ultimate NEAR Weapon Effort on a single target. If target reduced to zero HP, it is devoured whole"
+              "WAVE SURGE" "A Gargoleth can convulse its massive body to form a huge wave. The wave is as large as the average ship, and almost as high. All creatures in its path must make a HARD STR check or be swept up. Those who succeed hold on, but take 1D6 damage"
+              "ATTACK-STORM OF SPINES" "Using compressed air, a cloud of many barbed spines fly out of the creature's skin. There is no way to avoid them unless sheltered by wood, steel or stone. Those NEAR the Gargoleth all take 3 Weapon damage instantly"}}
+   {:name "GIANT TENTACLE"
+    :hearts 2
+    :rolls "+4 ALL ROLLS"
+    :actions-per-turn 1
+    :actions {"ATTACK-LASH" "Normal Weapon attack, NEAR reach"
+              "ATTACK-GRAPPLE" "Without LASHING, the Tentacle wraps itself around a single victim, initiating competing STR rolls. Those overcome are squeezed and must check with CON or be winded, losing their next turn"
+              "DRAG DOWN" "Grappled victims are pulled into the depths. The Tentacle will waggle and waiver for 1D4 ROUNDS before doing so"
+              "HURL" "If a Tentacle has a victim grappled, and takes any type of damage, it will HURL the victim for a FAR location. The landing, if not mitigated with a DEX check, will cause at least 1D4 damage, depending on the landing site"}}
+   {:name "SKELETON"
+    :hearts 1
+    :rolls "+2 ALL ROLLS"
+    :actions-per-turn 1
+    :actions {"ATTACK-WEAPON" "Weapon Effort, on any critical fail their weapon breaks and they must resort to BASIC attacks"
+              "ATTACK-DEATH TOUCH" "Making a normal STR attack, the Skeleton grasps bare skin, burning it with cold blue fire. This causes Magic Damage"}}
+   {:name "FLIMES"
+    :hearts 1
+    :rolls "FOR EACH FLIME BEYOND 1, ALL PRESENT FLIMES GAIN +1 TO ALL ROLLS"
+    :actions-per-turn 1
+    :actions {"ATTACK-BITE" "CLOSE Weapon Effort"
+              "ORBIT" "If 3 or more Flimes are CLOSE to one another, they can use their Action to ORBIT. They spin around one another for 1D4 ROUNDS. At the end of that time, they emit a beam of white energy, striking any targets in a straight line for Ultimate Magical Damage"}}
+   {:name "CARRION CRAB"
+    :hearts 3
+    :rolls "+2 STATS, +2 WEAPON DAMAGE"
+    :actions-per-turn 2
+    :actions {"ATTACK-GIANT CLAWS" "Weapon attack, CLOSE"
+              "DIG IN" "As an Action, the Carrion Crab pulls its legs inward and grips the ground. In this state is utterly immovable by any physical means"
+              "PASSIVE SPINES AND SPIKES" "These beasts are covered in armor, swords and spears as well as natural chitin spines. Any successful melee attack against them inflicts Weapon Damage on the attacker"}}])
