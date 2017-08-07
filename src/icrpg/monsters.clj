@@ -144,4 +144,47 @@
     :actions-per-turn 2
     :actions {"ATTACK-GIANT CLAWS" "Weapon attack, CLOSE"
               "DIG IN" "As an Action, the Carrion Crab pulls its legs inward and grips the ground. In this state is utterly immovable by any physical means"
-              "PASSIVE SPINES AND SPIKES" "These beasts are covered in armor, swords and spears as well as natural chitin spines. Any successful melee attack against them inflicts Weapon Damage on the attacker"}}])
+              "PASSIVE SPINES AND SPIKES" "These beasts are covered in armor, swords and spears as well as natural chitin spines. Any successful melee attack against them inflicts Weapon Damage on the attacker"}}
+   {:name "CAVE ROPER"
+    :hearts 2
+    :rolls "+4 ALL ROLLS"
+    :actions-per-turn 1
+    :actions {"ATTACK-LASH" "Normal Weapon attack, NEAR reach, a barbed tongue whips and flays"
+              "ATTACK-GRAPPLE" "A single NEAR target can resist with a HARD STR roll or be dragged in and held as food"
+              "CHEW" "With no roll, the Cave Roper chews on its held prey as an action. Victim can use a HARD CON check to reduce the Weapon Damage to half with sheer will"}}
+   {:name "CHILD OF AZATOTH"
+    :hearts 3
+    :rolls "+8 ALL ROLLS"
+    :actions-per-turn "1 PER VICTIM"
+    :actions {"INT SPELL-CONFUSION" "All intelligent creatures within FAR range make ALL rolls as HARD"
+              "INT SPELL-SPELL STEALER" "On an Attempt, the THING can utilize any INT spell used by its opponents"
+              "AURA OF DECAY" "For each turn spent within NEAR range of the Child of Azatoth, creatures must make a INT check. Failure costs 1 STAT point, chosen at random"
+              "INT SPELL-TELEKINESIS" "This being can move objects, even huge ones with an INT check. These are its only physical weapons"
+              "INT SPELL-BECKON" "With a competing INT roll against its victim, the Child of Azatoth compels a target to walk slowly toward it for 1D4 ROUNDS. The check can be attempted again each of those turns to break free"
+              "INT SPELL-MEMORY EATER" "This spell targets a single victim, and robs them of one key memory from their recent or distant past, whichever is more sadistic"
+              "AURA OF OFFERINGS" "Any creature within CLOSE range must make a CHA check. If they fail, they must offer one piece of LOOT to the dead God as tribute"}}
+   {:name "SHADOW LASHER"
+    :hearts 2
+    :rolls "+5 DEX, +2 ALL OTHERS"
+    :actions-per-turn 2
+    :actions {"ATTACK-LASH" "Weapon Effort, NEAR reach"
+              "ATTACK-POUNCE" "The Lasher leaps onto its prey, pinning it down with STR. If Lashed when pinned in this way, the target takes Ultimate Weapon Damage, and gains no benefit from armor"
+              "BLINK" "Shadow Lashers can move NEAR without passing between locations"}}
+   {:name "OGRE"
+    :hearts 4
+    :rolls "+8 STR, -3 INT -3 CHA, +3 ALL OTHERS"
+    :actions-per-turn 2
+    :actions {"ATTACK-SPIKED CLUB" "Weapon Damage with a NEAR reach. Even on a missed Attack, the spiked club inflicts 3 Damage on its target"
+              "ATTACK-BODY SLAM" "Ogres hurl their massive bodies at an enemy to crush it. A DEX check is needed to evade when this Attack succeeds. Failure results in DOUBLE Weapon Damage and being immobilized under the creature. Success avoids all effects"
+              "ATTACK-SEISMIC HAMMER" "A ground-shaking area Attack. All NEAR enemies must make a CON check or be shaken senseless and lose their next turn"
+              "BATTLE CRY" "If cornered and almost dead, an Ogre will call for aid. Roll 1D4, on a 4 1 more Ogre appears nearby"}}
+   {:name "TREE OF DEATH"
+    :hearts 5
+    :rolls "NONE"
+    :actions-per-turn 2
+    :actions {"CLOUD OF SEEDS" "Anything with FAR range must roll 1D8 as they approach. In that many ROUNDS, they will breathe too many seeds, and will then take 5 Poison damage every turn thereafter"
+              "ROOT CORPSE" "The tree pushes animated corpses up with its roots. These will attack anything nearby as 1 HEART monsters. 1D4 spawn at a time"
+              "CLOUD OF FEAR" "Any creatures within NEAR range are wracked with visions of hellish agony. Make a WIS or CHA check to resist, otherwise make a FAR move in a random direction"
+              "SPAWN INSECTS" "If cut or chopped, the tree will spew out a swarm of biting insects. This swarm can not be harmed with any conventional Weapon, and does Weapon Damage to one target per turn with no avoidance"
+              "BLIGHT" "If agitated, the tree will issue forth bursts of subsurface poison. This will taint water and soil for 1 mile in any direction for 1D4 years"
+              "CLOUD OF BETRAYAL" "If below 2 HEARTS, the tree cracks. In its core a cloud of spores rests. All creatures must make a HARD CON check or turn against their allies for 1D4 ROUNDS"}}])
