@@ -148,6 +148,32 @@
    {:name "WILLY THE KID"
     :max-life 8
     :ability "You only need two GATLING GUN to use the Gatling Gun."}])
+
+(def old-saloon
+  [{:name "JOSE DELGADO"
+    :max-life 7
+    :ability "You may use the Loudmouth die without replacing a base die (roll six dice total)."}
+   {:name "TEQUILA JOE"
+    :max-life 7
+    :ability "You may use the Coward die without replacing a base die (roll six dice total)."}
+   {:name "APACHE KID"
+    :max-life 9
+    :ability "If you roll ARROW, you may take the Indian Chief's Arrow from another player."}
+   {:name "BILL NOFACE"
+    :max-life 9
+    :ability "Apply ARROW results only after your last roll."}
+   {:name "ELENA FUENTE"
+    :max-life 7
+    :ability "Each time you roll one or more ARROW, you may give one of those arrows to a player of your choice."}
+   {:name "VERA CUSTER"
+    :max-life 7
+    :ability "Each time you must lose life points for 1 or 2, you lose 1 life point less."}
+   {:name "DOC HOLYDAY"
+    :max-life 8
+    :ability "Each time you use three or more 1 and/or 2, you also regain 2 life points."}
+   {:name "MOLLY STARK"
+    :max-life 8
+    :ability "Each time another player must lose 1 or more life points, you can lose them in his place."}])
 (ns btdg.config)
 
 (def defaults
@@ -219,29 +245,45 @@
          ;; get the next one
          (first))))
 
-(defn- roll-die []
-  (case (rand/uniform 0 6)
-    0 "1"
-    1 "2"
-    2 "ARROW"
-    3 "BEER"
-    4 "DYNAMITE"
-    5 "GATLING GUN"))
+(defn- roll-die [die]
+  (let [roll (rand/uniform 0 6)]
+    (case (:type die)
+      :base (case roll
+              0 "1"
+              1 "2"
+              2 "ARROW"
+              3 "BEER"
+              4 "DYNAMITE"
+              5 "GATLING GUN")
+      :loudmouth (case roll
+                   0 "1 (2)"
+                   1 "2 (2)"
+                   2 "ARROW"
+                   3 "BULLET"
+                   4 "DYNAMITE"
+                   5 "GATLING GUN (2)")
+      :coward (case roll
+                0 "1"
+                1 "ARROW"
+                2 "ARROW (BROKEN)"
+                3 "BEER"
+                4 "BEER (2)"
+                5 "DYNAMITE"))))
 
 ;; commands
 
 (defn roll-dice
   ([game]
-   (let [n (:dice-count cfg/defaults)]
+   (let [n (-> game :dice count)]
      ;; by default, reroll all dice
      (apply roll-dice game (range n))))
   ([game & die-idxs]
    (let [die-idxs (set die-idxs)
          updated-dice (map-indexed (fn [idx die]
                                      (if-not (die-idxs idx)
-                                       (assoc die :new? false)
+                                       (dissoc die :new?)
                                        (-> die
-                                           (assoc :value (roll-die))
+                                           (assoc :value (roll-die die))
                                            (assoc :new? true))))
                                    (:dice game))]
      (-> game
@@ -330,10 +372,15 @@
          (discard-arrows (:active-player-idx game))))))
 
 (defn setup-dice [game]
-  (let [n (:dice-count cfg/defaults)]
+  (let [active-player-idx (:active-player-idx game)
+        base-dice (repeat (:dice-count cfg/defaults) {:type :base})
+        dice (case (get-player-k game active-player-idx :name)
+               "JOSE DELGADO" (cons {:type :loudmouth} base-dice)
+               "TEQUILA JOE"  (cons {:type :coward} base-dice)
+               base-dice)]
     (-> game
         ;; setup n dice
-        (assoc :dice (repeat n {}))
+        (assoc :dice dice)
         ;; set # dice rolls to 0
         (assoc :dice-rolls 0)
         ;; make first roll
@@ -358,12 +405,17 @@
        ;; shuffle non-sheriff roles
        (rand/shuffle*)
        ;; put the sheriff first
-       (concat [:sheriff])))
+       (cons :sheriff)))
 
 (defn- setup-characters [n]
-  (->> characters/base
-       (rand/shuffle*)
-       (take n)))
+  (let [[x & xs] characters/old-saloon]
+    (->> (concat characters/base xs)
+         ;; shuffle characters
+         (rand/shuffle*)
+         ;; take N-1
+         (take (dec n))
+         ;; put JOSE DELGADO first
+         (cons x))))
 
 (defn- setup-players [roles characters]
   (mapv (fn [r c]

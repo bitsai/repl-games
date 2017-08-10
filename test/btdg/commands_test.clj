@@ -5,30 +5,27 @@
 
 (deftest roll-dice-test
   (rand/set-seed! 420)
-  (let [game (setup-dice {})]
-    (testing "Should have dice setup."
-      (is (= {:dice [{:value "DYNAMITE" :new? true}
-                     {:value "2" :new? true}
-                     {:value "2" :new? true}
-                     {:value "2" :new? true}
-                     {:value "DYNAMITE" :new? true}]
-              :dice-rolls 1}
-             game)))
+  (let [game {:dice [{:type :base}
+                     {:type :base}
+                     {:type :base}
+                     {:type :loudmouth}
+                     {:type :coward}]
+              :dice-rolls 0}]
     (testing "Should roll all dice by default."
-      (is (= {:dice [{:value "1" :new? true}
-                     {:value "1" :new? true}
-                     {:value "BEER" :new? true}
-                     {:value "2" :new? true}
-                     {:value "ARROW" :new? true}]
-              :dice-rolls 2}
+      (is (= {:dice [{:type :base :value "DYNAMITE" :new? true}
+                     {:type :base :value "2" :new? true}
+                     {:type :base :value "2" :new? true}
+                     {:type :loudmouth :value "2 (2)" :new? true}
+                     {:type :coward :value "BEER (2)" :new? true}]
+              :dice-rolls 1}
              (roll-dice game))))
     (testing "Should be able to roll specific dice."
-      (is (= {:dice [{:value "DYNAMITE" :new? true}
-                     {:value "2" :new? false}
-                     {:value "1" :new? true}
-                     {:value "2" :new? false}
-                     {:value "DYNAMITE" :new? true}]
-              :dice-rolls 2}
+      (is (= {:dice [{:type :base :value "1" :new? true}
+                     {:type :base}
+                     {:type :base :value "1" :new? true}
+                     {:type :loudmouth}
+                     {:type :coward :value "BEER" :new? true}]
+              :dice-rolls 1}
              (roll-dice game 0 2 4))))))
 
 (deftest take-arrows-test
@@ -45,7 +42,7 @@
                         {:arrows 2}]
               :arrows 6}
              (take-arrows game 0 1 1 2))))
-    (testing "Should not be able to take more arrows than game has."
+    (testing "Should not be able to take more than arrows remaining."
       (is (= {:players [{:arrows 1}
                         {:arrows 8}]
               :arrows 0}
@@ -65,7 +62,7 @@
                         {:arrows 6}]
               :arrows 3}
              (discard-arrows game 0 1 1 2))))
-    (testing "Should not be able to discard more arrows than player has."
+    (testing "Should not be able to discard more than arrows taken."
       (is (= {:players [{:arrows 0}
                         {:arrows 0}]
               :arrows 9}
@@ -199,47 +196,52 @@
 
 (deftest end-turn-test
   (rand/set-seed! 420)
-  (let [game {:players [{:max-life 10
+  (let [game {:players [{:name "JOSE DELGADO"
+                         :max-life 10
                          :life 1}
-                        {:max-life 10
+                        {:name "BART CASSIDY"
+                         :max-life 10
                          :life 8}
-                        {:max-life 10
+                        {:name "TEQUILA JOE"
+                         :max-life 10
                          :life 5}]
-              :active-player-idx 1
-              :dice [{:value "ARROW" :new? true}
-                     {:value "ARROW" :new? true}
-                     {:value "2" :new? false}
-                     {:value "DYAMITE" :new? false}
-                     {:value "1" :new? false}]
-              :dice-rolls 2}]
-    (testing "Should be able to find next active player and re-init dice."
-      (is (= {:players [{:max-life 10
+              :active-player-idx 1}]
+    (testing "Should be able to find next active player."
+      (is (= {:players [{:name "JOSE DELGADO"
+                         :max-life 10
                          :life 1}
-                        {:max-life 10
+                        {:name "BART CASSIDY"
+                         :max-life 10
                          :life 8}
-                        {:max-life 10
+                        {:name "TEQUILA JOE"
+                         :max-life 10
                          :life 5}]
               :active-player-idx 2
-              :dice [{:value "DYNAMITE" :new? true}
-                     {:value "2" :new? true}
-                     {:value "2" :new? true}
-                     {:value "2" :new? true}
-                     {:value "DYNAMITE" :new? true}]
+              :dice [{:type :coward :value "BEER (2)" :new? true}
+                     {:type :base :value "2" :new? true}
+                     {:type :base :value "2" :new? true}
+                     {:type :base :value "2" :new? true}
+                     {:type :base :value "DYNAMITE" :new? true}
+                     {:type :base :value "1" :new? true}]
               :dice-rolls 1}
              (end-turn game))))
     (testing "Should skip dead players."
-      (is (= {:players [{:max-life 10
+      (is (= {:players [{:name "JOSE DELGADO"
+                         :max-life 10
                          :life 1}
-                        {:max-life 10
+                        {:name "BART CASSIDY"
+                         :max-life 10
                          :life 8}
-                        {:max-life 10
+                        {:name "TEQUILA JOE"
+                         :max-life 10
                          :life 0}]
               :active-player-idx 0
-              :dice [{:value "1" :new? true}
-                     {:value "1" :new? true}
-                     {:value "BEER" :new? true}
-                     {:value "2" :new? true}
-                     {:value "ARROW" :new? true}]
+              :dice [{:type :loudmouth :value "1 (2)" :new? true}
+                     {:type :base :value "BEER" :new? true}
+                     {:type :base :value "2" :new? true}
+                     {:type :base :value "ARROW" :new? true}
+                     {:type :base :value "DYNAMITE" :new? true}
+                     {:type :base :value "1" :new? true}]
               :dice-rolls 1}
              (-> game
                  ;; kill player 2

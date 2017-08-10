@@ -49,3 +49,29 @@
    {:name "WILLY THE KID"
     :max-life 8
     :ability "You only need two GATLING GUN to use the Gatling Gun."}])
+
+(def old-saloon
+  [{:name "JOSE DELGADO"
+    :max-life 7
+    :ability "You may use the Loudmouth die without replacing a base die (roll six dice total)."}
+   {:name "TEQUILA JOE"
+    :max-life 7
+    :ability "You may use the Coward die without replacing a base die (roll six dice total)."}
+   {:name "APACHE KID"
+    :max-life 9
+    :ability "If you roll ARROW, you may take the Indian Chief's Arrow from another player."}
+   {:name "BILL NOFACE"
+    :max-life 9
+    :ability "Apply ARROW results only after your last roll."}
+   {:name "ELENA FUENTE"
+    :max-life 7
+    :ability "Each time you roll one or more ARROW, you may give one of those arrows to a player of your choice."}
+   {:name "VERA CUSTER"
+    :max-life 7
+    :ability "Each time you must lose life points for 1 or 2, you lose 1 life point less."}
+   {:name "DOC HOLYDAY"
+    :max-life 8
+    :ability "Each time you use three or more 1 and/or 2, you also regain 2 life points."}
+   {:name "MOLLY STARK"
+    :max-life 8
+    :ability "Each time another player must lose 1 or more life points, you can lose them in his place."}])

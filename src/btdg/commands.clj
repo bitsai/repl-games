@@ -26,29 +26,45 @@
          ;; get the next one
          (first))))
 
-(defn- roll-die []
-  (case (rand/uniform 0 6)
-    0 "1"
-    1 "2"
-    2 "ARROW"
-    3 "BEER"
-    4 "DYNAMITE"
-    5 "GATLING GUN"))
+(defn- roll-die [die]
+  (let [roll (rand/uniform 0 6)]
+    (case (:type die)
+      :base (case roll
+              0 "1"
+              1 "2"
+              2 "ARROW"
+              3 "BEER"
+              4 "DYNAMITE"
+              5 "GATLING GUN")
+      :loudmouth (case roll
+                   0 "1 (2)"
+                   1 "2 (2)"
+                   2 "ARROW"
+                   3 "BULLET"
+                   4 "DYNAMITE"
+                   5 "GATLING GUN (2)")
+      :coward (case roll
+                0 "1"
+                1 "ARROW"
+                2 "ARROW (BROKEN)"
+                3 "BEER"
+                4 "BEER (2)"
+                5 "DYNAMITE"))))
 
 ;; commands
 
 (defn roll-dice
   ([game]
-   (let [n (:dice-count cfg/defaults)]
+   (let [n (-> game :dice count)]
      ;; by default, reroll all dice
      (apply roll-dice game (range n))))
   ([game & die-idxs]
    (let [die-idxs (set die-idxs)
          updated-dice (map-indexed (fn [idx die]
                                      (if-not (die-idxs idx)
-                                       (assoc die :new? false)
+                                       (dissoc die :new?)
                                        (-> die
-                                           (assoc :value (roll-die))
+                                           (assoc :value (roll-die die))
                                            (assoc :new? true))))
                                    (:dice game))]
      (-> game
@@ -137,10 +153,15 @@
          (discard-arrows (:active-player-idx game))))))
 
 (defn setup-dice [game]
-  (let [n (:dice-count cfg/defaults)]
+  (let [active-player-idx (:active-player-idx game)
+        base-dice (repeat (:dice-count cfg/defaults) {:type :base})
+        dice (case (get-player-k game active-player-idx :name)
+               "JOSE DELGADO" (cons {:type :loudmouth} base-dice)
+               "TEQUILA JOE"  (cons {:type :coward} base-dice)
+               base-dice)]
     (-> game
         ;; setup n dice
-        (assoc :dice (repeat n {}))
+        (assoc :dice dice)
         ;; set # dice rolls to 0
         (assoc :dice-rolls 0)
         ;; make first roll

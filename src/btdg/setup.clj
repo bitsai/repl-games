@@ -11,12 +11,17 @@
        ;; shuffle non-sheriff roles
        (rand/shuffle*)
        ;; put the sheriff first
-       (concat [:sheriff])))
+       (cons :sheriff)))
 
 (defn- setup-characters [n]
-  (->> characters/base
-       (rand/shuffle*)
-       (take n)))
+  (let [[x & xs] characters/old-saloon]
+    (->> (concat characters/base xs)
+         ;; shuffle characters
+         (rand/shuffle*)
+         ;; take N-1
+         (take (dec n))
+         ;; put JOSE DELGADO first
+         (cons x))))
 
 (defn- setup-players [roles characters]
   (mapv (fn [r c]
