@@ -1,5 +1,5 @@
 (ns btdg.setup
-  (:require [btdg.cards :as cards]
+  (:require [btdg.characters :as characters]
             [btdg.commands :as cmds]
             [btdg.config :as cfg]
             [repl-games.random :as rand]))
@@ -13,7 +13,7 @@
               (rand/shuffle*))))
 
 (defn- setup-characters [n]
-  (->> cards/characters
+  (->> cards/base
        (rand/shuffle*)
        (take n)))
 

@@ -1,6 +1,6 @@
-(ns btdg.cards)
+(ns btdg.characters)
 
-(def characters
+(def base
   [{:name "Bart Cassidy"
     :max-life 8
     :ability "You may take an arrow instead of losing a life point (except to Indians or Dynamite)."}
