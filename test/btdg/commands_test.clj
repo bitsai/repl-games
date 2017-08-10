@@ -11,7 +11,7 @@
                      {:type :loudmouth}
                      {:type :coward}]
               :dice-rolls 0}]
-    (testing "Should roll all dice by default."
+    (testing "By default, roll all dice."
       (is (= {:dice [{:type :base :value "DYNAMITE" :new? true}
                      {:type :base :value "2" :new? true}
                      {:type :base :value "2" :new? true}
@@ -19,7 +19,7 @@
                      {:type :coward :value "BEER (2)" :new? true}]
               :dice-rolls 1}
              (roll-dice game))))
-    (testing "Should be able to roll specific dice."
+    (testing "Roll specified dice."
       (is (= {:dice [{:type :base :value "1" :new? true}
                      {:type :base}
                      {:type :base :value "1" :new? true}
@@ -31,217 +31,276 @@
 (deftest take-arrows-test
   (let [game {:players [{:arrows 0}
                         {:arrows 0}]
+              :active-player-idx 0
               :arrows 9}]
-    (testing "Should take 1 arrow by default."
+    (testing "By default, active player takes 1 arrow."
       (is (= {:players [{:arrows 1}
                         {:arrows 0}]
+              :active-player-idx 0
               :arrows 8}
-             (take-arrows game 0))))
-    (testing "Should be able to take arrows for multiple players."
-      (is (= {:players [{:arrows 1}
-                        {:arrows 2}]
-              :arrows 6}
-             (take-arrows game 0 1 1 2))))
-    (testing "Should not be able to take more than arrows remaining."
-      (is (= {:players [{:arrows 1}
-                        {:arrows 8}]
+             (take-arrows game))))
+    (testing "Active player takes n arrows."
+      (is (= {:players [{:arrows 2}
+                        {:arrows 0}]
+              :active-player-idx 0
+              :arrows 7}
+             (take-arrows game 2))))
+    (testing "Can't take more than arrows remaining."
+      (is (= {:players [{:arrows 9}
+                        {:arrows 0}]
+              :active-player-idx 0
               :arrows 0}
-             (take-arrows game 0 1 1 20))))))
+             (take-arrows game 20))))
+    (testing "Specified player takes n arrows."
+      (is (= {:players [{:arrows 0}
+                        {:arrows 2}]
+              :active-player-idx 0
+              :arrows 7}
+             (take-arrows game 1 2))))))
 
 (deftest discard-arrows-test
-  (let [game {:players [{:arrows 1}
-                        {:arrows 8}]
-              :arrows 0}]
-    (testing "Should discard all player arrows by default."
+  (let [game {:players [{:arrows 3}
+                        {:arrows 3}]
+              :active-player-idx 0
+              :arrows 3}]
+    (testing "By default, active player discards all arrows."
+      (is (= {:players [{:arrows 0}
+                        {:arrows 3}]
+              :active-player-idx 0
+              :arrows 6}
+             (discard-arrows game))))
+    (testing "Active player discards n arrows."
       (is (= {:players [{:arrows 1}
-                        {:arrows 0}]
-              :arrows 8}
-             (discard-arrows game 1))))
-    (testing "Should be able to discard arrows for multiple players."
+                        {:arrows 3}]
+              :active-player-idx 0
+              :arrows 5}
+             (discard-arrows game 2))))
+    (testing "Can't discard more than arrows taken."
       (is (= {:players [{:arrows 0}
-                        {:arrows 6}]
-              :arrows 3}
-             (discard-arrows game 0 1 1 2))))
-    (testing "Should not be able to discard more than arrows taken."
-      (is (= {:players [{:arrows 0}
-                        {:arrows 0}]
-              :arrows 9}
-             (discard-arrows game 0 1 1 20))))))
+                        {:arrows 3}]
+              :active-player-idx 0
+              :arrows 6}
+             (discard-arrows game 20))))
+    (testing "Specified player discards n arrows."
+      (is (= {:players [{:arrows 3}
+                        {:arrows 1}]
+              :active-player-idx 0
+              :arrows 5}
+             (discard-arrows game 1 2))))))
 
 (deftest gain-life-test
   (let [game {:players [{:max-life 10
                          :life 1}
                         {:max-life 10
-                         :life 8}]}]
-    (testing "Should gain 1 life by default."
+                         :life 1}]
+              :active-player-idx 0}]
+    (testing "By default, active player gains 1 life."
       (is (= {:players [{:max-life 10
                          :life 2}
                         {:max-life 10
-                         :life 8}]}
-             (gain-life game 0))))
-    (testing "Should be able to gain life for multiple players."
+                         :life 1}]
+              :active-player-idx 0}
+             (gain-life game))))
+    (testing "Active player gains n life."
+      (is (= {:players [{:max-life 10
+                         :life 3}
+                        {:max-life 10
+                         :life 1}]
+              :active-player-idx 0}
+             (gain-life game 2))))
+    (testing "Can't go above max life."
+      (is (= {:players [{:max-life 10
+                         :life 10}
+                        {:max-life 10
+                         :life 1}]
+              :active-player-idx 0}
+             (gain-life game 20))))
+    (testing "Specified players gain n life."
       (is (= {:players [{:max-life 10
                          :life 2}
                         {:max-life 10
-                         :life 10}]}
-             (gain-life game 0 1 1 2))))
-    (testing "Should not be able to gain more than max life."
-      (is (= {:players [{:max-life 10
-                         :life 2}
-                        {:max-life 10
-                         :life 10}]}
-             (gain-life game 0 1 1 20))))))
+                         :life 3}]
+              :active-player-idx 0}
+             (gain-life game 0 1 1 2))))))
 
 (deftest lose-life-test
   (let [game {:players [{:max-life 10
-                         :life 1
+                         :life 10
                          :arrows 3}
                         {:max-life 10
+                         :life 10}]
+              :active-player-idx 0
+              :arrows 6}]
+    (testing "By default, active player loses 1 life."
+      (is (= {:players [{:max-life 10
+                         :life 9
+                         :arrows 3}
+                        {:max-life 10
+                         :life 10}]
+              :active-player-idx 0
+              :arrows 6}
+             (lose-life game))))
+    (testing "Active player loses n life."
+      (is (= {:players [{:max-life 10
                          :life 8
-                         :arrows 0}]
-              :arrows 0}]
-    (testing "Should lose 1 life by default."
+                         :arrows 3}
+                        {:max-life 10
+                         :life 10}]
+              :active-player-idx 0
+              :arrows 6}
+             (lose-life game 2))))
+    (testing "Can't go below 0 life."
       (is (= {:players [{:max-life 10
                          :life 0
                          :arrows 0}
                         {:max-life 10
-                         :life 8
-                         :arrows 0}]
-              :arrows 3}
-             (lose-life game 0))))
-    (testing "Should be able to lose life for multiple players."
+                         :life 10}]
+              :active-player-idx 0
+              :arrows 9}
+             (lose-life game 20))))
+    (testing "Specified players lose n life."
       (is (= {:players [{:max-life 10
-                         :life 0
-                         :arrows 0}
+                         :life 9
+                         :arrows 3}
                         {:max-life 10
-                         :life 6
-                         :arrows 0}]
-              :arrows 3}
-             (lose-life game 0 1 1 2))))
-    (testing "Should not be able to go below 0 life."
-      (is (= {:players [{:max-life 10
-                         :life 0
-                         :arrows 0}
-                        {:max-life 10
-                         :life 0
-                         :arrows 0}]
-              :arrows 3}
-             (lose-life game 0 1 1 20))))))
+                         :life 8}]
+              :active-player-idx 0
+              :arrows 6}
+             (lose-life game 0 1 1 2))))))
 
 (deftest indians-attack-test
   (let [game {:players [{:max-life 10
                          :life 1
-                         :arrows 1}
-                        {:max-life 10
-                         :life 8
-                         :arrows 2}]
-              :arrows 0}]
-    (testing "Should attack all players by default."
-      (is (= {:players [{:max-life 10
-                         :life 0
-                         :arrows 0}
-                        {:max-life 10
-                         :life 6
-                         :arrows 0}]
-              :arrows 3}
-             (indians-attack game))))
-    (testing "Should be able to attack specific players."
-      (is (= {:players [{:max-life 10
-                         :life 0
-                         :arrows 0}
-                        {:max-life 10
-                         :life 8
-                         :arrows 2}]
-              :arrows 1}
-             (indians-attack game 0))))))
-
-(deftest gatling-gun-test
-  (let [game {:players [{:max-life 10
-                         :life 1
-                         :arrows 1}
-                        {:max-life 10
-                         :life 8
-                         :arrows 2}
+                         :arrows 3}
                         {:max-life 10
                          :life 1
                          :arrows 3}]
-              :active-player-idx 2
-              :arrows 0}]
-    (testing "Should attack all non-active players by default."
+              :active-player-idx 0
+              :arrows 3}]
+    (testing "By default, attack all players."
       (is (= {:players [{:max-life 10
                          :life 0
                          :arrows 0}
                         {:max-life 10
-                         :life 7
-                         :arrows 2}
-                        {:max-life 10
-                         :life 1
+                         :life 0
                          :arrows 0}]
-              :active-player-idx 2
-              :arrows 4}
+              :active-player-idx 0
+              :arrows 9}
+             (indians-attack game))))
+    (testing "Attack specified players."
+      (is (= {:players [{:max-life 10
+                         :life 1
+                         :arrows 3}
+                        {:max-life 10
+                         :life 0
+                         :arrows 0}]
+              :active-player-idx 0
+              :arrows 6}
+             (indians-attack game 1))))))
+
+(deftest gatling-gun-test
+  (let [game {:players [{:max-life 10
+                         :life 10
+                         :arrows 3}
+                        {:max-life 10
+                         :life 10}
+                        {:max-life 10
+                         :life 10}]
+              :active-player-idx 0
+              :arrows 6}]
+    (testing "By default, shoot all OTHER players"
+      (is (= {:players [{:max-life 10
+                         :life 10
+                         :arrows 0}
+                        {:max-life 10
+                         :life 9}
+                        {:max-life 10
+                         :life 9}]
+              :active-player-idx 0
+              :arrows 9}
              (gatling-gun game))))
-    (testing "Should be able to attack specific players."
+    (testing "Shoot specified players."
       (is (= {:players [{:max-life 10
-                         :life 0
+                         :life 10
                          :arrows 0}
                         {:max-life 10
-                         :life 8
-                         :arrows 2}
+                         :life 10}
                         {:max-life 10
-                         :life 1
-                         :arrows 0}]
-              :active-player-idx 2
-              :arrows 4}
-             (gatling-gun game 0))))))
+                         :life 9}]
+              :active-player-idx 0
+              :arrows 9}
+             (gatling-gun game 2))))))
 
 (deftest end-turn-test
   (rand/set-seed! 420)
   (let [game {:players [{:name "JOSE DELGADO"
-                         :max-life 10
-                         :life 1}
+                         :max-life 9
+                         :life 9}
                         {:name "BART CASSIDY"
-                         :max-life 10
+                         :max-life 8
                          :life 8}
-                        {:name "TEQUILA JOE"
-                         :max-life 10
-                         :life 5}]
+                        {:name "BLACK JACK"
+                         :max-life 8
+                         :life 8}]
               :active-player-idx 1}]
-    (testing "Should be able to find next active player."
+    (testing "Find next active player."
       (is (= {:players [{:name "JOSE DELGADO"
-                         :max-life 10
-                         :life 1}
+                         :max-life 9
+                         :life 9}
                         {:name "BART CASSIDY"
-                         :max-life 10
+                         :max-life 8
                          :life 8}
-                        {:name "TEQUILA JOE"
-                         :max-life 10
-                         :life 5}]
+                        {:name "BLACK JACK"
+                         :max-life 8
+                         :life 8}]
               :active-player-idx 2
-              :dice [{:type :coward :value "BEER (2)" :new? true}
+              :dice [{:type :base :value "DYNAMITE" :new? true}
                      {:type :base :value "2" :new? true}
                      {:type :base :value "2" :new? true}
                      {:type :base :value "2" :new? true}
-                     {:type :base :value "DYNAMITE" :new? true}
-                     {:type :base :value "1" :new? true}]
+                     {:type :base :value "DYNAMITE" :new? true}]
               :dice-rolls 1}
              (end-turn game))))
-    (testing "Should skip dead players."
+    (testing "Next active player is a coward."
       (is (= {:players [{:name "JOSE DELGADO"
-                         :max-life 10
-                         :life 1}
+                         :max-life 9
+                         :life 9}
                         {:name "BART CASSIDY"
-                         :max-life 10
+                         :max-life 8
                          :life 8}
                         {:name "TEQUILA JOE"
-                         :max-life 10
-                         :life 0}]
-              :active-player-idx 0
-              :dice [{:type :loudmouth :value "1 (2)" :new? true}
+                         :max-life 8
+                         :life 8}]
+              :active-player-idx 2
+              :dice [{:type :coward :value "1" :new? true}
+                     {:type :base :value "1" :new? true}
                      {:type :base :value "BEER" :new? true}
                      {:type :base :value "2" :new? true}
                      {:type :base :value "ARROW" :new? true}
+                     {:type :base :value "DYNAMITE" :new? true}]
+              :dice-rolls 1}
+             (-> game
+                 ;; make player 2 Tequila Joe
+                 (assoc-in [:players 2 :name] "TEQUILA JOE")
+                 ;; end turn
+                 (end-turn)))))
+    (testing "Skip dead players."
+      (is (= {:players [{:name "JOSE DELGADO"
+                         :max-life 9
+                         :life 9}
+                        {:name "BART CASSIDY"
+                         :max-life 8
+                         :life 8}
+                        {:name "BLACK JACK"
+                         :max-life 8
+                         :life 0}]
+              :active-player-idx 0
+              :dice [{:type :loudmouth :value "1 (2)" :new? true}
                      {:type :base :value "DYNAMITE" :new? true}
-                     {:type :base :value "1" :new? true}]
+                     {:type :base :value "GATLING" :new? true}
+                     {:type :base :value "ARROW" :new? true}
+                     {:type :base :value "ARROW" :new? true}
+                     {:type :base :value "DYNAMITE" :new? true}]
               :dice-rolls 1}
              (-> game
                  ;; kill player 2

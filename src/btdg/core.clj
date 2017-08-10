@@ -18,13 +18,13 @@
         :fn print/print-game!}
    :rd {:doc "(roll dice): [die-idx ...]"
         :fn cmds/roll-dice}
-   :ta {:doc "(take arrows): player-idx [n] ..."
+   :ta {:doc "(take arrows): [n] | player-idx n"
         :fn cmds/take-arrows}
-   :da {:doc "(discard arrows): player-idx [n] ..."
+   :da {:doc "(discard arrows): [n] | player-idx n"
         :fn cmds/discard-arrows}
-   :gl {:doc "(gain life): player-idx [n] ..."
+   :gl {:doc "(gain life): [n] | player-idx n ..."
         :fn cmds/gain-life}
-   :ll {:doc "(lose life): player-idx [n] ..."
+   :ll {:doc "(lose life): [n] | player-idx n ..."
         :fn cmds/lose-life}
    :ia {:doc "(Indians attack): [player-idx ...]"
         :fn cmds/indians-attack}
