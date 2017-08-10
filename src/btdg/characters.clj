@@ -21,7 +21,7 @@
     :ability "You never lose more than one life point to Indians."}
    {:name "KIT CARLSON"
     :max-life 7
-    :ability "For each GATLING GUN you may discard one arrow from any player."}
+    :ability "For each GATLING you may discard one arrow from any player."}
    {:name "LUCKY DUKE"
     :max-life 8
     :ability "You may make one extra re-roll."}
@@ -48,7 +48,7 @@
     :ability "Each time another player is eliminated, you gain two life points."}
    {:name "WILLY THE KID"
     :max-life 8
-    :ability "You only need two GATLING GUN to use the Gatling Gun."}])
+    :ability "You only need two GATLING to use the Gatling Gun."}])
 
 (def old-saloon
   [{:name "JOSE DELGADO"

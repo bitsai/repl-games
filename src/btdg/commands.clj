@@ -35,14 +35,14 @@
               2 "ARROW"
               3 "BEER"
               4 "DYNAMITE"
-              5 "GATLING GUN")
+              5 "GATLING")
       :loudmouth (case roll
                    0 "1 (2)"
                    1 "2 (2)"
                    2 "ARROW"
                    3 "BULLET"
                    4 "DYNAMITE"
-                   5 "GATLING GUN (2)")
+                   5 "GATLING (2)")
       :coward (case roll
                 0 "1"
                 1 "ARROW"
