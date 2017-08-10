@@ -1,37 +1,26 @@
 (ns btdg.print
   (:require [clojure.string :as str]))
 
-(defn- ->active-marker [active-idxs idx]
-  (if (or (and (integer? active-idxs)
-               (= active-idxs idx))
-          (and (set? active-idxs)
-               (contains? active-idxs idx)))
-    ">"
-    " "))
-
 (defn- print-player! [active-player-idx player-idx player]
-  (if-not (-> player :life pos?)
-    (println (format "%s[%s] DEAD"
-                     (->active-marker active-player-idx player-idx)
-                     player-idx))
-    (let [role (:role player)]
-      (println (format "%s[%s] %s (LIFE %d/%d) (ARROWS %d)"
-                       (->active-marker active-player-idx player-idx)
-                       player-idx
-                       (-> role name str/upper-case)
-                       (-> player :life)
-                       (-> player :max-life)
-                       (-> player :arrows)))
-      (when (#{:sheriff :deputy} role)
-        (println (format "     %s: %s"
-                         (-> player :name)
-                         (-> player :ability)))))))
+  (let [active-marker (if (= active-player-idx player-idx) ">" " ")]
+    (if (-> player :life pos?)
+      (let [role (:role player)]
+        (println (format "%s[%s] %s (LIFE %d/%d) (ARROWS %d)"
+                         active-marker
+                         player-idx
+                         (-> role name str/upper-case)
+                         (-> player :life)
+                         (-> player :max-life)
+                         (-> player :arrows)))
+        (when (#{:sheriff :deputy} role)
+          (println (format "     %s: %s"
+                           (-> player :name)
+                           (-> player :ability)))))
+      (println (format "%s[%s] DEAD" active-marker player-idx)))))
 
-(defn- print-die! [active-die-idxs die-idx die]
-  (println (format "%s[%s] %s"
-                   (->active-marker active-die-idxs die-idx)
-                   die-idx
-                   die)))
+(defn- print-die! [die-idx {:keys [new? value]}]
+  (let [new-roll-marker (if new? ">" " ")]
+    (println (format "%s[%s] %s" new-roll-marker die-idx value))))
 
 (defn print-game! [game]
   (->> game
@@ -42,5 +31,5 @@
   (println (format " DICE ROLLS %d" (:dice-rolls game)))
   (->> game
        (:dice)
-       (map-indexed (partial print-die! (:active-die-idxs game)))
+       (map-indexed print-die!)
        (dorun)))

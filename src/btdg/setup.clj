@@ -39,9 +39,11 @@
         characters (setup-characters (count roles))
         players (setup-players roles characters)]
     (-> game
+        ;; setup players
         (assoc :players players)
         ;; make first player active
         (assoc :active-player-idx 0)
+        ;; setup arrows
         (assoc :arrows (:arrow-count cfg/defaults))
-        ;; init dice
-        (cmds/init-dice))))
+        ;; setup dice
+        (cmds/setup-dice))))

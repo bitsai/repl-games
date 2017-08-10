@@ -5,29 +5,20 @@
 ;; helpers
 
 (defn- get-player-k [game player-idx k]
-  (get-in game (conj [:players player-idx] k)))
+  (get-in game [:players player-idx k]))
 
 (defn- update-player-k [game player-idx k f & args]
-  (apply update-in game (conj [:players player-idx] k) f args))
+  (apply update-in game [:players player-idx k] f args))
 
-(defn- do-for-players [f game player-idx n args]
-  (reduce (fn [g [player-idx n]]
-             (f g player-idx n))
+(defn- do-for-players [f game player-idx arg idxs-and-args]
+  (reduce (fn [g [player-idx arg]]
+             (f g player-idx arg))
            game
-           (cons [player-idx n] (partition 2 args))))
-
-(defn- roll-die []
-  (case (rand/uniform 0 6)
-    0 "ARROW"
-    1 "DYNAMITE"
-    2 "1"
-    3 "2"
-    4 "BEER"
-    5 "GATLING GUN"))
+           (cons [player-idx arg] (partition 2 idxs-and-args))))
 
 (defn- next-active-player-idx [game]
   (let [n (-> game :players count)]
-    (->> (range 1 (inc n))
+    (->> (iterate inc 1)
          ;; generate seq of next player idxs
          (map #(-> game :active-player-idx (+ %) (mod n)))
          ;; find live player idxs
@@ -35,40 +26,43 @@
          ;; get the next one
          (first))))
 
+(defn- roll-die []
+  (case (rand/uniform 0 6)
+    0 "1"
+    1 "2"
+    2 "ARROW"
+    3 "BEER"
+    4 "DYNAMITE"
+    5 "GATLING GUN"))
+
 ;; commands
 
-(defn init-dice [game]
-  (let [n (:dice-count cfg/defaults)]
-    (-> game
-        ;; set # dice rolls to 1
-        (assoc :dice-rolls 1)
-        ;; roll all dice
-        (assoc :dice (vec (repeatedly n roll-die)))
-        ;; mark all dice as active
-        (assoc :active-die-idxs (set (range n))))))
-
-(defn reroll-dice
+(defn roll-dice
   ([game]
    (let [n (:dice-count cfg/defaults)]
      ;; by default, reroll all dice
-     (apply reroll-dice game (range n))))
+     (apply roll-dice game (range n))))
   ([game & die-idxs]
-   (reduce (fn [g die-idx]
-             ;; roll selected die
-             (assoc-in g [:dice die-idx] (roll-die)))
-           (-> game
-               ;; increment # dice rolls
-               (update :dice-rolls inc)
-               ;; mark selected dice as active
-               (assoc :active-die-idxs (set die-idxs)))
-           die-idxs)))
+   (let [die-idxs (set die-idxs)
+         updated-dice (map-indexed (fn [idx die]
+                                     (if-not (die-idxs idx)
+                                       (assoc die :new? false)
+                                       (-> die
+                                           (assoc :value (roll-die))
+                                           (assoc :new? true))))
+                                   (:dice game))]
+     (-> game
+         ;; update dice
+         (assoc :dice updated-dice)
+         ;; increment # dice rolls
+         (update :dice-rolls inc)))))
 
 (defn take-arrows
   ([game player-idx]
    ;; by default, take 1 arrow
    (take-arrows game player-idx 1))
   ([game player-idx n]
-   (let [;; can't take more than game arrows
+   (let [;; can't take more than arrows remaining
          arrows (min n (:arrows game))]
      (-> game
          (update :arrows - arrows)
@@ -78,14 +72,12 @@
 
 (defn discard-arrows
   ([game player-idx]
-   (let [player-arrows (get-player-k game player-idx :arrows)]
-     ;; by default, discard all player arrows
-     (discard-arrows game player-idx player-arrows)))
+   ;; by default, discard all arrows
+   (discard-arrows game player-idx (:arrow-count cfg/defaults)))
   ([game player-idx n]
    (let [player-arrows (get-player-k game player-idx :arrows)
-         arrows (-> n
-                    ;; can't discard more than player arrows
-                    (min player-arrows))]
+         ;; can't discard more than arrows taken
+         arrows (min n player-arrows)]
      (-> game
          (update-player-k player-idx :arrows - arrows)
          (update :arrows + arrows))))
@@ -98,11 +90,9 @@
    (gain-life game player-idx 1))
   ([game player-idx n]
    (let [max-life (get-player-k game player-idx :max-life)
-         add-life #(-> %
-                       (+ n)
-                       ;; can't go above max life
-                       (min max-life))]
-     (update-player-k game player-idx :life add-life)))
+         ;; can't go above max life
+         add-life #(min (+ %1 %2) max-life)]
+     (update-player-k game player-idx :life add-life n)))
   ([game player-idx n & args]
    (do-for-players gain-life game player-idx n args)))
 
@@ -111,14 +101,12 @@
    ;; by default, lose 1 life
    (lose-life game player-idx 1))
   ([game player-idx n]
-   (let [remove-life #(-> %
-                          (- n)
-                          ;; can't go below 0 life
-                          (max 0))
-         updated (update-player-k game player-idx :life remove-life)]
-     (cond-> updated
+   (let [;; can't go below 0 life
+         remove-life #(max (- %1 %2) 0)
+         updated-game (update-player-k game player-idx :life remove-life n)]
+     (cond-> updated-game
        ;; if player is dead, discard arrows
-       (-> updated (get-player-k player-idx :life) zero?)
+       (-> updated-game (get-player-k player-idx :life) zero?)
        (discard-arrows player-idx))))
   ([game player-idx n & args]
    (do-for-players lose-life game player-idx n args)))
@@ -140,17 +128,27 @@
   ([game]
    (let [active-player-idx (:active-player-idx game)
          player-idxs (-> game :players count range)]
-     ;; by default, attack each of the OTHER players
+     ;; by default, attack all OTHER players
      (apply gatling-gun game (remove #{active-player-idx} player-idxs))))
   ([game & player-idxs]
-   (let [idxs-and-damages (interleave player-idxs (repeat 1))]
+   (let [idxs-and-hits (interleave player-idxs (repeat 1))]
      (-> game
-         (#(apply lose-life % idxs-and-damages))
+         (#(apply lose-life % idxs-and-hits))
          (discard-arrows (:active-player-idx game))))))
+
+(defn setup-dice [game]
+  (let [n (:dice-count cfg/defaults)]
+    (-> game
+        ;; setup n dice
+        (assoc :dice (repeat n {}))
+        ;; set # dice rolls to 0
+        (assoc :dice-rolls 0)
+        ;; make first roll
+        (roll-dice))))
 
 (defn end-turn [game]
   (-> game
       ;; find next active player
       (assoc :active-player-idx (next-active-player-idx game))
-      ;; init dice again
-      (init-dice)))
+      ;; setup dice
+      (setup-dice)))

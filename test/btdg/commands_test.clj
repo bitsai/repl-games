@@ -3,19 +3,33 @@
             [clojure.test :refer :all]
             [repl-games.random :as rand]))
 
-(deftest reroll-dice-test
+(deftest roll-dice-test
   (rand/set-seed! 420)
-  (let [game (init-dice {})]
-    (testing "Should reroll all dice by default."
-      (is (= {:dice-rolls 2
-              :dice ["ARROW" "ARROW" "2" "DYNAMITE" "1"]
-              :active-die-idxs #{0 1 2 3 4}}
-             (reroll-dice game))))
-    (testing "Should be able to reroll specific dice."
-      (is (= {:dice-rolls 2
-              :dice ["BEER" "DYNAMITE" "ARROW" "DYNAMITE" "BEER"]
-              :active-die-idxs #{0 2 4}}
-             (reroll-dice game 0 2 4))))))
+  (let [game (setup-dice {})]
+    (testing "Should have dice setup."
+      (is (= {:dice [{:value "DYNAMITE" :new? true}
+                     {:value "2" :new? true}
+                     {:value "2" :new? true}
+                     {:value "2" :new? true}
+                     {:value "DYNAMITE" :new? true}]
+              :dice-rolls 1}
+             game)))
+    (testing "Should roll all dice by default."
+      (is (= {:dice [{:value "1" :new? true}
+                     {:value "1" :new? true}
+                     {:value "BEER" :new? true}
+                     {:value "2" :new? true}
+                     {:value "ARROW" :new? true}]
+              :dice-rolls 2}
+             (roll-dice game))))
+    (testing "Should be able to roll specific dice."
+      (is (= {:dice [{:value "DYNAMITE" :new? true}
+                     {:value "2" :new? false}
+                     {:value "1" :new? true}
+                     {:value "2" :new? false}
+                     {:value "DYNAMITE" :new? true}]
+              :dice-rolls 2}
+             (roll-dice game 0 2 4))))))
 
 (deftest take-arrows-test
   (let [game {:players [{:arrows 0}
@@ -192,9 +206,12 @@
                         {:max-life 10
                          :life 5}]
               :active-player-idx 1
-              :dice-rolls 2
-              :dice ["ARROW" "ARROW" "2" "DYNAMITE" "1"]
-              :active-die-idxs #{0 1}}]
+              :dice [{:value "ARROW" :new? true}
+                     {:value "ARROW" :new? true}
+                     {:value "2" :new? false}
+                     {:value "DYAMITE" :new? false}
+                     {:value "1" :new? false}]
+              :dice-rolls 2}]
     (testing "Should be able to find next active player and re-init dice."
       (is (= {:players [{:max-life 10
                          :life 1}
@@ -203,9 +220,12 @@
                         {:max-life 10
                          :life 5}]
               :active-player-idx 2
-              :dice-rolls 1
-              :dice ["BEER" "DYNAMITE" "DYNAMITE" "DYNAMITE" "BEER"]
-              :active-die-idxs #{0 1 2 3 4}}
+              :dice [{:value "DYNAMITE" :new? true}
+                     {:value "2" :new? true}
+                     {:value "2" :new? true}
+                     {:value "2" :new? true}
+                     {:value "DYNAMITE" :new? true}]
+              :dice-rolls 1}
              (end-turn game))))
     (testing "Should skip dead players."
       (is (= {:players [{:max-life 10
@@ -215,9 +235,14 @@
                         {:max-life 10
                          :life 0}]
               :active-player-idx 0
-              :dice-rolls 1
-              :dice ["ARROW" "ARROW" "2" "DYNAMITE" "1"]
-              :active-die-idxs #{0 1 2 3 4}}
+              :dice [{:value "1" :new? true}
+                     {:value "1" :new? true}
+                     {:value "BEER" :new? true}
+                     {:value "2" :new? true}
+                     {:value "ARROW" :new? true}]
+              :dice-rolls 1}
              (-> game
+                 ;; kill player 2
                  (assoc-in [:players 2 :life] 0)
+                 ;; end turn
                  (end-turn)))))))
