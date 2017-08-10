@@ -10,7 +10,7 @@
                (repeat deputy-count :deputy))
        ;; shuffle non-sheriff roles
        (rand/shuffle*)
-       ;; prepend the sheriff
+       ;; put the sheriff first
        (concat [:sheriff])))
 
 (defn- setup-characters [n]
