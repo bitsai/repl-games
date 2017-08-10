@@ -180,7 +180,7 @@
   {:dice-count 5
    :arrow-count 9
    :renegade-count 1
-   :outlaw-count 3
+   :outlaw-count 2
    :deputy-count 1})
 (ns btdg.print
   (:require [clojure.string :as str]))
@@ -188,18 +188,16 @@
 (defn- print-player! [active-player-idx player-idx player]
   (let [active-marker (if (= active-player-idx player-idx) ">" " ")]
     (if (-> player :life pos?)
-      (let [role (:role player)]
+      (let [{:keys [ability role max-life life arrows]} player]
         (println (format "%s[%s] %s (LIFE %d/%d) (ARROWS %d)"
                          active-marker
                          player-idx
                          (-> role name str/upper-case)
-                         (-> player :life)
-                         (-> player :max-life)
-                         (-> player :arrows)))
-        (when (#{:sheriff :deputy} role)
-          (println (format "     %s: %s"
-                           (-> player :name)
-                           (-> player :ability)))))
+                         life
+                         max-life
+                         arrows))
+        (when-let [name (:name player)]
+          (println (format "     %s: %s" name ability))))
       (println (format "%s[%s] DEAD" active-marker player-idx)))))
 
 (defn- print-die! [die-idx {:keys [new? value]}]
@@ -412,7 +410,10 @@
                            ;; sheriff gets 2 additional life points
                            (= r :sheriff)
                            (+ 2))]
-            (-> c
+            (-> (cond-> c
+                  ;; remove name and ability for renegades and outlaws
+                  (#{:renegade :outlaw} r)
+                  (dissoc :name :ability))
                 (assoc :role r)
                 (assoc :max-life max-life)
                 (assoc :life max-life)

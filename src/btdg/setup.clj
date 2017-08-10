@@ -29,7 +29,10 @@
                            ;; sheriff gets 2 additional life points
                            (= r :sheriff)
                            (+ 2))]
-            (-> c
+            (-> (cond-> c
+                  ;; remove name and ability for renegades and outlaws
+                  (#{:renegade :outlaw} r)
+                  (dissoc :name :ability))
                 (assoc :role r)
                 (assoc :max-life max-life)
                 (assoc :life max-life)

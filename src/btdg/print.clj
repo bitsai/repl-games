@@ -4,18 +4,16 @@
 (defn- print-player! [active-player-idx player-idx player]
   (let [active-marker (if (= active-player-idx player-idx) ">" " ")]
     (if (-> player :life pos?)
-      (let [role (:role player)]
+      (let [{:keys [ability role max-life life arrows]} player]
         (println (format "%s[%s] %s (LIFE %d/%d) (ARROWS %d)"
                          active-marker
                          player-idx
                          (-> role name str/upper-case)
-                         (-> player :life)
-                         (-> player :max-life)
-                         (-> player :arrows)))
-        (when (#{:sheriff :deputy} role)
-          (println (format "     %s: %s"
-                           (-> player :name)
-                           (-> player :ability)))))
+                         life
+                         max-life
+                         arrows))
+        (when-let [name (:name player)]
+          (println (format "     %s: %s" name ability))))
       (println (format "%s[%s] DEAD" active-marker player-idx)))))
 
 (defn- print-die! [die-idx {:keys [new? value]}]
