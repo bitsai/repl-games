@@ -3,49 +3,49 @@
 (def characters
   [{:name "Bart Cassidy"
     :max-life 8
-    :ability "You may take an arrow instead of losing a life point (except to Indians or Dynamite). You cannot use this ability if you lose a life point to Indian or Dynamite, only for 1, 2, or Gatling Gun. You may not use this ability to take the last arrow remaining in the pile."}
+    :ability "You may take an arrow instead of losing a life point (except to Indians or Dynamite)."}
    {:name "Black Jack"
     :max-life 8
-    :ability "You may re-roll Dynamite (not if you roll three or more!). If you roll three or more Dynamite at once (or in total if you didn't re-roll them), follow the usual rules (your turn ends, etc.)."}
+    :ability "You may re-roll DYNAMITE (not if you roll three or more!)."}
    {:name "Calamity Jane"
     :max-life 8
     :ability "You can use 1 as 2 and vice-versa."}
    {:name "El Gringo"
     :max-life 7
-    :ability "When a player makes you lose one or more life points, he must take an arrow. Life points lost to Indians or Dynamite are not affected."}
+    :ability "When a player makes you lose one or more life points, he must take an arrow."}
    {:name "Jesse Jones"
     :max-life 9
-    :ability "If you have four life points or less, you gain two if you use Beer for yourself. For example, if you have four life points and use two beers, you get four life points."}
+    :ability "If you have four life points or less, you gain two if you use BEER for yourself."}
    {:name "Jourdonnais"
     :max-life 7
     :ability "You never lose more than one life point to Indians."}
    {:name "Kit Carlson"
     :max-life 7
-    :ability "For each Gatling Gun you may discard one arrow from any player. You may choose to discard your own arrows. If you roll three Gatling Gun, you discard all your own arrows, plus three from any player(s) (of course, you still deal one damage to each other player)."}
+    :ability "For each GATLING GUN you may discard one arrow from any player."}
    {:name "Lucky Duke"
     :max-life 8
-    :ability "You may make one extra re-roll. You may roll the dice a total of four times on your turn."}
+    :ability "You may make one extra re-roll."}
    {:name "Paul Regret"
     :max-life 9
     :ability "You never lose life points to the Gatling Gun."}
    {:name "Pedro Ramirez"
     :max-life 8
-    :ability "Each time you lose a life point, you may discard one of your arrows. You still lose the life point when you use this ability."}
+    :ability "Each time you lose a life point, you may discard one of your arrows."}
    {:name "Rose Doolan"
     :max-life 9
-    :ability "You may use 1 or 2 for players sitting one place further. With 1 you may hit a player sitting up to two places away, and with 2 you may hit a player sitting two or three places away."}
+    :ability "You may use 1 or 2 for players sitting one place further."}
    {:name "Sid Ketchum"
     :max-life 8
-    :ability "At the beginning of your turn, any player of your choice gains one life point. You may also choose yourself."}
+    :ability "At the beginning of your turn, any player of your choice gains one life point."}
    {:name "Slab the Killer"
     :max-life 8
-    :ability "Once per turn, you can use a Beer to double a 1 or 2. The dice you double takes two life points away from the same player (you can't choose two different players). The Beer in this case does not provide any life points."}
+    :ability "Once per turn, you can use a BEER to double a 1 or 2."}
    {:name "Suzy Lafayette"
     :max-life 8
-    :ability "If you didn't roll any 1 or 2, you gain two life points. This only applies at the end of your turn, not during your re-rolls."}
+    :ability "If you didn't roll any 1 or 2, you gain two life points."}
    {:name "Vulture Sam"
     :max-life 9
     :ability "Each time another player is eliminated, you gain two life points."}
    {:name "Willy the Kid"
     :max-life 8
-    :ability "You only need 2 Gatling Gun results to use the Gatling Gun. You can activate the Gatling Gun only once per turn, even if you roll more than two Gatling Gun results."}])
+    :ability "You only need two GATLING GUN to use the Gatling Gun."}])
