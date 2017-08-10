@@ -275,13 +275,15 @@
      (apply roll-dice game die-idxs)))
   ([game & die-idxs]
    (let [die-idxs (set die-idxs)
-         updated-dice (map-indexed (fn [idx die]
-                                     (if-not (die-idxs idx)
-                                       (dissoc die :new?)
-                                       (-> die
-                                           (assoc :value (roll-die die))
-                                           (assoc :new? true))))
-                                   (:dice game))]
+         ;; use mapv to evaluate immediately, to avoid bad randomness
+         updated-dice (mapv (fn [idx die]
+                              (if-not (die-idxs idx)
+                                (dissoc die :new?)
+                                (-> die
+                                    (assoc :value (roll-die die))
+                                    (assoc :new? true))))
+                            (range)
+                            (:dice game))]
      (-> game
          (assoc :dice updated-dice)
          (update :dice-rolls inc)))))
