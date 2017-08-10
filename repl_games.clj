@@ -97,9 +97,9 @@
     ;; create game commands
     (doseq [[cmd-name cmd-spec] cmd-map]
       (mk-command! ns game-atom help-atom cmd-name cmd-spec print-game))))
-(ns btdg.cards)
+(ns btdg.characters)
 
-(def characters
+(def base
   [{:name "Bart Cassidy"
     :max-life 8
     :ability "You may take an arrow instead of losing a life point (except to Indians or Dynamite)."}
@@ -151,12 +151,11 @@
 (ns btdg.config)
 
 (def defaults
-  {:sheriff-count 1
-   :renegade-count 1
-   :outlaw-count 3
-   :deputy-count 1
+  {:dice-count 5
    :arrow-count 9
-   :dice-count 5})
+   :renegade-count 2
+   :outlaw-count 3
+   :deputy-count 2})
 (ns btdg.print
   (:require [clojure.string :as str]))
 
@@ -360,21 +359,22 @@
       ;; init dice again
       (init-dice)))
 (ns btdg.setup
-  (:require [btdg.cards :as cards]
+  (:require [btdg.characters :as characters]
             [btdg.commands :as cmds]
             [btdg.config :as cfg]
             [repl-games.random :as rand]))
 
-(defn- setup-roles [sheriff-count renegade-count outlaw-count deputy-count]
-  ;; put sheriffs first, then the other roles shuffled together
-  (concat (repeat sheriff-count :sheriff)
-          (-> (concat (repeat renegade-count :renegade)
-                      (repeat outlaw-count :outlaw)
-                      (repeat deputy-count :deputy))
-              (rand/shuffle*))))
+(defn- setup-roles [renegade-count outlaw-count deputy-count]
+  (->> (concat (repeat renegade-count :renegade)
+               (repeat outlaw-count :outlaw)
+               (repeat deputy-count :deputy))
+       ;; shuffle non-sheriff roles
+       (rand/shuffle*)
+       ;; prepend the sheriff
+       (concat [:sheriff])))
 
 (defn- setup-characters [n]
-  (->> cards/characters
+  (->> characters/base
        (rand/shuffle*)
        (take n)))
 
@@ -393,8 +393,7 @@
         characters))
 
 (defn mk-game-state [game]
-  (let [roles (setup-roles (:sheriff-count cfg/defaults)
-                           (:renegade-count cfg/defaults)
+  (let [roles (setup-roles (:renegade-count cfg/defaults)
                            (:outlaw-count cfg/defaults)
                            (:deputy-count cfg/defaults))
         characters (setup-characters (count roles))
