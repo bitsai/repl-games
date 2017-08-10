@@ -3,6 +3,6 @@
 (def defaults
   {:dice-count 5
    :arrow-count 9
-   :renegade-count 2
+   :renegade-count 1
    :outlaw-count 3
-   :deputy-count 2})
+   :deputy-count 1})
