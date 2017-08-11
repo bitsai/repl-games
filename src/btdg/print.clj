@@ -2,31 +2,33 @@
   (:require [clojure.string :as str]))
 
 (defn- print-player! [active-player-idx player-idx player]
-  (let [active-marker (if (= active-player-idx player-idx) ">" " ")]
+  (let [active-marker (if (= active-player-idx player-idx) "<" " ")]
     (if (-> player :life pos?)
-      (let [{:keys [ability role max-life life arrows]} player]
-        (println (format "%s[%s] %s (LIFE %d/%d) (ARROWS %d)"
-                         active-marker
+      (let [role-name (-> player :role name str/upper-case)
+            {:keys [name role max-life life arrows]} player]
+        (println (format "(%s)%s %-8s %d/%d %d %s"
                          player-idx
-                         (-> role name str/upper-case)
+                         active-marker
+                         role-name
                          life
                          max-life
-                         arrows))
-        (when-let [name (:name player)]
-          (println (format "     %s: %s" name ability))))
+                         arrows
+                         (or name "")))
+        (when-let [ability (:ability player)]
+          (println (format "     %s" ability))))
       (println (format "%s[%s] DEAD" active-marker player-idx)))))
 
 (defn- print-die! [die-idx {:keys [new? value]}]
-  (let [new-roll-marker (if new? ">" " ")]
-    (println (format "%s[%s] %s" new-roll-marker die-idx value))))
+  (let [new-marker (if new? "<" " ")]
+    (println (format "(%s)%s %s" die-idx new-marker value))))
 
 (defn print-game! [game]
   (->> game
        (:players)
        (map-indexed (partial print-player! (:active-player-idx game)))
        (dorun))
-  (println (format " ARROWS %d" (:arrows game)))
-  (println (format " DICE ROLLS %d" (:dice-rolls game)))
+  (println (format "ARROWS %d" (:arrows game)))
+  (println (format "DICE ROLLS %d" (:dice-rolls game)))
   (->> game
        (:dice)
        (map-indexed print-die!)
