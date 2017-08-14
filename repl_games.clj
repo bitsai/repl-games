@@ -182,6 +182,11 @@
    :renegade-count 1
    :outlaw-count 2
    :deputy-count 1})
+
+(def dice
+  {:base ["1" "2" "ARROW" "BEER" "DYNAMITE" "GATLING"]
+   :loudmouth ["1 (2)" "2 (2)" "ARROW" "BULLET" "DYNAMITE" "GATLING (2)"]
+   :coward ["1" "ARROW" "ARROW (BROKEN)" "BEER" "BEER (2)" "DYNAMITE"]})
 (ns btdg.print
   (:require [clojure.string :as str]))
 
@@ -243,29 +248,7 @@
          (first))))
 
 (defn- roll-die [die]
-  (let [roll (rand/uniform 0 6)]
-    (case (:type die)
-      :base (case roll
-              0 "1"
-              1 "2"
-              2 "ARROW"
-              3 "BEER"
-              4 "DYNAMITE"
-              5 "GATLING")
-      :loudmouth (case roll
-                   0 "1 (2)"
-                   1 "2 (2)"
-                   2 "ARROW"
-                   3 "BULLET"
-                   4 "DYNAMITE"
-                   5 "GATLING (2)")
-      :coward (case roll
-                0 "1"
-                1 "ARROW"
-                2 "ARROW (BROKEN)"
-                3 "BEER"
-                4 "BEER (2)"
-                5 "DYNAMITE"))))
+  (-> die :type cfg/dice rand/rand-nth*))
 
 ;; commands
 
