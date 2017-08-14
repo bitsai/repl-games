@@ -200,7 +200,7 @@
                          (or name "")))
         (when-let [ability (:ability player)]
           (println (format "     %s" ability))))
-      (println (format "%s[%s] DEAD" active-marker player-idx)))))
+      (println (format "(%s)%s DEAD" player-idx active-marker)))))
 
 (defn- print-die! [die-idx {:keys [new? value]}]
   (let [new-marker (if new? "<" " ")]
