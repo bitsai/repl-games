@@ -261,29 +261,6 @@
                      {:type :base :value "DYNAMITE" :new? true}]
               :dice-rolls 1}
              (end-turn game))))
-    (testing "Next active player is a coward."
-      (is (= {:players [{:name "JOSE DELGADO"
-                         :max-life 9
-                         :life 9}
-                        {:name "BART CASSIDY"
-                         :max-life 8
-                         :life 8}
-                        {:name "TEQUILA JOE"
-                         :max-life 8
-                         :life 8}]
-              :active-player-idx 2
-              :dice [{:type :coward :value "1" :new? true}
-                     {:type :base :value "1" :new? true}
-                     {:type :base :value "BEER" :new? true}
-                     {:type :base :value "2" :new? true}
-                     {:type :base :value "ARROW" :new? true}
-                     {:type :base :value "DYNAMITE" :new? true}]
-              :dice-rolls 1}
-             (-> game
-                 ;; make player 2 Tequila Joe
-                 (assoc-in [:players 2 :name] "TEQUILA JOE")
-                 ;; end turn
-                 (end-turn)))))
     (testing "Skip dead players."
       (is (= {:players [{:name "JOSE DELGADO"
                          :max-life 9
@@ -296,9 +273,9 @@
                          :life 0}]
               :active-player-idx 0
               :dice [{:type :loudmouth :value "1 (2)" :new? true}
-                     {:type :base :value "DYNAMITE" :new? true}
-                     {:type :base :value "GATLING" :new? true}
-                     {:type :base :value "ARROW" :new? true}
+                     {:type :base :value "1" :new? true}
+                     {:type :base :value "BEER" :new? true}
+                     {:type :base :value "2" :new? true}
                      {:type :base :value "ARROW" :new? true}
                      {:type :base :value "DYNAMITE" :new? true}]
               :dice-rolls 1}
