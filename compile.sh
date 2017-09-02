@@ -8,4 +8,6 @@ cat src/repl_games/random.clj \
     src/btdg/commands.clj \
     src/btdg/setup.clj \
     src/btdg/core.clj \
+    src/icrpg/characters.clj \
+    src/icrpg/monsters.clj \
     > repl_games.clj
