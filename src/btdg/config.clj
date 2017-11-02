@@ -8,6 +8,21 @@
    :deputy-count 1})
 
 (def dice
-  {:base ["1" "2" "ARROW" "BEER" "DYNAMITE" "GATLING"]
-   :loudmouth ["1 (2)" "2 (2)" "ARROW" "BULLET" "DYNAMITE" "GATLING (2)"]
-   :coward ["1" "ARROW" "ARROW (BROKEN)" "BEER" "BEER (2)" "DYNAMITE"]})
+  {:base ["1"
+          "2"
+          "Bandage"
+          "Fan the Hammer"
+          "Indian arrow"
+          "Jam"]
+   :loudmouth ["1 (x2)"
+               "2 (x2)"
+               "Fan the Hammer (x2)"
+               "Indian arrow"
+               "Jam"
+               "Misfire"]
+   :coward ["1"
+            "Bandage"
+            "Bandage (x2)"
+            "Broken arrow"
+            "Indian arrow"
+            "Jam"]})

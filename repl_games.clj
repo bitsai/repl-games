@@ -102,52 +102,52 @@
 (def base
   [{:name "BART CASSIDY"
     :max-life 8
-    :ability "You may take an arrow instead of losing a life point (except to Indians or Dynamite)."}
+    :ability "You may take an arrow instead of losing a life point (except to Indians or Jams)."}
    {:name "BLACK JACK"
     :max-life 8
-    :ability "You may re-roll DYNAMITE (not if you roll three or more!)."}
+    :ability "You may re-roll \"Jam\" (not if you roll three or more!)."}
    {:name "CALAMITY JANE"
     :max-life 8
-    :ability "You can use 1 as 2 and vice-versa."}
+    :ability "You can use \"1\" as \"2\" and vice-versa."}
    {:name "EL GRINGO"
     :max-life 7
     :ability "When a player makes you lose one or more life points, he must take an arrow."}
    {:name "JESSE JONES"
     :max-life 9
-    :ability "If you have four life points or less, you gain two if you use BEER for yourself."}
+    :ability "If you have four life points or less, you gain two if you use \"Bandage\" for yourself."}
    {:name "JOURDONNAIS"
     :max-life 7
     :ability "You never lose more than one life point to Indians."}
    {:name "KIT CARLSON"
     :max-life 7
-    :ability "For each GATLING you may discard one arrow from any player."}
+    :ability "For each \"Fan the Hammer\" you may discard one arrow from any player."}
    {:name "LUCKY DUKE"
     :max-life 8
     :ability "You may make one extra re-roll."}
    {:name "PAUL REGRET"
     :max-life 9
-    :ability "You never lose life points to the Gatling Gun."}
+    :ability "You never lose life points to Fan the Hammer."}
    {:name "PEDRO RAMIREZ"
     :max-life 8
     :ability "Each time you lose a life point, you may discard one of your arrows."}
    {:name "ROSE DOOLAN"
     :max-life 9
-    :ability "You may use 1 or 2 for players sitting one place further."}
+    :ability "You may use \"1\" or \"2\" for players sitting one place further."}
    {:name "SID KETCHUM"
     :max-life 8
     :ability "At the beginning of your turn, any player of your choice gains one life point."}
    {:name "SLAB THE KILLER"
     :max-life 8
-    :ability "Once per turn, you can use a BEER to double a 1 or 2."}
+    :ability "Once per turn, you can use a \"Bandage\" to double a \"1\" or \"2\"."}
    {:name "SUZY LAFAYETTE"
     :max-life 8
-    :ability "If you didn't roll any 1 or 2, you gain two life points."}
+    :ability "If you didn't roll any \"1\" or \"2\", you gain two life points."}
    {:name "VULTURE SAM"
     :max-life 9
     :ability "Each time another player is eliminated, you gain two life points."}
    {:name "WILLY THE KID"
     :max-life 8
-    :ability "You only need two GATLING to use the Gatling Gun."}])
+    :ability "You only need two \"Fan the Hammer\" to use Fan the Hammer."}])
 
 (def old-saloon
   [{:name "JOSE DELGADO"
@@ -158,19 +158,19 @@
     :ability "You may use the Coward die without replacing a base die (roll six dice total)."}
    {:name "APACHE KID"
     :max-life 9
-    :ability "If you roll ARROW, you may take the Indian Chief's Arrow from another player."}
+    :ability "If you roll \"Indian arrow\", you may take the Indian Chief's Arrow from another player."}
    {:name "BILL NOFACE"
     :max-life 9
-    :ability "Apply ARROW results only after your last roll."}
+    :ability "Apply \"Indian arrow\" results only after your last roll."}
    {:name "ELENA FUENTE"
     :max-life 7
-    :ability "Each time you roll one or more ARROW, you may give one of those arrows to a player of your choice."}
+    :ability "Each time you roll one or more \"Indian arrow\", you may give one of those arrows to a player of your choice."}
    {:name "VERA CUSTER"
     :max-life 7
-    :ability "Each time you must lose life points for 1 or 2, you lose 1 life point less."}
+    :ability "Each time you must lose life points for \"1\" or \"2\", you lose 1 life point less."}
    {:name "DOC HOLYDAY"
     :max-life 8
-    :ability "Each time you use three or more 1 and/or 2, you also regain 2 life points."}
+    :ability "Each time you use three or more \"1\" and/or \"2\", you also regain 2 life points."}
    {:name "MOLLY STARK"
     :max-life 8
     :ability "Each time another player must lose 1 or more life points, you can lose them in his place."}])
@@ -184,9 +184,24 @@
    :deputy-count 1})
 
 (def dice
-  {:base ["1" "2" "ARROW" "BEER" "DYNAMITE" "GATLING"]
-   :loudmouth ["1 (2)" "2 (2)" "ARROW" "BULLET" "DYNAMITE" "GATLING (2)"]
-   :coward ["1" "ARROW" "ARROW (BROKEN)" "BEER" "BEER (2)" "DYNAMITE"]})
+  {:base ["1"
+          "2"
+          "Bandage"
+          "Fan the Hammer"
+          "Indian arrow"
+          "Jam"]
+   :loudmouth ["1 (x2)"
+               "2 (x2)"
+               "Fan the Hammer (x2)"
+               "Indian arrow"
+               "Jam"
+               "Misfire"]
+   :coward ["1"
+            "Bandage"
+            "Bandage (x2)"
+            "Broken arrow"
+            "Indian arrow"
+            "Jam"]})
 (ns btdg.print
   (:require [clojure.string :as str]))
 
@@ -195,14 +210,13 @@
     (if (-> player :life pos?)
       (let [role-name (-> player :role name str/upper-case)
             {:keys [name role max-life life arrows]} player]
-        (println (format "(%s)%s %-8s %d/%d %d %s"
+        (println (format "(%s)%s %-8s %d/%d %d"
                          player-idx
                          active-marker
                          role-name
                          life
                          max-life
-                         arrows
-                         (or name "")))
+                         arrows))
         (when-let [ability (:ability player)]
           (println (format "     %s" ability))))
       (println (format "(%s)%s DEAD" player-idx active-marker)))))
@@ -380,14 +394,9 @@
        (cons :sheriff)))
 
 (defn- setup-characters [n]
-  (let [[x & xs] characters/old-saloon]
-    (->> (concat characters/base xs)
-         ;; shuffle characters
-         (rand/shuffle*)
-         ;; take N-1
-         (take (dec n))
-         ;; put JOSE DELGADO first
-         (cons x))))
+  (->> (concat characters/base characters/old-saloon)
+       (rand/shuffle*)
+       (take n)))
 
 (defn- setup-players [roles characters]
   (mapv (fn [r c]
@@ -447,7 +456,7 @@
         :fn cmds/lose-life}
    :ia {:doc "(Indians attack): [player-idx ...]"
         :fn cmds/indians-attack}
-   :gg {:doc "(Gatling Gun): [player-idx ...]"
+   :fh {:doc "(Fan the Hammer): [player-idx ...]"
         :fn cmds/gatling-gun}
    :et {:doc "(end turn)"
         :fn cmds/end-turn}))

@@ -12,11 +12,11 @@
                      {:type :coward}]
               :dice-rolls 0}]
     (testing "By default, roll all dice."
-      (is (= {:dice [{:type :base :value "DYNAMITE" :new? true}
+      (is (= {:dice [{:type :base :value "Indian arrow" :new? true}
                      {:type :base :value "2" :new? true}
                      {:type :base :value "2" :new? true}
-                     {:type :loudmouth :value "2 (2)" :new? true}
-                     {:type :coward :value "BEER (2)" :new? true}]
+                     {:type :loudmouth :value "2 (x2)" :new? true}
+                     {:type :coward :value "Indian arrow" :new? true}]
               :dice-rolls 1}
              (roll-dice game))))
     (testing "Roll specified dice."
@@ -24,7 +24,7 @@
                      {:type :base}
                      {:type :base :value "1" :new? true}
                      {:type :loudmouth}
-                     {:type :coward :value "BEER" :new? true}]
+                     {:type :coward :value "Broken arrow" :new? true}]
               :dice-rolls 1}
              (roll-dice game 0 2 4))))))
 
@@ -254,11 +254,11 @@
                          :max-life 8
                          :life 8}]
               :active-player-idx 2
-              :dice [{:type :base :value "DYNAMITE" :new? true}
+              :dice [{:type :base :value "Indian arrow" :new? true}
                      {:type :base :value "2" :new? true}
                      {:type :base :value "2" :new? true}
                      {:type :base :value "2" :new? true}
-                     {:type :base :value "DYNAMITE" :new? true}]
+                     {:type :base :value "Indian arrow" :new? true}]
               :dice-rolls 1}
              (end-turn game))))
     (testing "Skip dead players."
@@ -272,12 +272,12 @@
                          :max-life 8
                          :life 0}]
               :active-player-idx 0
-              :dice [{:type :loudmouth :value "1 (2)" :new? true}
+              :dice [{:type :loudmouth :value "1 (x2)" :new? true}
                      {:type :base :value "1" :new? true}
-                     {:type :base :value "BEER" :new? true}
+                     {:type :base :value "Fan the Hammer" :new? true}
                      {:type :base :value "2" :new? true}
-                     {:type :base :value "ARROW" :new? true}
-                     {:type :base :value "DYNAMITE" :new? true}]
+                     {:type :base :value "Bandage" :new? true}
+                     {:type :base :value "Indian arrow" :new? true}]
               :dice-rolls 1}
              (-> game
                  ;; kill player 2

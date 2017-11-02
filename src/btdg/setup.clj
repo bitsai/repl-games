@@ -14,14 +14,9 @@
        (cons :sheriff)))
 
 (defn- setup-characters [n]
-  (let [[x & xs] characters/old-saloon]
-    (->> (concat characters/base xs)
-         ;; shuffle characters
-         (rand/shuffle*)
-         ;; take N-1
-         (take (dec n))
-         ;; put JOSE DELGADO first
-         (cons x))))
+  (->> (concat characters/base characters/old-saloon)
+       (rand/shuffle*)
+       (take n)))
 
 (defn- setup-players [roles characters]
   (mapv (fn [r c]

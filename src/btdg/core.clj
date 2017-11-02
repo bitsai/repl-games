@@ -28,7 +28,7 @@
         :fn cmds/lose-life}
    :ia {:doc "(Indians attack): [player-idx ...]"
         :fn cmds/indians-attack}
-   :gg {:doc "(Gatling Gun): [player-idx ...]"
+   :fh {:doc "(Fan the Hammer): [player-idx ...]"
         :fn cmds/gatling-gun}
    :et {:doc "(end turn)"
         :fn cmds/end-turn}))

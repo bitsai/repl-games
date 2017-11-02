@@ -6,14 +6,13 @@
     (if (-> player :life pos?)
       (let [role-name (-> player :role name str/upper-case)
             {:keys [name role max-life life arrows]} player]
-        (println (format "(%s)%s %-8s %d/%d %d %s"
+        (println (format "(%s)%s %-8s %d/%d %d"
                          player-idx
                          active-marker
                          role-name
                          life
                          max-life
-                         arrows
-                         (or name "")))
+                         arrows))
         (when-let [ability (:ability player)]
           (println (format "     %s" ability))))
       (println (format "(%s)%s DEAD" player-idx active-marker)))))
