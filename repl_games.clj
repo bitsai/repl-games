@@ -450,7 +450,7 @@
         :fn cmds/lose-life}
    :ia {:doc "(Indians attack): excluded-player-idx ..."
         :fn cmds/indians-attack}
-   :fh {:doc "(Fan the Hammer): excluded-player-idx ..."
+   :fh {:doc "(fan the hammer): excluded-player-idx ..."
         :fn cmds/gatling-gun}
    :et {:doc "(end turn)"
         :fn cmds/end-turn}))
