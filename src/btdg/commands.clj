@@ -44,6 +44,8 @@
         (update :dice-rolls inc))))
 
 (defn take-arrows
+  ([game]
+   (take-arrows game (:active-player-idx game) 1))
   ([game n]
    (take-arrows game (:active-player-idx game) n))
   ([game player-idx n]
@@ -54,6 +56,8 @@
          (update-player-k player-idx :arrows + arrows)))))
 
 (defn discard-arrows
+  ([game]
+   (discard-arrows game (:active-player-idx game) (:arrow-count cfg/defaults)))
   ([game n]
    (discard-arrows game (:active-player-idx game) n))
   ([game player-idx n]
@@ -65,6 +69,8 @@
          (update :arrows + arrows)))))
 
 (defn gain-life
+  ([game]
+   (gain-life game (:active-player-idx game) 1))
   ([game n]
    (gain-life game (:active-player-idx game) n))
   ([game player-idx n]
@@ -76,6 +82,8 @@
    (do-for-players game gain-life (concat [player-idx n] args))))
 
 (defn lose-life
+  ([game]
+   (lose-life game (:active-player-idx game) 1))
   ([game n]
    (lose-life game (:active-player-idx game) n))
   ([game player-idx n]
@@ -111,7 +119,7 @@
          player-idxs-and-hits (interleave player-idxs (repeat 1))]
      (-> game
          (do-for-players lose-life player-idxs-and-hits)
-         (discard-arrows (get-player-k game active-player-idx :arrows))))))
+         (discard-arrows)))))
 
 (defn setup-dice [game]
   (let [active-player-idx (:active-player-idx game)

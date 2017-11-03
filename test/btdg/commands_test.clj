@@ -33,6 +33,12 @@
                         {:arrows 0}]
               :active-player-idx 0
               :arrows 9}]
+    (testing "By default, active player takes 1 arrow."
+      (is (= {:players [{:arrows 1}
+                        {:arrows 0}]
+              :active-player-idx 0
+              :arrows 8}
+             (take-arrows game))))
     (testing "Active player takes n arrows."
       (is (= {:players [{:arrows 2}
                         {:arrows 0}]
@@ -57,6 +63,12 @@
                         {:arrows 3}]
               :active-player-idx 0
               :arrows 3}]
+    (testing "By default, active player discards all arrows."
+      (is (= {:players [{:arrows 0}
+                        {:arrows 3}]
+              :active-player-idx 0
+              :arrows 6}
+             (discard-arrows game))))
     (testing "Active player discards n arrows."
       (is (= {:players [{:arrows 1}
                         {:arrows 3}]
@@ -82,6 +94,13 @@
                         {:max-life 10
                          :life 1}]
               :active-player-idx 0}]
+    (testing "By default, active player gains 1 life."
+      (is (= {:players [{:max-life 10
+                         :life 2}
+                        {:max-life 10
+                         :life 1}]
+              :active-player-idx 0}
+             (gain-life game))))
     (testing "Active player gains n life."
       (is (= {:players [{:max-life 10
                          :life 3}
@@ -112,6 +131,15 @@
                          :life 10}]
               :active-player-idx 0
               :arrows 6}]
+    (testing "By default, active player loses 1 life."
+      (is (= {:players [{:max-life 10
+                         :life 9
+                         :arrows 3}
+                        {:max-life 10
+                         :life 10}]
+              :active-player-idx 0
+              :arrows 6}
+             (lose-life game))))
     (testing "Active player loses n life."
       (is (= {:players [{:max-life 10
                          :life 8
