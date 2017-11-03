@@ -335,29 +335,26 @@
   ([game player-idx n & args]
    (do-for-players game lose-life (concat [player-idx n] args))))
 
-(defn indians-attack
-  ([game]
-   (let [player-idxs (-> game :players count range)]
-     (apply indians-attack game player-idxs)))
-  ([game & player-idxs]
-   (let [player-idxs-and-arrows (->> player-idxs
-                                     (map #(get-player-k game % :arrows))
-                                     (interleave player-idxs))]
-     (-> game
-         (do-for-players lose-life player-idxs-and-arrows)
-         (do-for-players discard-arrows player-idxs-and-arrows)))))
+(defn indians-attack [game & excluded-player-idxs]
+  (let [player-idxs (->> (-> game :players count range)
+                         (remove (set excluded-player-idxs)))
+        player-idxs-and-arrows (->> player-idxs
+                                    (map #(get-player-k game % :arrows))
+                                    (interleave player-idxs))]
+    (-> game
+        (do-for-players lose-life player-idxs-and-arrows)
+        (do-for-players discard-arrows player-idxs-and-arrows))))
 
-(defn gatling-gun
-  ([game]
-   (let [active-player-idx (:active-player-idx game)
-         player-idxs (-> game :players count range)]
-     (apply gatling-gun game (remove #{active-player-idx} player-idxs))))
-  ([game & player-idxs]
-   (let [active-player-idx (:active-player-idx game)
-         player-idxs-and-hits (interleave player-idxs (repeat 1))]
-     (-> game
-         (do-for-players lose-life player-idxs-and-hits)
-         (discard-arrows)))))
+(defn gatling-gun [game & excluded-player-idxs]
+  (let [;; always exclude active player
+        active-player-idx (:active-player-idx game)
+        excluded-player-idxs (cons active-player-idx excluded-player-idxs)
+        player-idxs (->> (-> game :players count range)
+                         (remove (set excluded-player-idxs)))
+        player-idxs-and-hits (interleave player-idxs (repeat 1))]
+    (-> game
+        (do-for-players lose-life player-idxs-and-hits)
+        (discard-arrows))))
 
 (defn setup-dice [game]
   (let [active-player-idx (:active-player-idx game)
@@ -451,9 +448,9 @@
         :fn cmds/gain-life}
    :ll {:doc "(lose life): [n] | player-idx n ..."
         :fn cmds/lose-life}
-   :ia {:doc "(Indians attack): [player-idx ...]"
+   :ia {:doc "(Indians attack): excluded-player-idx ..."
         :fn cmds/indians-attack}
-   :fh {:doc "(Fan the Hammer): [player-idx ...]"
+   :fh {:doc "(Fan the Hammer): excluded-player-idx ..."
         :fn cmds/gatling-gun}
    :et {:doc "(end turn)"
         :fn cmds/end-turn}))

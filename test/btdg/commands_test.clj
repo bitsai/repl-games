@@ -187,7 +187,7 @@
               :active-player-idx 0
               :arrows 9}
              (indians-attack game))))
-    (testing "Attack specified players."
+    (testing "Exclude specified players."
       (is (= {:players [{:max-life 10
                          :life 1
                          :arrows 3}
@@ -196,7 +196,7 @@
                          :arrows 0}]
               :active-player-idx 0
               :arrows 6}
-             (indians-attack game 1))))))
+             (indians-attack game 0))))))
 
 (deftest gatling-gun-test
   (let [game {:players [{:max-life 10
@@ -208,7 +208,7 @@
                          :life 10}]
               :active-player-idx 0
               :arrows 6}]
-    (testing "By default, shoot all OTHER players"
+    (testing "By default, shoot all OTHER players."
       (is (= {:players [{:max-life 10
                          :life 10
                          :arrows 0}
@@ -219,7 +219,7 @@
               :active-player-idx 0
               :arrows 9}
              (gatling-gun game))))
-    (testing "Shoot specified players."
+    (testing "Exclude specified players (and active player)."
       (is (= {:players [{:max-life 10
                          :life 10
                          :arrows 0}
@@ -229,7 +229,7 @@
                          :life 9}]
               :active-player-idx 0
               :arrows 9}
-             (gatling-gun game 2))))))
+             (gatling-gun game 1))))))
 
 (deftest end-turn-test
   (rand/set-seed! 420)
