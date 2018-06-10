@@ -471,7 +471,7 @@
 (def ^:dynamic *monster-builders* (atom nil))
 (def monster-num 12)
 
-(declare orc-battle game-loop-start game-loop-end init-player player-dead? show-player player-attack-start player-attack-end a d1 d2 f randval random-monster init-monsters monster-dead? monsters-dead? show-monsters make-monster monster-hit monster-show monster-attack)
+(declare orc-battle game-loop-start game-loop-end init-player player-dead? show-player player-attack-start player-attack-end s d1 d2 f randval random-monster init-monsters monster-dead? monsters-dead? show-monsters make-monster monster-hit monster-show monster-attack)
 
 (defn orc-battle []
   (init-monsters)
@@ -514,13 +514,13 @@
   (printf "You are a valiant gunslinger with a health of %d, an agility of %d, and a focus of %d.\n" @*player-health* @*player-agility* @*player-focus*))
 
 (defn player-attack-start []
-  (println "Attack style: [a]imed shot [d1+d2]ouble tap [f]an the hammer"))
+  (println "Attack style: [s]nipe [d1|d2]ouble tap [f]an the hammer"))
 
 (defn player-attack-end []
   (swap! *player-attacks* dec)
   (game-loop-end))
 
-(defn a [x]
+(defn s [x]
   (let [y (+ 2 (randval (quot @*player-focus* 2)))]
     (swap! *monsters* update x #(monster-hit % y))
     (player-attack-end)))
@@ -614,7 +614,7 @@
   (let [m (update m :health - x)]
     (if (monster-dead? m)
       (println "The corpse of the fully decapitated and decapacitated hydra falls to the floor!")
-      (printf "You lop off %d of the hydra's heads!\n" x))
+      (printf "You shoot off %d of the hydra's heads!\n" x))
     m))
 
 (defmethod monster-attack "hydra" [m]
