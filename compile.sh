@@ -9,4 +9,5 @@ cat src/repl_games/random.clj \
     src/btdg/setup.clj \
     src/btdg/core.clj \
     src/orc_battle/core.clj \
+    src/supercrew/core.clj \
     > repl_games.clj

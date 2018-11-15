@@ -1,7 +1,7 @@
 # btdg
 
-A Solitaire variant of BANG! The Dice Game, based on the [Lone Gunslinger rules](http://www.bang.cz/en/rules-and-faq/special-rules/59-pro-1-hrace-osamely-pistolnik.html) for BANG!
+A Solitaire variant of [BANG! The Dice Game](http://www.bang.cz/en/rules-and-faq/special-rules/59-pro-1-hrace-osamely-pistolnik.html).
 
-Adds Old Saloon Modules 1 and 4.
+Includes Old Saloon Modules 1 and 4.
 
-Applied a minor reskin (ex. renames Gatling Gun to Fan the Hammer).
+Applies a minor reskin (ex. renames Gatling Gun to Fan the Hammer).
