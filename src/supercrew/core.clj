@@ -110,6 +110,9 @@
       (print-hero h)
       (println))))
 
+(defn d [n sides]
+  (repeatedly n #(inc (rand-int sides))))
+
 (defn r [n]
   (loop [n n
          rs []]
