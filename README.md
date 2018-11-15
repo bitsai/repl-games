@@ -1,8 +1,8 @@
 # repl-games
 
-A simple framework for text-based games in the Clojure REPL.
+A simple framework for text-based games and helpers in the Clojure REPL.
 
-## Notes
+## Game Notes
 
 Clojure REPL on Android: https://www.deepbluelambda.org/programs/clojure-repl/
 

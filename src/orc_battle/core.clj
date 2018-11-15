@@ -52,13 +52,13 @@
   (printf "You are a valiant gunslinger with a health of %d, an agility of %d, and a focus of %d.\n" @*player-health* @*player-agility* @*player-focus*))
 
 (defn player-attack-start []
-  (println "Attack style: [s]nipe [d1|d2]ouble tap [f]an the hammer"))
+  (println "Attack style: [a]imed shot [d1|d2]ouble tap [f]an the hammer"))
 
 (defn player-attack-end []
   (swap! *player-attacks* dec)
   (game-loop-end))
 
-(defn s [x]
+(defn a [x]
   (let [y (+ 2 (randval (quot @*player-focus* 2)))]
     (swap! *monsters* update x #(monster-hit % y))
     (player-attack-end)))
@@ -191,10 +191,10 @@
           (swap! *player-health* - 2))
 
       (= x @*player-agility*)
-      (do (println "A brigand catches your arm with his whip, taking off 2 agility points!")
+      (do (println "A brigand catches your arm with his knife, taking off 2 agility points!")
           (swap! *player-agility* - 2))
 
       (= x @*player-focus*)
-      (do (println "A brigand cuts your head with his whip, taking off 2 focus points!")
+      (do (println "A brigand cuts your head with his knife, taking off 2 focus points!")
           (swap! *player-focus* - 2)))
     m))
