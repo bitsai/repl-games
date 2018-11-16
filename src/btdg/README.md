@@ -4,4 +4,4 @@ A Solitaire variant of [BANG! The Dice Game](http://www.bang.cz/en/rules-and-faq
 
 Includes Old Saloon Modules 1 and 4.
 
-Applies a minor reskin (ex. renames Gatling Gun to Fan the Hammer).
+Renames Gatling Gun to Fan the Hammer.
